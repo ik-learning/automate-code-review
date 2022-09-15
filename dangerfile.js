@@ -59,5 +59,5 @@ const adviseManualApplyShouldBeAddedWhenFilesChanged = (files) => {
   }
 }
 
-// ensureFileHasNewline(updatedFiles);
+ensureFileHasNewline(updatedFiles);
 adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);

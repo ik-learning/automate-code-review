@@ -12,6 +12,12 @@ Here is a (non-exhaustive) list of the kinds of things Danger has been used for 
 - Reviewer roulette
 - Single codebase effort
 
+## Supported Features
+
+- Message 'apply after merge'
+- Ensure files has new line
+- 
+
 ## Getting started
 
 ## Commands
@@ -68,3 +74,7 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 - [Example 6/10](https://github.com/artsy/metaphysics/blob/main/dangerfile.ts)
 <!-- how to -->
 - [Gitlab Templates](https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml)
+
+## TODO
+
+- Please use the appropriate MR template, and populate with details and a jira ticket -->
