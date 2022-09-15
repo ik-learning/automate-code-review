@@ -26,6 +26,7 @@ Here is a (non-exhaustive) list of the kinds of things Danger has been used for 
 docker pull ghcr.io/danger/danger-js:11.1.2
 yarn danger:local
 # locally test
+yarn danger pr $DANGER_PR_URL
 yarn danger pr --removePreviousComments $DANGER_PR_URL
 DANGER_TEST_PR='2' yarn danger ci
 ```

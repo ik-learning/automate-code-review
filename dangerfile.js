@@ -1,4 +1,4 @@
-const { danger, warn } = require('danger')
+const { danger, warn, message } = require('danger')
 
 markdown("Hey there! Thanks for contributing a PR to a repo! 🎉")
 
@@ -85,7 +85,6 @@ const ensureDynamoDBSingleKeyModification = (files) => {
       for (let c of el.chunks) {
         for (let x of c.changes) {
           let sanitized = x.content.replace(/[^a-zA-Z_+-]/g, "");
-          // console.log(sanitized)
           for (let el of conditionsWhenMultipleDynamoKeysModified) {
             if (sanitized.includes(el) && lastEl !== el) {
               keys[el] += 1
@@ -106,15 +105,92 @@ const ensureDynamoDBSingleKeyModification = (files) => {
   }
 }
 
-const ensureRDSCreationValidated = () => {
+// engine_version, family
+const rdsPostgresConditionsToLookAfter = {
+  'engine': 'postgres',
+  'engine_version': '14.3',
+  'family': 'postgres14'
+}
+const rdsRecommendetInstanceTypesInDev = [
+  'db.t3.micro', 'db.t3.small'
+]
+const ensureRDSCreationValidated = (files) => {
+  // TODO: support mysql
   const tfvars = danger.git.fileMatch("**/rds/**/*.tfvars")
+  const hcl = danger.git.fileMatch("**/rds/**/*.hcl")
+  if (tfvars.getKeyedPaths().created.length != hcl.getKeyedPaths().created.length) {
+    const details = [
+      "*No hcl file detected*. Create a `terragrunt.hcl` file next to `*.tfvars` with the below **exact** content: <br>",
+      "<code>",
+      "include \"common\" {\r\n",
+      "  path = find_in_parent_folders(\"common.hcl\")\r\n",
+      "}",
+      "</code>"
+    ].join("")
+    markdown(details)
+  }
+  if (tfvars.getKeyedPaths().created.length > 1) {
+    message(`(Potential improvement) Do you need **prod** immediately too, or can it be split out and deployed later (ie. will you be using it today)..`);
+  }
+  const rds = {
+    'engine_version': '',
+    'family': ''
+  }
+
+  if (tfvars.created) {
+    // validate instance class
+    const createdFiles = tfvars.getKeyedPaths().created;
+    createdFiles.filter((el) => el.includes('/dev/')).map((el) => {
+      let notRecommendedInstanceClass = true;
+      let instance_class;
+
+      danger.git.structuredDiffForFile(el).then((e) => {
+        for (let i of e.chunks) {
+          for (let c of i.changes) {
+            if (c.content.includes('instance_class')) {
+              instance_class = c.content.split(" ").at(-1)
+              for (let rds of rdsRecommendetInstanceTypesInDev) {
+                if (instance_class.includes(rds)) {
+                  notRecommendedInstanceClass = false;
+                  break;
+                }
+              }
+              if (notRecommendedInstanceClass) {
+                warn(`📂 ${el}. ➡️  (Potential cost saving) In dev environment instance class ${instance_class} not recommended. Consider smaller sizes "${rdsRecommendetInstanceTypesInDev}" ...`);
+              }
+              break;
+            }
+          }
+        }
+      });
+      return
+    })
+    // for (let f of tfvars.getKeyedPaths().created) {
+    //   danger.git.structuredDiffForFile(f).filter.then((el) => {
+    //     console.l
+    //     // for (let i of el.chunks) {
+    //     //   console.log(i)
+    //     // }
+    //   })
+    // }
+    // validate engine version
+    // for (let f of tfvars.getKeyedPaths().created) {
+    //   danger.git.structuredDiffForFile(f).then((el) => {
+    //     for (let i of el.chunks) {
+    //       console.log(i)
+    //     }
+    //   })
+    // }
+  }
   // const app = danger.git.fileMatch("src/**/*.ts")
   // const tests = danger.git.fileMatch("*/__tests__/*")
-  console.log(tfvars)
+  // console.log(tfvars)
 }
 
 // ensureFileHasNewline(updatedFiles);
 // adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
 // ensureDynamoDBSingleKeyModification(updatedFiles);
 // console.log(danger.git)
-ensureRDSCreationValidated()
+ensureRDSCreationValidated(danger.git.created_files)
+
+
