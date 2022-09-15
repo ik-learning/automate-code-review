@@ -63,6 +63,7 @@ const conditionsWhenMultipleDynamoKeysModified = [
 const ensureDynamoDBSingleKeyModification = (files) => {
   // TODO: consider what to do with LSI?
   // TODO: consider multiple use caess e.g. keys removed, added and modified
+  // TODO: could be simplified e.g. calculate number of '{' and '}'
   const result = files.filter((val) => {
     return val.includes('dynamodb')
   });
@@ -81,9 +82,7 @@ const ensureDynamoDBSingleKeyModification = (files) => {
         'read_capacity': 0,
         'write_capacity': 0
       }
-      console.log(el)
       for (let c of el.chunks) {
-        console.log(c)
         for (let x of c.changes) {
           let sanitized = x.content.replace(/[^a-zA-Z_+-]/g, "");
           // console.log(sanitized)
@@ -101,14 +100,14 @@ const ensureDynamoDBSingleKeyModification = (files) => {
         }
       }
       if (result >= 2) {
-        warn(`📂 ${file}. ➡️  Only one GSI can be operated on at a time, otherwise AWS will complain..`);
+        warn(`📂 ${file}. ➡️  (Potential issue) Only one GSI can be operated on at a time, otherwise AWS will complain..`);
       }
     })
   }
 }
 
-// ensureFileHasNewline(updatedFiles);
-// adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
+ensureFileHasNewline(updatedFiles);
+adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
 ensureDynamoDBSingleKeyModification(updatedFiles);
 // console.log(danger.git)
 
