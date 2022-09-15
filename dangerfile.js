@@ -2,9 +2,6 @@ const { danger, warn } = require('danger')
 
 markdown("Hey there! Thanks for contributing a PR to a repo! 🎉")
 
-if (danger.gitLab.mergeRequest.title.contains("WIP")) {
-  warn("MR is considered WIP")
-}
 // console.log(danger.gitlab)
 // console.log(danger)
 // No PR is too small to include a description of why you made a change
@@ -59,5 +56,59 @@ const adviseManualApplyShouldBeAddedWhenFilesChanged = (files) => {
   }
 }
 
-ensureFileHasNewline(updatedFiles);
-adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
+// dynamodb
+const conditionsWhenMultipleDynamoKeysModified = [
+  'name', 'hash_key', 'projection_type', 'range_key', 'read_capacity', 'write_capacity'
+]
+const ensureDynamoDBSingleKeyModification = (files) => {
+  // TODO: consider what to do with LSI?
+  // TODO: consider multiple use caess e.g. keys removed, added and modified
+  const result = files.filter((val) => {
+    return val.includes('dynamodb')
+  });
+  for (let file of result) {
+    danger.git.structuredDiffForFile(file).then((el) => {
+      if (el.chunks.length > 1) {
+        console.log('potentially multiple changes in the dynamodb file')
+      }
+      let lastEl = '';
+      let result = 0
+      const keys = {
+        'name': 0,
+        'hash_key': 0,
+        'projection_type': 0,
+        'range_key': 0,
+        'read_capacity': 0,
+        'write_capacity': 0
+      }
+      console.log(el)
+      for (let c of el.chunks) {
+        console.log(c)
+        for (let x of c.changes) {
+          let sanitized = x.content.replace(/[^a-zA-Z_+-]/g, "");
+          // console.log(sanitized)
+          for (let el of conditionsWhenMultipleDynamoKeysModified) {
+            if (sanitized.includes(el) && lastEl !== el) {
+              keys[el] += 1
+              lastEl = el
+              // console.log(`${sanitized} -> ${el}`)
+              if (keys[el] >= 2) {
+                result += 1
+              }
+              break;
+            }
+          }
+        }
+      }
+      if (result >= 2) {
+        warn(`📂 ${file}. ➡️  Only one GSI can be operated on at a time, otherwise AWS will complain..`);
+      }
+    })
+  }
+}
+
+// ensureFileHasNewline(updatedFiles);
+// adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
+ensureDynamoDBSingleKeyModification(updatedFiles);
+// console.log(danger.git)
+

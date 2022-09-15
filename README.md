@@ -16,7 +16,7 @@ Here is a (non-exhaustive) list of the kinds of things Danger has been used for 
 
 - Message 'apply after merge'
 - Ensure files has new line
-- 
+-
 
 ## Getting started
 
@@ -25,6 +25,8 @@ Here is a (non-exhaustive) list of the kinds of things Danger has been used for 
 ```sh
 docker pull ghcr.io/danger/danger-js:11.1.2
 yarn danger:local
+# locally test
+yarn danger pr --removePreviousComments $DANGER_PR_URL
 ```
 
 ### Run Danger file
@@ -77,4 +79,7 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 
 ## TODO
 
+- [X] Hey, unfortunately only one GSI can be operated on at a time, otherwise AWS will complain.
 - Please use the appropriate MR template, and populate with details and a jira ticket -->
+- RDS validation
+- Please can you update the topic details section, and also put the topics in alphabetical order.
