@@ -116,6 +116,7 @@ const rdsRecommendetInstanceTypesInDev = [
 ]
 const ensureRDSCreationValidated = (files) => {
   // TODO: support mysql
+  // TODO: validate version
   const tfvars = danger.git.fileMatch("**/rds/**/*.tfvars")
   const hcl = danger.git.fileMatch("**/rds/**/*.hcl")
   if (tfvars.getKeyedPaths().created.length != hcl.getKeyedPaths().created.length) {
@@ -187,10 +188,7 @@ const ensureRDSCreationValidated = (files) => {
   // console.log(tfvars)
 }
 
-// ensureFileHasNewline(updatedFiles);
-// adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
-// ensureDynamoDBSingleKeyModification(updatedFiles);
-// console.log(danger.git)
+ensureFileHasNewline(updatedFiles);
+adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
+ensureDynamoDBSingleKeyModification(updatedFiles);
 ensureRDSCreationValidated(danger.git.created_files)
-
-
