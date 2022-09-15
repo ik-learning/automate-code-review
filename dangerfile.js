@@ -28,8 +28,6 @@ const updatedFiles = [
   ...danger.git.modified_files,
 ];
 
-// console.log(updatedFiles)
-
 const ensureFileHasNewline = (files) => {
   // Always ensure all files has newlines
   for (let file of files) {
@@ -41,5 +39,20 @@ const ensureFileHasNewline = (files) => {
   }
 }
 
-ensureFileHasNewline(updatedFiles);
+const conditionsToTriggerApply = [
+  'terraform', '.gitlab-ci.yml', 'environments'
+]
 
+const adviseManualApplyShouldBeAddedWhenFilesChanged = (files) => {
+  // manual apply advice should be added to a file
+  const result = files.filter((val) => {
+    return conditionsToTriggerApply.some(el => val.includes(el))
+  });
+  if (result.length > 0) {
+    console.log(`files that must te applied ${result}`);
+    message("You'll need to run the manual apply job when changes merged...")
+  }
+}
+
+// ensureFileHasNewline(updatedFiles);
+adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);

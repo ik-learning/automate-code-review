@@ -35,6 +35,7 @@ npm install
 - [Danger 5 minutes](https://medium.com/@ivan.ha/integrate-danger-js-in-5-minutes-55515bc5355d)
 - [Gitlab source](https://github.com/danger/danger-js/blob/main/source/platforms/gitlab/GitLabGit.ts)
 - [7/10 Gitlab](https://github.com/cangSDARM/dangerjs-self-hosted-gitlab-sample/blob/master/dangerfile.js)
+- [Emojies](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#symbols)
 
 ```yaml
  include:
