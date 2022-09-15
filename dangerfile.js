@@ -2,6 +2,9 @@ const { danger, warn } = require('danger')
 
 markdown("Hey there! Thanks for contributing a PR to a repo! 🎉")
 
+if (danger.gitLab.mergeRequest.title.contains("WIP")) {
+  warn("MR is considered WIP")
+}
 // console.log(danger.gitlab)
 // console.log(danger)
 // No PR is too small to include a description of why you made a change
