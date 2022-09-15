@@ -3,6 +3,15 @@
 - [10% project](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5454364804/10+Time+Projects)
 - [jira PAAS-1508](https://hbidigital.atlassian.net/browse/PAAS-1508)
 
+Here is a (non-exhaustive) list of the kinds of things Danger has been used for at GitLab so far:
+
+- Coding style
+- Database review
+- Documentation review
+- Merge request metrics
+- Reviewer roulette
+- Single codebase effort
+
 ## Getting started
 
 ## Commands
@@ -16,6 +25,22 @@ docker pull ghcr.io/danger/danger-js:11.1.2
 ```
 npm install
 ```
+
+### Docs
+
+- [Gitlab How to](https://danger.systems/js/usage/gitlab.html)
+- [Danger bot](https://docs.gitlab.com/ee/development/dangerbot.html)
+
+```yaml
+ include:
+   - project: 'gitlab-org/quality/pipeline-common'
+     file:
+       - '/ci/danger-review.yml'
+     rules:
+       - if: $CI_SERVER_HOST == "gitlab.com"
+```
+
+Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gitlab-ci.yml
 
 ## Examples
 
@@ -31,4 +56,8 @@ npm install
 - [https://github.com/rizalibnu/danger-plugin-pull-request](https://github.com/rizalibnu/danger-plugin-pull-request)
 - [Official Docker creation](https://github.com/danger/danger-js/blob/main/.github/workflows/publish_package.yml)
 - [Docker image](https://github.com/orgs/danger/packages/container/package/danger-js)
+- [Docker images. Build Images](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.danger)
 - [Examples](https://snyk.io/advisor/npm-package/danger/functions/danger.markdown)
+- [Example 6/10](https://github.com/artsy/metaphysics/blob/main/dangerfile.ts)
+<!-- how to -->
+- [Gitlab Templates](https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml)

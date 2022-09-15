@@ -1,9 +1,8 @@
 {
-  "name": "danger-example",
+  "name": "danger-10-percent-project",
   "version": "1.0.0",
   "description": "Danger JS example",
-  "author": "Ardy Dedase",
-  "license": "ISC",
+  "author": "IK <ivankatliarchuk@hollandandbarrett.com>",
   "devDependencies": {
     "danger": "^11.0.5"
   }
