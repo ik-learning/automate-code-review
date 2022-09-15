@@ -106,8 +106,15 @@ const ensureDynamoDBSingleKeyModification = (files) => {
   }
 }
 
-ensureFileHasNewline(updatedFiles);
-adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
-ensureDynamoDBSingleKeyModification(updatedFiles);
-// console.log(danger.git)
+const ensureRDSCreationValidated = () => {
+  const tfvars = danger.git.fileMatch("**/rds/**/*.tfvars")
+  // const app = danger.git.fileMatch("src/**/*.ts")
+  // const tests = danger.git.fileMatch("*/__tests__/*")
+  console.log(tfvars)
+}
 
+// ensureFileHasNewline(updatedFiles);
+// adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
+// ensureDynamoDBSingleKeyModification(updatedFiles);
+// console.log(danger.git)
+ensureRDSCreationValidated()

@@ -84,3 +84,4 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 - Please use the appropriate MR template, and populate with details and a jira ticket -->
 - RDS validation
 - Please can you update the topic details section, and also put the topics in alphabetical order.
+- Jira link is missing
