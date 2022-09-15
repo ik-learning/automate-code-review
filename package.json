@@ -9,9 +9,11 @@
   },
   "scripts": {
     "prepush": "yarn build; yarn danger:local",
-    "danger:local": "yarn danger local --dangerfile dangerfile.ts --base master",
+    "danger:local": "yarn danger local --dangerfile dangerfile.js --base run-apply-example",
     "local": "yarn danger:local",
-    "pr:local": "yarn danger pr $DANGER_PR_URL",
-    "pr:remote": "$DANGER_TEST_PR=${GITHUB_PR_ID} yarn danger ci"
+    "pr:local-full": "yarn danger pr --d dangerfile.ts --removePreviousComments $DANGER_PR_URL",
+    "pr:local": "yarn danger pr --removePreviousComments $DANGER_PR_URL",
+    "pr:remote": "yarn danger ci",
+    "pr:remote-full": "DANGER_TEST_PR='1' yarn danger ci"
   }
 }
