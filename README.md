@@ -36,6 +36,7 @@ npm install
 - [Gitlab source](https://github.com/danger/danger-js/blob/main/source/platforms/gitlab/GitLabGit.ts)
 - [7/10 Gitlab](https://github.com/cangSDARM/dangerjs-self-hosted-gitlab-sample/blob/master/dangerfile.js)
 - [Emojies](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#symbols)
+- [5/10 blog](https://prog.world/automate-review-selection-with-gitlab-ci-and-danger-js)
 
 ```yaml
  include:
