@@ -3,7 +3,15 @@
   "version": "1.0.0",
   "description": "Danger JS example",
   "author": "IK <ivankatliarchuk@hollandandbarrett.com>",
+  "repository": "https://gitlab.com/HnBI/platform-as-a-service/test-projects/automate-code-review",
   "devDependencies": {
     "danger": "^11.0.5"
+  },
+  "scripts": {
+    "prepush": "yarn build; yarn danger:local",
+    "danger:local": "yarn danger local --dangerfile dangerfile.ts --base master",
+    "local": "yarn danger:local",
+    "pr:local": "yarn danger pr $DANGER_PR_URL",
+    "pr:remote": "$DANGER_TEST_PR=${GITHUB_PR_ID} yarn danger ci"
   }
 }

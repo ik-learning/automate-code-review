@@ -18,6 +18,7 @@ Here is a (non-exhaustive) list of the kinds of things Danger has been used for 
 
 ```sh
 docker pull ghcr.io/danger/danger-js:11.1.2
+yarn danger:local
 ```
 
 ### Run Danger file
@@ -30,6 +31,8 @@ npm install
 
 - [Gitlab How to](https://danger.systems/js/usage/gitlab.html)
 - [Danger bot](https://docs.gitlab.com/ee/development/dangerbot.html)
+- [Danger Local](https://danger.systems/js/tutorials/fast-feedback.html)
+- [Danger 5 minutes](https://medium.com/@ivan.ha/integrate-danger-js-in-5-minutes-55515bc5355d)
 
 ```yaml
  include:
