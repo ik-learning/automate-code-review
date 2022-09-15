@@ -11,6 +11,12 @@
 docker pull ghcr.io/danger/danger-js:11.1.2
 ```
 
+### Run Danger file
+
+```
+npm install
+```
+
 ## Examples
 
 - [https://github.com/artsy/artsy.github.io/blob/main/Dangerfile](https://github.com/artsy/artsy.github.io/blob/main/Dangerfile)
