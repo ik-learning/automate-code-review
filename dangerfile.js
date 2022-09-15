@@ -1,4 +1,6 @@
-const {danger, warn} = require('danger')
+const { danger, warn } = require('danger')
+
+markdown("Hey there! Thanks for contributing a PR to a repo! 🎉")
 
 // console.log(danger.gitlab)
 // console.log(danger)
