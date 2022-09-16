@@ -93,3 +93,4 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 - Du not ren when `[skip ci]
 - Template should be used!!!
 - skip some suggestions for renovate bot
+- [X] Changelog is missing.

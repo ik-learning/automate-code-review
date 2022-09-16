@@ -195,13 +195,17 @@ const shouldChanelogBeModified = [
 ]
 const changelogSync = async () => {
   let changedChangelog = danger.git.modified_files.includes('CHANGELOG.md')
-  console.log(danger.gitlab.metadata.repoSlug)
   shouldChanelogBeModified.forEach(el => {
     if (danger.gitlab.metadata.repoSlug.includes(el)) {
-      warn('This PR modified important files but does not have any changes to the CHANGELOG.');
+      warn('This PR modified important files but does not have `Added|Changed` entry in the CHANGELOG.');
     }
   });
+}
 
+const shouldTemplateBeModifiedFolders = [
+  'terraform', 'environments'
+]
+const templateShouldBeEnforced = async () => {
 
 }
 
@@ -213,7 +217,8 @@ ensureDynamoDBSingleKeyModification(updatedFiles);
 ensureRDSCreationValidated(danger.git.created_files)
 
 async function runAsync() {
-  await changelogSync()
+  await changelogSync();
+  await templateShouldBeEnforced();
 }
 
 runAsync();
