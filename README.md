@@ -79,6 +79,10 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 <!-- how to -->
 - [Gitlab Templates](https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml)
 
+### Plugins
+
+- [PR Higene](https://www.npmjs.com/package/danger-plugin-pr-hygiene)
+
 ## TODO
 
 - [X] Hey, unfortunately only one GSI can be operated on at a time, otherwise AWS will complain.
@@ -86,3 +90,6 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 - RDS validation
 - Please can you update the topic details section, and also put the topics in alphabetical order.
 - Jira link is missing
+- Du not ren when `[skip ci]
+- Template should be used!!!
+- skip some suggestions for renovate bot

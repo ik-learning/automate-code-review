@@ -82,6 +82,7 @@ const ensureDynamoDBSingleKeyModification = (files) => {
         'read_capacity': 0,
         'write_capacity': 0
       }
+      // forEach??
       for (let c of el.chunks) {
         for (let x of c.changes) {
           let sanitized = x.content.replace(/[^a-zA-Z_+-]/g, "");
@@ -144,7 +145,7 @@ const ensureRDSCreationValidated = (files) => {
     createdFiles.filter((el) => el.includes('/dev/')).map((el) => {
       let notRecommendedInstanceClass = true;
       let instance_class;
-
+      // rewrite with forEach!!!
       danger.git.structuredDiffForFile(el).then((e) => {
         for (let i of e.chunks) {
           for (let c of i.changes) {
@@ -188,7 +189,31 @@ const ensureRDSCreationValidated = (files) => {
   // console.log(tfvars)
 }
 
+// changelog
+const shouldChanelogBeModified = [
+  'platform-as-a-service/k8s-cluster-config'
+]
+const changelogSync = async () => {
+  let changedChangelog = danger.git.modified_files.includes('CHANGELOG.md')
+  console.log(danger.gitlab.metadata.repoSlug)
+  shouldChanelogBeModified.forEach(el => {
+    if (danger.gitlab.metadata.repoSlug.includes(el)) {
+      warn('This PR modified important files but does not have any changes to the CHANGELOG.');
+    }
+  });
+
+
+}
+
+// template
+
 ensureFileHasNewline(updatedFiles);
 adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
 ensureDynamoDBSingleKeyModification(updatedFiles);
 ensureRDSCreationValidated(danger.git.created_files)
+
+async function runAsync() {
+  await changelogSync()
+}
+
+runAsync();
