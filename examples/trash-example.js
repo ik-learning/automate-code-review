@@ -10,3 +10,10 @@ if no changes >>>
 
 
 console.log(danger.gitlab.utils.fileContents(file).then(d => { console.log(d) }));
+
+const pr = danger.github.pr
+const bodyAndTitle = (pr.body + pr.title).toLowerCase()
+
+// Custom modifiers for people submitting PRs to be able to say "skip this"
+const acceptedNoTests = bodyAndTitle.includes("#skip_new_tests")
+const acceptedNoNativeChanges = bodyAndTitle.includes("#native_no_changes")

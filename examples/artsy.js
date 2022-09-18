@@ -1,38 +1,5 @@
 // https://github.com/artsy/emission/blob/bc66cf42e8e84f999d9b22f06a764bd79a6449f4/dangerfile.ts#L177
 
-Skip to content
-Pull requests
-Issues
-Marketplace
-Explore
-@ivankatliarchuk
-This repository has been archived by the owner.It is now read - only.
-  artsy /
-  emission
-Public archive
-
-Code
-Issues 54
-Pull requests
-Actions
-Wiki
-Security
-
-Insights
-
-emission / dangerfile.ts /
-@ashfurrow
-ashfurrow Updates Danger rule for adding tests for new files.
-Latest commit bc66cf4 on 11 Dec 2019
-History
-6 contributors
-@orta
-@ashfurrow
-@alloy
-@ds300
-@sweir27
-@kierangillen
-208 lines(176 sloc) 8.29 KB
 import { danger, fail, markdown, warn } from "danger"
 import { compact, includes, uniq } from "lodash"
 
