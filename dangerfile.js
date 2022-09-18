@@ -228,6 +228,7 @@ const templateShouldBeEnforced = async (files, templates) => {
   const tfvarsDeleted = tfvars.getKeyedPaths().deleted;
 
   let template = {}
+  // TODO: support Updated and Deleted!!!
   let templateNotInUse = !contains(danger.gitlab.mr.description, ['## Checklist', 'Created']);
 
   // created
