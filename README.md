@@ -23,6 +23,7 @@ Here is a (non-exhaustive) list of the kinds of things Danger has been used for 
     - [Run Danger file](#run-danger-file)
     - [Docs](#docs)
 - [Examples](#examples)
+    - [How To](#how-to)
     - [Plugins](#plugins)
 - [TODO && Supported Features](#todo-&&-supported-features)
 
@@ -88,9 +89,12 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 - [Docker images. Build Images](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.danger)
 - [Examples](https://snyk.io/advisor/npm-package/danger/functions/danger.markdown)
 - [Example 6/10](https://github.com/artsy/metaphysics/blob/main/dangerfile.ts)
-<!-- how to -->
+
+### How To
+
 - [Gitlab Templates](https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml)
 - [Danger Github Action](https://github.com/MeilCli/danger-action)
+- [Gitlab Node API](https://github.com/jdalrymple/gitbeaker)
 
 ### Plugins
 
