@@ -20,3 +20,9 @@ local: ## Run locally
 
 open-mr: ## Run locally and open mr
 	@yarn danger ci
+
+docker-build: ## Docker image build
+	@docker build . --tag danger -f Dockerfile --progress plain
+
+docker-exec: ## Docker exec to a file
+	@docker run -it --rm danger
