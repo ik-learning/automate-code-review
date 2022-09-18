@@ -7,8 +7,9 @@
   "license": "MIT",
   "devDependencies": {
     "danger": "^11.0.5",
-    "js-yaml": "^4.1.0",
     "hcl2-parser": "^1.0.3",
+    "js-yaml": "^4.1.0",
+    "object-hash": "^3.0.0",
     "micromatch": "^4.0.5"
   },
   "scripts": {
@@ -21,5 +22,6 @@
     "pr:remote-full": "DANGER_TEST_PR='2' yarn danger ci"
   },
   "dependencies": {
+
   }
 }

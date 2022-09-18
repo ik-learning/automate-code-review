@@ -17,3 +17,5 @@ const bodyAndTitle = (pr.body + pr.title).toLowerCase()
 // Custom modifiers for people submitting PRs to be able to say "skip this"
 const acceptedNoTests = bodyAndTitle.includes("#skip_new_tests")
 const acceptedNoNativeChanges = bodyAndTitle.includes("#native_no_changes")
+
+const full = await danger.gitlab.utils.fileContents(file);

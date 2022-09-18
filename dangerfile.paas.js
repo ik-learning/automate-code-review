@@ -1,11 +1,12 @@
 'use strict';
 
+// const { danger } = require('danger');
 // const { danger, warn, message, markdown } = require('danger')
 const match = require('micromatch');
 
 // helpers & utils
 const
-  { contains, hclToJson } = require("./lib/utils");
+  { contains, hclToJson, getHashDifference } = require("./lib/utils");
 
 const repo = danger.gitlab.metadata.repoSlug;
 const commitFiles = [
@@ -58,53 +59,28 @@ const adviseManualApplyMessage = files => {
 }
 
 // dynamodb
-const conditionsWhenMultipleDynamoKeysModified = [
-  'name', 'hash_key', 'projection_type', 'range_key', 'read_capacity', 'write_capacity'
-]
-const ensureDynamoDBSingleKeyModification = (files) => {
+const ensureDynamoDBSingleKeyModification = async (files) => {
   // TODO: consider what to do with LSI?
   // TODO: consider multiple use caess e.g. keys removed, added and modified
-  // TODO: could be simplified e.g. calculate number of '{' and '}'
-  const result = files.filter((val) => {
-    return val.includes('dynamodb')
-  });
-  for (let file of result) {
-    danger.git.structuredDiffForFile(file).then((el) => {
-      if (el.chunks.length > 1) {
-        console.log('potentially multiple changes in the dynamodb file')
+  files.filter(file => file.includes('dynamodb')).forEach(async file => {
+    let multipleGCI = false;
+    const diff = await danger.git.diffForFile(file);
+    const before = hclToJson(diff.before).dynamodb_table.global_secondary_indexes;
+    const after = hclToJson(diff.after).dynamodb_table.global_secondary_indexes;
+    const singleGCI = 1;
+    if (Math.abs(before.length - after.length) > singleGCI) {
+      console.log('length difference');
+      multipleGCI = true;
+    } else {
+      if (getHashDifference(after, before).length > singleGCI) {
+        console.log('multiple changes found while comparing "global secondary indexes"');
+        multipleGCI = true;
       }
-      let lastEl = '';
-      let result = 0
-      const keys = {
-        'name': 0,
-        'hash_key': 0,
-        'projection_type': 0,
-        'range_key': 0,
-        'read_capacity': 0,
-        'write_capacity': 0
-      }
-      // forEach??
-      for (let c of el.chunks) {
-        for (let x of c.changes) {
-          let sanitized = x.content.replace(/[^a-zA-Z_+-]/g, "");
-          for (let el of conditionsWhenMultipleDynamoKeysModified) {
-            if (sanitized.includes(el) && lastEl !== el) {
-              keys[el] += 1
-              lastEl = el
-              // console.log(`${sanitized} -> ${el}`)
-              if (keys[el] >= 2) {
-                result += 1
-              }
-              break;
-            }
-          }
-        }
-      }
-      if (result >= 2) {
-        warn(`📂 ${file}. ➡️  (Potential issue) Only one GSI can be operated on at a time, otherwise AWS will complain..`);
-      }
-    })
-  }
+    }
+    if (multipleGCI) {
+      warn(`📂 ${file}. ➡️  (Potential issue) Only one GSI can be operated on at a time, otherwise AWS will complain..`);
+    }
+  })
 }
 
 // engine_version, family
@@ -261,6 +237,7 @@ const commonChecks = source => {
 
 const infraChecks = async () => {
   adviseManualApplyMessage(commitFiles);
+  await ensureDynamoDBSingleKeyModification(updatedFiles);
   await ensureRDSCreationValidated();
   await templateShouldBeEnforced(commitFiles, mrTemplates);
 }
