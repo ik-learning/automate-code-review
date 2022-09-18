@@ -98,3 +98,4 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 - RDS support deleted files with message
 - Gitlab suggest a change in an MR
 - RDS/Dynamo DB deleted files -> ask PAAS to remove database
+- Sandbox (deleted) on deletion du not remove example. Consider to commment CI logic only. Remove resources from local.
