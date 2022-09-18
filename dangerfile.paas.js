@@ -179,6 +179,7 @@ const changelogSync = async () => {
   // TODO: revisit the check for changelog repo not required
   let changedChangelog = danger.git.modified_files.includes('CHANGELOG.md')
   if (!changedChangelog) {
+    // TODO: not required when runs on a repo
     shouldChanelogBeModified.forEach(el => {
       if (danger.gitlab.metadata.repoSlug.includes(el)) {
         warn('This PR modified important files but does not have `Added|Changed` entry in the CHANGELOG.');
@@ -252,10 +253,8 @@ const templateShouldBeEnforced = async (files, templates) => {
   }
 }
 
-// template
-
+// TODO refactore
 // ensureDynamoDBSingleKeyModification(updatedFiles);
-// ensureRDSCreationValidated(danger.git.created_files)
 
 const commonChecks = source => {
   ensureFileHasNewline(updatedFiles);
@@ -267,15 +266,14 @@ const infraChecks = async () => {
   await templateShouldBeEnforced(commitFiles, mrTemplates);
 }
 
-// async function runAsync() {
-//   await ensureRDSCreationValidated();
-//   // await changelogSync();
-//   await templateShouldBeEnforced(commitFiles, mrTemplates);
-// }
+const changelogs = async () => {
+  await changelogSync()
+}
 
 // danger.github.pr.body.includes("[skip ci]")
 
 module.exports = {
   commonChecks,
   infraChecks,
+  changelogs,
 };
