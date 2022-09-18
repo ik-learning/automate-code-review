@@ -4,6 +4,7 @@
   "description": "Danger JS example",
   "author": "IK <ivankatliarchuk@hollandandbarrett.com>",
   "repository": "https://gitlab.com/HnBI/platform-as-a-service/test-projects/automate-code-review",
+  "license": "MIT",
   "devDependencies": {
     "danger": "^11.0.5",
     "js-yaml": "^4.1.0",

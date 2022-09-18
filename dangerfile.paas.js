@@ -163,7 +163,7 @@ async function ensureRDSCreationValidated() {
       const data = hclToJson(diff.after);
       let { engine, engine_version, family } = data.rds_config.instance_config
       if (engine === 'postgres' && engine_version !== rdsPostgres.engine_version && family !== rdsPostgres.family ) {
-        warn(`📂 ${file}. ✏️  is there is a reason to created outdated rds. \`proposed: { family:${rdsPostgres.family}, engine_version:${rdsPostgres.engine_version} }, current: { family:${family}, engine_version:${engine_version} } \``)
+        warn(`📂 ${file}. ✏️  is there is a reason to created outdated rds. **proposed** \`{ family:${rdsPostgres.family}, engine_version:${rdsPostgres.engine_version} }\` **current** \`{ family:${family}, engine_version:${engine_version} }\``)
       }
       if (engine !== 'postgres') {
         console.log(`mr review weith \`${engine}\` is  not yet supported.`)
@@ -216,7 +216,7 @@ const templateShouldBeEnforced = async (files, templates) => {
 
   let template = {}
   // TODO: support Updated and Deleted!!!
-  let templateNotInUse = !contains(danger.gitlab.mr.description, ['## Checklist', 'Created']);
+  let templateNotInUse = !contains(danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'created']);
 
   // created
   if (templateNotInUse && tfvarsCreated.length > 0) {
