@@ -122,12 +122,13 @@ const yaml = require('js-yaml');
 const HCL = require("hcl2-parser");
 const match = require('micromatch');
 
-// TODO: only infra repo should be validated
-const ensureRDSCreationValidated = async (files) => {
+// TODO: Infrastructure repository
+// const ensureRDSCreationValidated = async (files) => {
+async function ensureRDSCreationValidated() {
   // TODO: support mysql
   // TODO: validate version
-  const tfvars = danger.git.fileMatch("**/rds/**/*.tfvars")
-  const hcl = danger.git.fileMatch("**/rds/**/*.hcl")
+  const tfvars = danger.git.fileMatch("**/rds/**/*.tfvars");
+  const hcl = danger.git.fileMatch("**/rds/**/*.hcl");
   // if (tfvars.getKeyedPaths().created.length != hcl.getKeyedPaths().created.length) {
   //   const details = [
   //     "*No hcl file detected*. Create a `terragrunt.hcl` file next to `*.tfvars` with the below **exact** content: <br>",
