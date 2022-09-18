@@ -154,6 +154,12 @@ function branchCheck() {
   }
 }
 
+danger.git.commits.forEach(commit => {
+  if (!commit.message.match(/^(feat:)|(fix:)|(major:)|(chore:)/g)) {
+    fail(`Commit message '${commit.message}' does match the correct format`)
+  }
+})
+
 branchCheck();
 mrInfoCheck();
 rangeCheck();

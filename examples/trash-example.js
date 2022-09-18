@@ -17,5 +17,10 @@ const bodyAndTitle = (pr.body + pr.title).toLowerCase()
 // Custom modifiers for people submitting PRs to be able to say "skip this"
 const acceptedNoTests = bodyAndTitle.includes("#skip_new_tests")
 const acceptedNoNativeChanges = bodyAndTitle.includes("#native_no_changes")
+danger.git.commits.forEach(commit => {
+  if (!commit.message.match(/^(feat:)|(fix:)|(major:)|(chore:)/g)) {
+    fail(`Commit message '${commit.message}' does match the correct format`)
+  }
+})
 
 const full = await danger.gitlab.utils.fileContents(file);
