@@ -157,7 +157,7 @@ async function ensureRDSCreationValidated() {
       const data = HCL.parseToObject(diff.after)[0];
       let { instance_class, engine, engine_version } = data.rds_config.instance_config
       if (engine === 'postgres' && !match.isMatch(instance_class, rdsRecommendetInstanceTypesInDev)) {
-        warn(`📂 ${file}. ➡️  (💵 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider smaller sizes "${rdsRecommendetInstanceTypesInDev}" ...`);
+        warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider smaller sizes \`${rdsRecommendetInstanceTypesInDev}\` ...`);
       }
       if (engine !== 'postgres') {
         console.log(`mr review weith \`${engine}\` is  not yet supported.`)
@@ -193,12 +193,15 @@ const shouldChanelogBeModified = [
   'platform-as-a-service/k8s-cluster-config'
 ]
 const changelogSync = async () => {
+  // TODO: revisit the check for changelog repo not required
   let changedChangelog = danger.git.modified_files.includes('CHANGELOG.md')
-  shouldChanelogBeModified.forEach(el => {
-    if (danger.gitlab.metadata.repoSlug.includes(el)) {
-      warn('This PR modified important files but does not have `Added|Changed` entry in the CHANGELOG.');
-    }
-  });
+  if (!changedChangelog) {
+    shouldChanelogBeModified.forEach(el => {
+      if (danger.gitlab.metadata.repoSlug.includes(el)) {
+        warn('This PR modified important files but does not have `Added|Changed` entry in the CHANGELOG.');
+      }
+    });
+  }
 }
 
 const shouldTemplateBeModifiedFolders = [
