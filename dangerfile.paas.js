@@ -169,11 +169,11 @@ const mrTemplates = {
     'modified': 'to-do'
   },
   'dynamodb': {
-    'created': 'todo',
+    'created': 'Create DynamoDB Table.md',
     'modified': 'Update DynamoDB Table.md'
   },
   'appconfig': {
-    'created': 'todo',
+    'created': 'Create AppConfig.md',
     'modified': 'todo',
     'deleted': 'todo',
   }
@@ -187,10 +187,12 @@ const templateShouldBeEnforced = async (files, templates) => {
 
   let template = {}
   // TODO: support Updated and Deleted!!!
-  let templateNotInUse = !contains(danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'created']);
+  let tmpCreatedMissing = !contains(danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'created']);
+  let tmpModifiedMissing = !contains(danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'update']);
+  let tmpDeletedMissing = !contains(danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'remove']);
 
   // created
-  if (templateNotInUse && tfvarsCreated.length > 0) {
+  if (tmpCreatedMissing && tfvarsCreated.length > 0) {
     tfvarsCreated.forEach(file => {
       Object.keys(templates).some(el => {
         if (file.includes(el)) {
@@ -200,12 +202,17 @@ const templateShouldBeEnforced = async (files, templates) => {
     })
   }
   // updated
-  if (templateNotInUse && tfvarsModified.length > 0) {
-    let action = 'modified'
-    // todo
+  if (tmpModifiedMissing && tfvarsModified.length > 0) {
+    tfvarsModified.forEach(file => {
+      Object.keys(templates).some(el => {
+        if (file.includes(el)) {
+          template[el] = 'modified'
+        }
+      });
+    })
   }
   // deleted
-  if (templateNotInUse && tfvarsDeleted.length > 0) {
+  if (tmpDeletedMissing && tfvarsDeleted.length > 0) {
     console.log('deleted')
     let action = 'deleted'
     // todo
@@ -226,8 +233,6 @@ const templateShouldBeEnforced = async (files, templates) => {
 }
 
 // TODO refactore
-// ensureDynamoDBSingleKeyModification(updatedFiles);
-
 const commonChecks = source => {
   ensureFileHasNewline(updatedFiles);
 }
