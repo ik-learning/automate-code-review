@@ -5,6 +5,18 @@ const yaml = require('js-yaml');
 const HCL = require("hcl2-parser");
 const match = require('micromatch');
 
+
+const repo = danger.gitlab.metadata.repoSlug;
+const commitFiles = [
+  ...danger.git.created_files,
+  ...danger.git.deleted_files,
+  ...danger.git.modified_files,
+];
+const updatedFiles = [
+  ...danger.git.created_files,
+  ...danger.git.modified_files,
+];
+
 markdown("Hey there! Thanks for contributing a PR to a repo! 🎉")
 
 // console.log(danger.gitlab)
@@ -14,26 +26,11 @@ markdown("Hey there! Thanks for contributing a PR to a repo! 🎉")
 //   warn('Please include a description of your PR changes.');
 // }
 
-// danger.gitlab.mr = exactly the MR JSON from the API
-// danger.gitlab.utils = util funcs
-// danger.gitlab.commits = commits from the GitLab API
-
 // Check that someone has been assigned to this PR
 // if (danger.gitlab.mr.assignee === null) {
 //    warn('Please assign someone to merge this PR, and optionally include people who should review.');
 // }
 // console.log(danger.git)
-
-const commitFiles = [
-  ...danger.git.created_files,
-  ...danger.git.deleted_files,
-  ...danger.git.modified_files,
-];
-
-const updatedFiles = [
-  ...danger.git.created_files,
-  ...danger.git.modified_files,
-];
 
 const ensureFileHasNewline = (files) => {
   // Always ensure all files has newlines
@@ -123,7 +120,7 @@ const rdsRecommendInstanceTypesInDev = [
 
 // TODO: Infrastructure repository
 function hclToJson(source) {
-  return HCL.parseToObject(diff.after)[0];
+  return HCL.parseToObject(source)[0];
 }
 
 // const ensureRDSCreationValidated = async (files) => {
@@ -170,7 +167,7 @@ async function ensureRDSCreationValidated() {
       const data = hclToJson(diff.after);
       let { engine, engine_version, family } = data.rds_config.instance_config
       if (engine === 'postgres' && engine_version !== rdsPostgres.engine_version && family !== rdsPostgres.family ) {
-        warn(`📂 ${file}. ✏️ is there is a reason to created outdated rds. \`proposed: { family:${rdsPostgres.family}, engine_version:${rdsPostgres.engine_version} }, current: { family:${family}, engine_version:${engine_version} } \` `)
+        warn(`📂 ${file}. ✏️  is there is a reason to created outdated rds. \`proposed: { family:${rdsPostgres.family}, engine_version:${rdsPostgres.engine_version} }, current: { family:${family}, engine_version:${engine_version} } \``)
       }
       if (engine !== 'postgres') {
         console.log(`mr review weith \`${engine}\` is  not yet supported.`)
@@ -199,8 +196,74 @@ const changelogSync = async () => {
 const shouldTemplateBeEnforced = [
   'terraform', 'environments'
 ]
-const templateShouldBeEnforced = async () => {
+const mrTemplates = {
+  'rds': {
+    'created': 'Create RDS instance.md',
+    'modified': 'to-do'
+  },
+  'dynamodb': {
+    'created': 'todo',
+    'modified': 'Update DynamoDB Table.md'
+  },
+  'appconfig': {
+    'created': 'todo',
+    'modified': 'todo',
+    'deleted': 'todo',
+  }
+};
 
+// helper function
+function contains(target, pattern) {
+  let result = 0;
+  pattern.forEach(function (word) {
+    result = result + target.includes(word);
+  });
+  return (result === pattern.length)
+}
+
+const templateShouldBeEnforced = async (files, templates) => {
+  const tfvars = danger.git.fileMatch("**.tfvars");
+  const tfvarsCreated = tfvars.getKeyedPaths().created;
+  const tfvarsModified = tfvars.getKeyedPaths().modified;
+  const tfvarsDeleted = tfvars.getKeyedPaths().deleted;
+
+  let template = {}
+  let templateNotInUse = !contains(danger.gitlab.mr.description, ['## Checklist', 'Created']);
+
+  // created
+  if (templateNotInUse && tfvarsCreated.length > 0) {
+    tfvarsCreated.forEach(file => {
+      // validate where file has missing template
+      Object.keys(mrTemplates).some(el => {
+        if (file.includes(el)) {
+          template[el] = 'created'
+        }
+      });
+    })
+  }
+  // updated
+  if (templateNotInUse && tfvarsModified.length > 0) {
+    let action = 'modified'
+    // todo
+  }
+  // deleted
+  if (templateNotInUse && tfvarsDeleted.length > 0) {
+    console.log('deleted')
+    let action = 'deleted'
+    // todo
+  }
+
+  if (Object.keys(template).length === 1) {
+    Object.entries(template).forEach(([key, value]) => {
+      const mrTemplate = mrTemplates[key][value];
+      const sanitized = mrTemplate.split(" ").join("%20");
+      const link = `https://gitlab.com/${repo}/-/blob/master/.gitlab/merge_request_templates/${sanitized}`
+
+      warn(`Please use the appropriate MR [${mrTemplate}](${link}), and populate with details and a jira ticket...`)
+    });
+  } else if (Object.keys(template).length > 1) {
+    warn(`multiple resources 'created|modified|deleted' in a single MR.`)
+  }
 }
 
 // template
@@ -217,7 +280,7 @@ const commonChecks = source => {
 async function runAsync() {
   await ensureRDSCreationValidated();
   // await changelogSync();
-  // await templateShouldBeEnforced();
+  await templateShouldBeEnforced(commitFiles, mrTemplates);
 }
 
 runAsync().then(r => console.log(r));
