@@ -233,8 +233,7 @@ const templateShouldBeEnforced = async (files, templates) => {
   // created
   if (templateNotInUse && tfvarsCreated.length > 0) {
     tfvarsCreated.forEach(file => {
-      // validate where file has missing template
-      Object.keys(mrTemplates).some(el => {
+      Object.keys(templates).some(el => {
         if (file.includes(el)) {
           template[el] = 'created'
         }
@@ -255,11 +254,12 @@ const templateShouldBeEnforced = async (files, templates) => {
 
   if (Object.keys(template).length === 1) {
     Object.entries(template).forEach(([key, value]) => {
-      const mrTemplate = mrTemplates[key][value];
+      const mrTemplate = templates[key][value];
+      const mrTemplateWithoutExt = mrTemplate.split('.')[0];
       const sanitized = mrTemplate.split(" ").join("%20");
       const link = `https://gitlab.com/${repo}/-/blob/master/.gitlab/merge_request_templates/${sanitized}`
 
-      warn(`Please use the appropriate MR [${mrTemplate}](${link}), and populate with details and a jira ticket...`)
+      warn(`Please use the appropriate MR [${mrTemplateWithoutExt}](${link}), and populate with details and a jira ticket...`)
     });
   } else if (Object.keys(template).length > 1) {
     warn(`multiple resources 'created|modified|deleted' in a single MR.`)

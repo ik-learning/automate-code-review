@@ -78,6 +78,7 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 - [Example 6/10](https://github.com/artsy/metaphysics/blob/main/dangerfile.ts)
 <!-- how to -->
 - [Gitlab Templates](https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml)
+- [Danger Github Action](https://github.com/MeilCli/danger-action)
 
 ### Plugins
 
@@ -86,11 +87,14 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 ## TODO
 
 - [X] Hey, unfortunately only one GSI can be operated on at a time, otherwise AWS will complain.
-- Please use the appropriate MR template, and populate with details and a jira ticket -->
-- RDS validation
+- [X] RDS version validation
+- [X] Please use the appropriate MR template, and populate with details and a jira ticket
+- [X] Template should be used
 - Please can you update the topic details section, and also put the topics in alphabetical order.
 - Jira link is missing
 - Du not ren when `[skip ci]
-- Template should be used!!!
 - skip some suggestions for renovate bot
 - [X] Changelog is missing.
+- RDS support deleted files with message
+- Gitlab suggest a change in an MR
+- RDS/Dynamo DB deleted files -> ask PAAS to remove database
