@@ -12,6 +12,25 @@ Here is a (non-exhaustive) list of the kinds of things Danger has been used for 
 - Reviewer roulette
 - Single codebase effort
 
+---
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+## Contents
+
+- [Supported Features](#supported-features)
+- [Getting started](#getting-started)
+- [Commands](#commands)
+    - [Run Danger file](#run-danger-file)
+    - [Docs](#docs)
+- [Examples](#examples)
+    - [Plugins](#plugins)
+- [TODO](#todo)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+---
+
 ## Supported Features
 
 - Message 'apply after merge'
@@ -90,12 +109,13 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 - [X] RDS version validation
 - [X] Please use the appropriate MR template, and populate with details and a jira ticket
 - [X] Template should be used
+- [X] Changelog is missing
 - Please can you update the topic details section, and also put the topics in alphabetical order.
 - Jira link is missing
 - Du not ren when `[skip ci]
 - skip some suggestions for renovate bot
-- [X] Changelog is missing.
 - RDS support deleted files with message
 - Gitlab suggest a change in an MR
 - RDS/Dynamo DB deleted files -> ask PAAS to remove database
 - Sandbox (deleted) on deletion du not remove example. Consider to commment CI logic only. Remove resources from local.
+- Unit tests

@@ -267,4 +267,3 @@ const getGameChanges = files => {
     })
 }
 getGameChanges(danger.git.modified_files.concat(danger.git.created_files, danger.git.deleted_files))
-
