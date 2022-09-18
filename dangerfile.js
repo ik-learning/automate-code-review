@@ -117,20 +117,23 @@ const rdsPostgres = {
   'engine_version': '14.3',
   'family': 'postgres14'
 }
-const rdsRecommendetInstanceTypesInDev = [
+const rdsRecommendInstanceTypesInDev = [
   'db.t3.micro', 'db.t3.small'
 ]
 
 // TODO: Infrastructure repository
+function hclToJson(source) {
+  return HCL.parseToObject(diff.after)[0];
+}
+
 // const ensureRDSCreationValidated = async (files) => {
 async function ensureRDSCreationValidated() {
-  // TODO: support mysql
-  // TODO: validate version
+  // TODO: support mysql, aurora
   const tfvars = danger.git.fileMatch("**/rds/**/*.tfvars");
   const hcl = danger.git.fileMatch("**/rds/**/*.hcl");
   const tfvarsCreated = tfvars.getKeyedPaths().created;
 
-  if (tfvarsCreated.length != hcl.getKeyedPaths().created.length) {
+  if (tfvarsCreated.length !== hcl.getKeyedPaths().created.length) {
     const details = [
       "*No `*.hcl` file detected*. Create a `terragrunt.hcl` file next to `*.tfvars` with the below **exact** content: <br>\n",
       "```\n",
@@ -149,10 +152,10 @@ async function ensureRDSCreationValidated() {
     // validate instance class in dev
     match(tfvarsCreated, ['**/dev/**']).forEach(async file => {
       const diff = await danger.git.diffForFile(file);
-      const data = HCL.parseToObject(diff.after)[0];
+      const data = hclToJson(diff.after);
       let { instance_class, engine, engine_version } = data.rds_config.instance_config
-      if (engine === 'postgres' && !match.isMatch(instance_class, rdsRecommendetInstanceTypesInDev)) {
-        warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider smaller sizes \`${rdsRecommendetInstanceTypesInDev}\` ...`);
+      if (engine === 'postgres' && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
+        warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider smaller sizes \`${rdsRecommendInstanceTypesInDev}\` ...`);
       }
       if (engine !== 'postgres') {
         console.log(`mr review weith \`${engine}\` is  not yet supported.`)
@@ -164,8 +167,7 @@ async function ensureRDSCreationValidated() {
     // make sure latest version in use dev|prod
     tfvarsCreated.forEach(async file => {
       const diff = await danger.git.diffForFile(file);
-      const data = HCL.parseToObject(diff.after)[0];
-      // console.log(data)
+      const data = hclToJson(diff.after);
       let { engine, engine_version, family } = data.rds_config.instance_config
       if (engine === 'postgres' && engine_version !== rdsPostgres.engine_version && family !== rdsPostgres.family ) {
         warn(`📂 ${file}. ✏️ is there is a reason to created outdated rds. \`proposed: { family:${rdsPostgres.family}, engine_version:${rdsPostgres.engine_version} }, current: { family:${family}, engine_version:${engine_version} } \` `)
@@ -194,7 +196,7 @@ const changelogSync = async () => {
   }
 }
 
-const shouldTemplateBeModifiedFolders = [
+const shouldTemplateBeEnforced = [
   'terraform', 'environments'
 ]
 const templateShouldBeEnforced = async () => {
