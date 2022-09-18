@@ -1,4 +1,4 @@
-const { danger, warn, message } = require('danger')
+const { danger, warn, message, markdown } = require('danger')
 
 markdown("Hey there! Thanks for contributing a PR to a repo! 🎉")
 
@@ -129,6 +129,7 @@ async function ensureRDSCreationValidated() {
   // TODO: validate version
   const tfvars = danger.git.fileMatch("**/rds/**/*.tfvars");
   const hcl = danger.git.fileMatch("**/rds/**/*.hcl");
+
   // if (tfvars.getKeyedPaths().created.length != hcl.getKeyedPaths().created.length) {
   //   const details = [
   //     "*No hcl file detected*. Create a `terragrunt.hcl` file next to `*.tfvars` with the below **exact** content: <br>",
@@ -151,56 +152,18 @@ async function ensureRDSCreationValidated() {
   if (tfvars.created) {
     // validate instance class
     const createdFiles = tfvars.getKeyedPaths().created;
-    match(createdFiles, ['**/dev/**']).forEach(file => {
-      const ttt = await danger.git.diffForFile(file);
+    match(createdFiles, ['**/dev/**']).forEach(async file => {
+      const diff = await danger.git.diffForFile(file);
+      const data = HCL.parseToObject(diff.after)[0];
+      let { instance_class, engine, engine_version } = data.rds_config.instance_config
+      if (engine === 'postgres' && !match.isMatch(instance_class, rdsRecommendetInstanceTypesInDev)) {
+        warn(`📂 ${file}. ➡️  (💵 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider smaller sizes "${rdsRecommendetInstanceTypesInDev}" ...`);
+      }
+      if (engine !== 'postgres') {
+        console.log(`mr review weith \`${engine}\` is  not yet supported.`)
+      }
     });
-    // Promise.all(match(createdFiles, ['**/dev/**'])
-    //   .map((file) => danger.git.diffForFile(file))).then(diffs => {
-    //     diffs.forEach(diff => {
-    //       console.log(diff)
-    //       const hcl = HCL.parseToObject(diff.after)
-    //       // console.log(JSON.stringify(hcl))
-    //       let data = hcl[0];
-    //       // console.log(data)
-    //       let { instance_class, engine, engine_version } = data.rds_config.instance_config
-    //       console.log(instance_class)
-    //       if (engine === 'postgres') {
-    //         if (!match.isMatch(instance_class, rdsRecommendetInstanceTypesInDev)) {
-    //           // warn(`📂 ${file}. ➡️  (💵 saving) In dev environment instance class ${instance_class} not recommended. Consider smaller sizes "${rdsRecommendetInstanceTypesInDev}" ...`);
-    //         }
-    //       } else {
-    //         console.log(`${engine} is  not supported yet.`)
-    //       }
-    //     })
-    //   });
 
-
-    //   let notRecommendedInstanceClass = true;
-    //   let instance_class;
-    //   // rewrite with forEach!!!
-
-    //   danger.git.structuredDiffForFile(el).then((e) => {
-
-    //     for (let i of e.chunks) {
-    //       for (let c of i.changes) {
-    //         if (c.content.includes('instance_class')) {
-    //           instance_class = c.content.split(" ").at(-1)
-    //           for (let rds of rdsRecommendetInstanceTypesInDev) {
-    //             if (instance_class.includes(rds)) {
-    //               notRecommendedInstanceClass = false;
-    //               break;
-    //             }
-    //           }
-    //           if (notRecommendedInstanceClass) {
-    //             warn(`📂 ${el}. ➡️  (Potential cost saving) In dev environment instance class ${instance_class} not recommended. Consider smaller sizes "${rdsRecommendetInstanceTypesInDev}" ...`);
-    //           }
-    //           break;
-    //         }
-    //       }
-    //     }
-    //   });
-    //   return
-    // })
 
     // was not working!!!!
     // for (let f of tfvars.getKeyedPaths().created) {
@@ -262,6 +225,6 @@ async function runAsync() {
   // await templateShouldBeEnforced();
 }
 
-runAsync();
+runAsync().then(r => console.log(r));
 
 // danger.github.pr.body.includes("[skip ci]")
