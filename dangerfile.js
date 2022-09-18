@@ -1,4 +1,9 @@
+'use strict';
+
 const { danger, warn, message, markdown } = require('danger')
+const yaml = require('js-yaml');
+const HCL = require("hcl2-parser");
+const match = require('micromatch');
 
 markdown("Hey there! Thanks for contributing a PR to a repo! 🎉")
 
@@ -107,7 +112,7 @@ const ensureDynamoDBSingleKeyModification = (files) => {
 }
 
 // engine_version, family
-const rdsPostgresConditionsToLookAfter = {
+const rdsPostgres = {
   'engine': 'postgres',
   'engine_version': '14.3',
   'family': 'postgres14'
@@ -116,12 +121,6 @@ const rdsRecommendetInstanceTypesInDev = [
   'db.t3.micro', 'db.t3.small'
 ]
 
-// TODO: temp
-const fs = require('fs')
-const yaml = require('js-yaml');
-const HCL = require("hcl2-parser");
-const match = require('micromatch');
-
 // TODO: Infrastructure repository
 // const ensureRDSCreationValidated = async (files) => {
 async function ensureRDSCreationValidated() {
@@ -129,30 +128,26 @@ async function ensureRDSCreationValidated() {
   // TODO: validate version
   const tfvars = danger.git.fileMatch("**/rds/**/*.tfvars");
   const hcl = danger.git.fileMatch("**/rds/**/*.hcl");
+  const tfvarsCreated = tfvars.getKeyedPaths().created;
 
-  // if (tfvars.getKeyedPaths().created.length != hcl.getKeyedPaths().created.length) {
-  //   const details = [
-  //     "*No hcl file detected*. Create a `terragrunt.hcl` file next to `*.tfvars` with the below **exact** content: <br>",
-  //     "<code>",
-  //     "include \"common\" {\r\n",
-  //     "  path = find_in_parent_folders(\"common.hcl\")\r\n",
-  //     "}",
-  //     "</code>"
-  //   ].join("")
-  //   markdown(details)
-  // }
-  // if (tfvars.getKeyedPaths().created.length > 1) {
-  //   message(`(Potential improvement) Do you need **prod** immediately too, or can it be split out and deployed later (ie. will you be using it today)..`);
-  // }
-  const rds = {
-    'engine_version': '',
-    'family': ''
+  if (tfvarsCreated.length != hcl.getKeyedPaths().created.length && false) {
+    const details = [
+      "*No `*.hcl` file detected*. Create a `terragrunt.hcl` file next to `*.tfvars` with the below **exact** content: <br>\n",
+      "```\n",
+      "include \"common\" {\r\n",
+      " path = find_in_parent_folders(\"common.hcl\")\r\n",
+      "}\n",
+      "```"
+    ].join("")
+    warn(details)
+  }
+  if (tfvarsCreated.length > 1 && false) {
+    message(`(Potential improvement) Do you need **prod** immediately too, or can it be split out and deployed later (ie. will you be using it today?).`);
   }
 
-  if (tfvars.created) {
-    // validate instance class
-    const createdFiles = tfvars.getKeyedPaths().created;
-    match(createdFiles, ['**/dev/**']).forEach(async file => {
+  if (tfvars.created && false) {
+    // validate instance class in dev
+    match(tfvarsCreated, ['**/dev/**']).forEach(async file => {
       const diff = await danger.git.diffForFile(file);
       const data = HCL.parseToObject(diff.after)[0];
       let { instance_class, engine, engine_version } = data.rds_config.instance_config
@@ -163,29 +158,24 @@ async function ensureRDSCreationValidated() {
         console.log(`mr review weith \`${engine}\` is  not yet supported.`)
       }
     });
-
-
-    // was not working!!!!
-    // for (let f of tfvars.getKeyedPaths().created) {
-    //   danger.git.structuredDiffForFile(f).filter.then((el) => {
-    //     console.l
-    //     // for (let i of el.chunks) {
-    //     //   console.log(i)
-    //     // }
-    //   })
-    // }
-    // validate engine version
-    // for (let f of tfvars.getKeyedPaths().created) {
-    //   danger.git.structuredDiffForFile(f).then((el) => {
-    //     for (let i of el.chunks) {
-    //       console.log(i)
-    //     }
-    //   })
-    // }
   }
-  // const app = danger.git.fileMatch("src/**/*.ts")
-  // const tests = danger.git.fileMatch("*/__tests__/*")
-  // console.log(tfvars)
+
+  if (tfvars.created) {
+    // make sure latest version in use dev|prod
+    tfvarsCreated.forEach(async file => {
+      const diff = await danger.git.diffForFile(file);
+      const data = HCL.parseToObject(diff.after)[0];
+      // console.log(data)
+      let { engine, engine_version, family } = data.rds_config.instance_config
+      if (engine === 'postgres' && engine_version !== rdsPostgres.engine_version && family !== rdsPostgres.family ) {
+        warn(`📂 ${file}. ✏️ is there is a reason to created outdated rds. \`proposed: { family:${rdsPostgres.family}, engine_version:${rdsPostgres.engine_version} }, current: { family:${family}, engine_version:${engine_version} } \` `)
+      }
+      if (engine !== 'postgres') {
+        console.log(`mr review weith \`${engine}\` is  not yet supported.`)
+      }
+    })
+
+  }
 }
 
 // changelog
@@ -223,7 +213,7 @@ const commonChecks = source => {
 }
 
 async function runAsync() {
-  await ensureRDSCreationValidated(danger.git.created_files);
+  await ensureRDSCreationValidated();
   // await changelogSync();
   // await templateShouldBeEnforced();
 }
