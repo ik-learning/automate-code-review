@@ -71,16 +71,14 @@ const ensureDynamoDBSingleKeyModification = async (files) => {
     if (Math.abs(before.length - after.length) > singleGCI) {
       console.log('length difference');
       multipleGCI = true;
-    } else {
-      if (getHashDifference(after, before).length > singleGCI) {
-        console.log('multiple changes found while comparing "global secondary indexes"');
-        multipleGCI = true;
-      }
+    } else if (getHashDifference(after, before).length > singleGCI) {
+      console.log('multiple changes found while comparing "global secondary indexes"');
+      multipleGCI = true;
     }
     if (multipleGCI) {
-      warn(`📂 ${file}. ➡️  (Potential issue) Only one GSI can be operated on at a time, otherwise AWS will complain..`);
+      warn(`📂 ${file}. ➡️  (Potential issue) Only one GSI can be modified at a time, otherwise AWS will complain..`);
     }
-  })
+  }, Error())
 }
 
 // engine_version, family
@@ -92,7 +90,6 @@ const rdsPostgres = {
 const rdsRecommendInstanceTypesInDev = [
   'db.t3.micro', 'db.t3.small'
 ]
-
 
 const ensureRDSCreationValidated = async (files) => {
   // TODO: support mysql, aurora
@@ -117,7 +114,7 @@ const ensureRDSCreationValidated = async (files) => {
 
   if (tfvars.created) {
     // validate instance class in dev
-    match(tfvarsCreated, ['**/dev/**']).forEach(async file => {
+    match(tfvarsCreated, ['**/dev/**'], {}).forEach(async file => {
       const diff = await danger.git.diffForFile(file);
       const data = hclToJson(diff.after);
       let { instance_class, engine, engine_version } = data.rds_config.instance_config
@@ -127,7 +124,7 @@ const ensureRDSCreationValidated = async (files) => {
       if (engine !== 'postgres') {
         console.log(`mr review weith \`${engine}\` is  not yet supported.`)
       }
-    });
+    }, Error());
   }
 
   if (tfvars.created) {
