@@ -130,7 +130,7 @@ async function ensureRDSCreationValidated() {
   const hcl = danger.git.fileMatch("**/rds/**/*.hcl");
   const tfvarsCreated = tfvars.getKeyedPaths().created;
 
-  if (tfvarsCreated.length != hcl.getKeyedPaths().created.length && false) {
+  if (tfvarsCreated.length != hcl.getKeyedPaths().created.length) {
     const details = [
       "*No `*.hcl` file detected*. Create a `terragrunt.hcl` file next to `*.tfvars` with the below **exact** content: <br>\n",
       "```\n",
@@ -141,11 +141,11 @@ async function ensureRDSCreationValidated() {
     ].join("")
     warn(details)
   }
-  if (tfvarsCreated.length > 1 && false) {
-    message(`(Potential improvement) Do you need **prod** immediately too, or can it be split out and deployed later (ie. will you be using it today?).`);
+  if (tfvarsCreated.length > 1) {
+    message(`🤖 Do you need **prod** immediately too, or can it be split out and deployed later (ie. will you be using it today?).`);
   }
 
-  if (tfvars.created && false) {
+  if (tfvars.created) {
     // validate instance class in dev
     match(tfvarsCreated, ['**/dev/**']).forEach(async file => {
       const diff = await danger.git.diffForFile(file);
