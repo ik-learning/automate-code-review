@@ -13,7 +13,7 @@ markdown("Hey there! Thanks for contributing a PR to a repo! 🎉")
 // danger.gitlab.utils = util funcs
 // danger.gitlab.commits = commits from the GitLab API
 
-// // Check that someone has been assigned to this PR
+// Check that someone has been assigned to this PR
 // if (danger.gitlab.mr.assignee === null) {
 //    warn('Please assign someone to merge this PR, and optionally include people who should review.');
 // }
@@ -115,25 +115,33 @@ const rdsPostgresConditionsToLookAfter = {
 const rdsRecommendetInstanceTypesInDev = [
   'db.t3.micro', 'db.t3.small'
 ]
-const ensureRDSCreationValidated = (files) => {
+
+// TODO: temp
+const fs = require('fs')
+const yaml = require('js-yaml');
+const HCL = require("hcl2-parser");
+const match = require('micromatch');
+
+// TODO: only infra repo should be validated
+const ensureRDSCreationValidated = async (files) => {
   // TODO: support mysql
   // TODO: validate version
   const tfvars = danger.git.fileMatch("**/rds/**/*.tfvars")
   const hcl = danger.git.fileMatch("**/rds/**/*.hcl")
-  if (tfvars.getKeyedPaths().created.length != hcl.getKeyedPaths().created.length) {
-    const details = [
-      "*No hcl file detected*. Create a `terragrunt.hcl` file next to `*.tfvars` with the below **exact** content: <br>",
-      "<code>",
-      "include \"common\" {\r\n",
-      "  path = find_in_parent_folders(\"common.hcl\")\r\n",
-      "}",
-      "</code>"
-    ].join("")
-    markdown(details)
-  }
-  if (tfvars.getKeyedPaths().created.length > 1) {
-    message(`(Potential improvement) Do you need **prod** immediately too, or can it be split out and deployed later (ie. will you be using it today)..`);
-  }
+  // if (tfvars.getKeyedPaths().created.length != hcl.getKeyedPaths().created.length) {
+  //   const details = [
+  //     "*No hcl file detected*. Create a `terragrunt.hcl` file next to `*.tfvars` with the below **exact** content: <br>",
+  //     "<code>",
+  //     "include \"common\" {\r\n",
+  //     "  path = find_in_parent_folders(\"common.hcl\")\r\n",
+  //     "}",
+  //     "</code>"
+  //   ].join("")
+  //   markdown(details)
+  // }
+  // if (tfvars.getKeyedPaths().created.length > 1) {
+  //   message(`(Potential improvement) Do you need **prod** immediately too, or can it be split out and deployed later (ie. will you be using it today)..`);
+  // }
   const rds = {
     'engine_version': '',
     'family': ''
@@ -142,31 +150,58 @@ const ensureRDSCreationValidated = (files) => {
   if (tfvars.created) {
     // validate instance class
     const createdFiles = tfvars.getKeyedPaths().created;
-    createdFiles.filter((el) => el.includes('/dev/')).map((el) => {
-      let notRecommendedInstanceClass = true;
-      let instance_class;
-      // rewrite with forEach!!!
-      danger.git.structuredDiffForFile(el).then((e) => {
-        for (let i of e.chunks) {
-          for (let c of i.changes) {
-            if (c.content.includes('instance_class')) {
-              instance_class = c.content.split(" ").at(-1)
-              for (let rds of rdsRecommendetInstanceTypesInDev) {
-                if (instance_class.includes(rds)) {
-                  notRecommendedInstanceClass = false;
-                  break;
-                }
-              }
-              if (notRecommendedInstanceClass) {
-                warn(`📂 ${el}. ➡️  (Potential cost saving) In dev environment instance class ${instance_class} not recommended. Consider smaller sizes "${rdsRecommendetInstanceTypesInDev}" ...`);
-              }
-              break;
-            }
-          }
-        }
-      });
-      return
-    })
+    match(createdFiles, ['**/dev/**']).forEach(file => {
+      const ttt = await danger.git.diffForFile(file);
+    });
+    // Promise.all(match(createdFiles, ['**/dev/**'])
+    //   .map((file) => danger.git.diffForFile(file))).then(diffs => {
+    //     diffs.forEach(diff => {
+    //       console.log(diff)
+    //       const hcl = HCL.parseToObject(diff.after)
+    //       // console.log(JSON.stringify(hcl))
+    //       let data = hcl[0];
+    //       // console.log(data)
+    //       let { instance_class, engine, engine_version } = data.rds_config.instance_config
+    //       console.log(instance_class)
+    //       if (engine === 'postgres') {
+    //         if (!match.isMatch(instance_class, rdsRecommendetInstanceTypesInDev)) {
+    //           // warn(`📂 ${file}. ➡️  (💵 saving) In dev environment instance class ${instance_class} not recommended. Consider smaller sizes "${rdsRecommendetInstanceTypesInDev}" ...`);
+    //         }
+    //       } else {
+    //         console.log(`${engine} is  not supported yet.`)
+    //       }
+    //     })
+    //   });
+
+
+    //   let notRecommendedInstanceClass = true;
+    //   let instance_class;
+    //   // rewrite with forEach!!!
+
+    //   danger.git.structuredDiffForFile(el).then((e) => {
+
+    //     for (let i of e.chunks) {
+    //       for (let c of i.changes) {
+    //         if (c.content.includes('instance_class')) {
+    //           instance_class = c.content.split(" ").at(-1)
+    //           for (let rds of rdsRecommendetInstanceTypesInDev) {
+    //             if (instance_class.includes(rds)) {
+    //               notRecommendedInstanceClass = false;
+    //               break;
+    //             }
+    //           }
+    //           if (notRecommendedInstanceClass) {
+    //             warn(`📂 ${el}. ➡️  (Potential cost saving) In dev environment instance class ${instance_class} not recommended. Consider smaller sizes "${rdsRecommendetInstanceTypesInDev}" ...`);
+    //           }
+    //           break;
+    //         }
+    //       }
+    //     }
+    //   });
+    //   return
+    // })
+
+    // was not working!!!!
     // for (let f of tfvars.getKeyedPaths().created) {
     //   danger.git.structuredDiffForFile(f).filter.then((el) => {
     //     console.l
@@ -211,14 +246,21 @@ const templateShouldBeEnforced = async () => {
 
 // template
 
-ensureFileHasNewline(updatedFiles);
-adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
-ensureDynamoDBSingleKeyModification(updatedFiles);
-ensureRDSCreationValidated(danger.git.created_files)
+// ensureFileHasNewline(updatedFiles);
+// adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
+// ensureDynamoDBSingleKeyModification(updatedFiles);
+// ensureRDSCreationValidated(danger.git.created_files)
+
+const commonChecks = source => {
+
+}
 
 async function runAsync() {
-  await changelogSync();
-  await templateShouldBeEnforced();
+  await ensureRDSCreationValidated(danger.git.created_files);
+  // await changelogSync();
+  // await templateShouldBeEnforced();
 }
 
 runAsync();
+
+// danger.github.pr.body.includes("[skip ci]")

@@ -5,7 +5,10 @@
   "author": "IK <ivankatliarchuk@hollandandbarrett.com>",
   "repository": "https://gitlab.com/HnBI/platform-as-a-service/test-projects/automate-code-review",
   "devDependencies": {
-    "danger": "^11.0.5"
+    "danger": "^11.0.5",
+    "js-yaml": "^4.1.0",
+    "hcl2-parser": "^1.0.3",
+    "micromatch": "^4.0.5"
   },
   "scripts": {
     "prepush": "yarn build; yarn danger:local",
@@ -15,5 +18,7 @@
     "pr:local": "yarn danger pr --removePreviousComments $DANGER_PR_URL",
     "pr:remote": "yarn danger ci",
     "pr:remote-full": "DANGER_TEST_PR='2' yarn danger ci"
+  },
+  "dependencies": {
   }
 }
