@@ -119,8 +119,7 @@ const rdsRecommendInstanceTypesInDev = [
 ]
 
 
-// const ensureRDSCreationValidated = async (files) => {
-async function ensureRDSCreationValidated() {
+const ensureRDSCreationValidated = async (files) => {
   // TODO: support mysql, aurora
   const tfvars = danger.git.fileMatch("**/rds/**/*.tfvars");
   const hcl = danger.git.fileMatch("**/rds/**/*.hcl");
@@ -169,7 +168,6 @@ async function ensureRDSCreationValidated() {
         console.log(`mr review weith \`${engine}\` is  not yet supported.`)
       }
     })
-
   }
 }
 
