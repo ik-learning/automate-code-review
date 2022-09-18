@@ -1,10 +1,11 @@
 'use strict';
 
 const { danger, warn, message, markdown } = require('danger')
-const yaml = require('js-yaml');
-const HCL = require("hcl2-parser");
 const match = require('micromatch');
 
+// helpers & utils
+const
+  { contains, hclToJson } = require("./lib/utils");
 
 const repo = danger.gitlab.metadata.repoSlug;
 const commitFiles = [
@@ -34,27 +35,26 @@ markdown("Hey there! Thanks for contributing a PR to a repo! 🎉")
 
 const ensureFileHasNewline = (files) => {
   // Always ensure all files has newlines
-  for (let file of files) {
+  files.forEach(file => {
     danger.git.diffForFile(file).then((el) => {
       if (el.diff.includes('No newline at end of file')) {
         warn(`📂 ${file}. ➡️  No newline at end of file.`);
       }
     })
-  }
+  });
 }
 
 const conditionsToTriggerApply = [
   'terraform', '.gitlab-ci.yml', 'environments'
 ]
 
-const adviseManualApplyShouldBeAddedWhenFilesChanged = (files) => {
-  // manual apply advice should be added to a file
+const adviseManualApplyShouldBeAddedWhenFilesChanged = files => {
+  // manual apply advice should be added to an MR
   const result = files.filter((val) => {
     return conditionsToTriggerApply.some(el => val.includes(el))
   });
   if (result.length > 0) {
-    console.log(`files that must te applied ${result}`);
-    message("You'll need to run the manual apply job when changes merged...")
+    message("🛠️  You'll need to run the manual apply job when changes merged...")
   }
 }
 
@@ -118,10 +118,6 @@ const rdsRecommendInstanceTypesInDev = [
   'db.t3.micro', 'db.t3.small'
 ]
 
-// TODO: Infrastructure repository
-function hclToJson(source) {
-  return HCL.parseToObject(source)[0];
-}
 
 // const ensureRDSCreationValidated = async (files) => {
 async function ensureRDSCreationValidated() {
@@ -212,15 +208,6 @@ const mrTemplates = {
   }
 };
 
-// helper function
-function contains(target, pattern) {
-  let result = 0;
-  pattern.forEach(function (word) {
-    result = result + target.includes(word);
-  });
-  return (result === pattern.length)
-}
-
 const templateShouldBeEnforced = async (files, templates) => {
   const tfvars = danger.git.fileMatch("**.tfvars");
   const tfvarsCreated = tfvars.getKeyedPaths().created;
@@ -269,8 +256,8 @@ const templateShouldBeEnforced = async (files, templates) => {
 
 // template
 
-// ensureFileHasNewline(updatedFiles);
-// adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
+ensureFileHasNewline(updatedFiles);
+adviseManualApplyShouldBeAddedWhenFilesChanged(commitFiles);
 // ensureDynamoDBSingleKeyModification(updatedFiles);
 // ensureRDSCreationValidated(danger.git.created_files)
 
