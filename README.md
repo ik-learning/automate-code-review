@@ -18,24 +18,17 @@ Here is a (non-exhaustive) list of the kinds of things Danger has been used for 
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Contents
 
-- [Supported Features](#supported-features)
 - [Getting started](#getting-started)
 - [Commands](#commands)
     - [Run Danger file](#run-danger-file)
     - [Docs](#docs)
 - [Examples](#examples)
     - [Plugins](#plugins)
-- [TODO](#todo)
+- [TODO && Supported Features](#todo-&&-supported-features)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
-
-## Supported Features
-
-- Message 'apply after merge'
-- Ensure files has new line
-- Multiple GCI
 
 ## Getting started
 
@@ -103,12 +96,14 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 
 - [PR Higene](https://www.npmjs.com/package/danger-plugin-pr-hygiene)
 
-## TODO
+## TODO && Supported Features
 
-- [X] Hey, unfortunately only one GSI can be operated on at a time, otherwise AWS will complain.
+- [X] Message 'apply after merge'
+- [X] Ensure files has new line
+- [X] Multiple GCI
+  * [X] Hey, unfortunately only one GSI can be operated on at a time, otherwise AWS will complain.
 - [X] RDS version validation
 - [X] Please use the appropriate MR template, and populate with details and a jira ticket
-- [X] Template should be used
 - [X] Changelog is missing
 - Please can you update the topic details section, and also put the topics in alphabetical order.
 - Jira link is missing
