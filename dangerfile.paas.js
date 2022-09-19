@@ -139,12 +139,12 @@ const ensureRDSCreationValidated = async (files) => {
       if (engine !== 'postgres') {
         console.log(`mr review weith \`${engine}\` is  not yet supported.`)
       }
-    })
+    }, Error())
   }
 }
 
 // changelog
-const shouldChanelogBeModified = [
+const shouldChangelogBeModified = [
   'platform-as-a-service/k8s-cluster-config'
 ]
 const changelogSync = async () => {
@@ -152,7 +152,7 @@ const changelogSync = async () => {
   let changedChangelog = danger.git.modified_files.includes('CHANGELOG.md')
   if (!changedChangelog) {
     // TODO: not required when runs on a repo
-    shouldChanelogBeModified.forEach(el => {
+    shouldChangelogBeModified.forEach(el => {
       if (danger.gitlab.metadata.repoSlug.includes(el)) {
         warn('This PR modified important files but does not have `Added|Changed` entry in the CHANGELOG.');
       }
