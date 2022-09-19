@@ -118,4 +118,9 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
 - Sandbox (deleted) on deletion du not remove example. Consider to commment CI logic only. Remove resources from local.
 - Unit tests
 - Kafka aplhabetic
+  - [X] partial fix
+  - [ ] compare prefixes, e.g. where its new prefix of already exist
+  - [ ] enforce single format e.g. `-` or `_`
+  - message `Please can you update the topic details section, and also put the topics in alphabetical order.
+You also seem to be using a different format to the existing supply chain (ie. supply-chain- prefix, and hyphens), has your team chosen to change the format going forward?`
 - Kafka MR templates

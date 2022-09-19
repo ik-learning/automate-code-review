@@ -9,8 +9,9 @@
     "danger": "^11.0.5",
     "hcl2-parser": "^1.0.3",
     "js-yaml": "^4.1.0",
+    "micromatch": "^4.0.5",
     "object-hash": "^3.0.0",
-    "micromatch": "^4.0.5"
+    "lodash": "^4.17.21"
   },
   "scripts": {
     "prepush": "yarn build; yarn danger:local",
@@ -22,6 +23,5 @@
     "pr:remote-full": "DANGER_TEST_PR='2' yarn danger ci"
   },
   "dependencies": {
-
   }
 }

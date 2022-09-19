@@ -3,6 +3,7 @@
 // const { danger } = require('danger');
 // const { danger, warn, message, markdown } = require('danger')
 const match = require('micromatch');
+const array = require('lodash/array');
 
 // helpers & utils
 const
@@ -19,19 +20,8 @@ const updatedFiles = [
   ...danger.git.modified_files,
 ];
 
-// markdown("Hey there! Thanks for contributing a PR to a repo! 🎉")
+markdown("Hey there! Thanks for contributing a PR to a repo! 🎉")
 
-// console.log(danger.gitlab)
-// No PR is too small to include a description of why you made a change
-// if (danger.gitlab.mr.body.length < 10) {
-//   warn('Please include a description of your PR changes.');
-// }
-
-// Check that someone has been assigned to this PR
-// if (danger.gitlab.mr.assignee === null) {
-//    warn('Please assign someone to merge this PR, and optionally include people who should review.');
-// }
-// console.log(danger.git)
 
 const ensureFileHasNewline = (files) => {
   // Always ensure all files has newlines
@@ -232,6 +222,57 @@ const templateShouldBeEnforced = async (files, templates) => {
   }
 }
 
+const csvEntryAlphabeticOrderAsync = async () => {
+  const csv = danger.git.fileMatch("**.csv");
+  if (csv.modified) {
+    const csvModified = csv.getKeyedPaths().modified;
+    csvModified.forEach(async file => {
+      const diff = await danger.git.diffForFile(file);
+      const before = diff.before.split('\n').slice(1).filter((a) => a);
+      const after = diff.after.split('\n').slice(1).filter((a) => a); // filter to remove empty elements
+      const added = array.xor(before, after);
+      // const header = after.shift();
+      let sorted = [...after].sort((a, b) => {
+        let first = a.split(',')[0];
+        let second = b.split(',')[0];
+        if (first < second) {
+          return -1;
+        }
+        if (first > second) {
+          return 1;
+        }
+        return 0;
+      });
+      // TODO: review whole msk-topics file, as it does have multiple violations
+
+      const result = [];
+      let onlyAdded = true;
+      let addedAsTxt = added.join(',');
+      for (let i = 0; i < after.length; i++) {
+        let first = after[i];
+        let second = sorted[i];
+
+        if (onlyAdded && addedAsTxt.includes(first)) {
+          if (first !== second) {
+            result.push(`▶️  ${i + 1}, current: ${sorted[i]}, should-be: ${after[i]}`)
+          }
+        }
+      }
+      if (result.length > 0) {
+        // console.log(result)
+        let msg = [
+          "Please, put the topics in alphabetical order.",
+          "A hint below 👷‍♂️\n",
+          "```",
+          ...result,
+          "```"
+        ].join("\n")
+        warn(msg)
+      }
+    }, Error())
+  }
+}
+
 // TODO refactore
 const commonChecks = source => {
   ensureFileHasNewline(updatedFiles);
@@ -254,4 +295,5 @@ module.exports = {
   commonChecks,
   infraChecks,
   changelogs,
+  csvEntryAlphabeticOrderAsync,
 };
