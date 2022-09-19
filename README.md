@@ -121,6 +121,7 @@ Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gi
   - [X] partial fix
   - [ ] compare prefixes, e.g. where its new prefix of already exist
   - [ ] enforce single format e.g. `-` or `_`
+  - [ ] msk MR `diff` instead of simple update
   - message `Please can you update the topic details section, and also put the topics in alphabetical order.
 You also seem to be using a different format to the existing supply chain (ie. supply-chain- prefix, and hyphens), has your team chosen to change the format going forward?`
 - Kafka MR templates
