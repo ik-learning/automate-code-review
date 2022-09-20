@@ -253,8 +253,9 @@ const csvEntryAlphabeticOrderAsync = async () => {
         let second = sorted[i];
 
         if (onlyAdded && addedAsTxt.includes(first)) {
+          // first !== second && right after
           if (first !== second) {
-            result.push(`▶️  ${i + 1}, current: ${sorted[i]}, should-be: ${after[i]}`)
+            result.push(`+ ${i + 1} ${after[i]}`)
           }
         }
       }
@@ -262,8 +263,8 @@ const csvEntryAlphabeticOrderAsync = async () => {
         // console.log(result)
         let msg = [
           "Please, put the topics in alphabetical order.",
-          "A hint below 👷‍♂️\n",
-          "```",
+          "A hint below\n",
+          "```diff",
           ...result,
           "```"
         ].join("\n")
