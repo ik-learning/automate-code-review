@@ -107,6 +107,10 @@ If you no longer need a global secondary index, you can delete it using the Upda
 
 - [PR Higene](https://www.npmjs.com/package/danger-plugin-pr-hygiene)
 
+### Example MRs to Cover
+
+- [DynamoDB case](https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/merge_requests/3230/diffs)
+
 ## TODO && Supported Features
 
 - [X] Message 'apply after merge'
