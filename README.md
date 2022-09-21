@@ -99,6 +99,10 @@ npm install
 - [Danger Github Action](https://github.com/MeilCli/danger-action)
 - [Gitlab Node API](https://github.com/jdalrymple/gitbeaker)
 
+```
+If you no longer need a global secondary index, you can delete it using the UpdateTable operation. You can delete only one global secondary index per UpdateTable operation. While the global secondary index is being deleted, there is no effect on any read or write activity in the parent table.
+```
+
 ### Plugins
 
 - [PR Higene](https://www.npmjs.com/package/danger-plugin-pr-hygiene)
