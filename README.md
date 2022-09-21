@@ -61,6 +61,8 @@ npm install
 - [Emojies](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#symbols)
 - [5/10 blog](https://prog.world/automate-review-selection-with-gitlab-ci-and-danger-js)
 
+### Shared pipelines
+
 ```yaml
  include:
    - project: 'gitlab-org/quality/pipeline-common'
@@ -70,8 +72,9 @@ npm install
        - if: $CI_SERVER_HOST == "gitlab.com"
 ```
 
-Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gitlab-ci.yml
-Another share https://gitlab.com/HnBI/composer-platform/backend/composer/-/blob/main/.gitlab-ci.yml
+- Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gitlab-ci.yml
+- Another share https://gitlab.com/HnBI/composer-platform/backend/composer/-/blob/main/.gitlab-ci.yml
+- HBi shared pipelines https://gitlab.com/HnBI/shared-projects/shared-gitlab-ci
 
 ## Examples
 
