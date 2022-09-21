@@ -53,7 +53,10 @@ dynamodb_table = {
       range_key          = "id"
       read_capacity      = null
       write_capacity     = null
-      non_key_attributes = []
+      # https://hollandandbarrett.slack.com/archives/CKCRFQMU1/p1663764642618809 message
+      # I have added a new column to the existing GSI "combinedPromotionName"
+      # \"Cannot update GSI's properties other than Provisioned Throughput and Contributor Insights Specification. You can create a new GSI with a different name.\"
+      non_key_attributes = ["promotionName", "id", "statusType", "promotionStart", "promotionEnd"] # to add "combinedPromotionName"
     }
   ]
 
