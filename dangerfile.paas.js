@@ -235,7 +235,7 @@ const templateShouldBeEnforced = async (files, templates) => {
       warn(`Please use the appropriate MR [${mrTemplateWithoutExt}](${link}), and populate with details and a jira ticket...`)
     });
   } else if (Object.keys(template).length > 1) {
-    warn(`multiple resources 'created|modified|deleted' in a single MR.`)
+    warn("multiple resources 'created|modified|deleted' in a single MR.")
   }
 }
 
@@ -291,8 +291,19 @@ const csvEntryAlphabeticOrderAsync = async () => {
   }
 }
 
+const jiraStoryMisisng = () => {
+  if (danger.gitlab.mr.state === 'opened') {
+    const isJira = (danger.gitlab.mr.title + danger.gitlab.mr.description).includes("hbidigital.atlassian.net/browse")
+    if (!isJira) {
+      warn('Add a link to the relevant Jira story.')
+    } else {
+      console.log('link to jira found')
+    }
+  }
+};
 // TODO refactore
 const commonChecks = source => {
+  jiraStoryMisisng();
   ensureFileHasNewline(updatedFiles);
 }
 

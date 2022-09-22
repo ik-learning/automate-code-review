@@ -124,8 +124,7 @@ If you no longer need a global secondary index, you can delete it using the Upda
 - [X] RDS version validation
 - [X] Please use the appropriate MR template, and populate with details and a jira ticket
 - [X] Changelog is missing
-- Please can you update the topic details section, and also put the topics in alphabetical order.
-- Jira link is missing
+- [X] Jira link is missing
 - Du not ren when `[skip ci]
 - skip some suggestions for renovate bot
 - RDS support deleted files with message
@@ -135,9 +134,9 @@ If you no longer need a global secondary index, you can delete it using the Upda
 - Unit tests
 - Kafka aplhabetic
   - [X] partial fix
-  - [ ] compare prefixes, e.g. where its new prefix of already exist
+  - [X] compare prefixes, e.g. where its new prefix of already exist
   - [ ] enforce single format e.g. `-` or `_`
-  - [ ] msk MR `diff` instead of simple update
-  - message `Please can you update the topic details section, and also put the topics in alphabetical order.
+  - [X] msk MR `diff` instead of simple update
+  - [X] message `Please can you update the topic details section, and also put the topics in alphabetical order.
 You also seem to be using a different format to the existing supply chain (ie. supply-chain- prefix, and hyphens), has your team chosen to change the format going forward?`
 - Kafka MR templates
