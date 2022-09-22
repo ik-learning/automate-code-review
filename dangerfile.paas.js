@@ -67,7 +67,24 @@ const ensureDynamoDBSingleKeyModification = async (files) => {
     }
     if (multipleGCI) {
       warn(`📂 ${file}. ➡️  (Potential issue) Only one GSI can be modified at a time, otherwise AWS will complain..`);
+      // no point to validate the rest
+      return
     }
+
+    const beforeHashKeys = before.reduce((obj, item) => (obj[item.hash_key] = item.non_key_attributes, obj), {});
+    // potentially not just `non_key_attributes` cannot be modified.
+    after.filter(el => el.hash_key in beforeHashKeys).forEach(el => {
+      if (el.non_key_attributes.length !== beforeHashKeys[el.hash_key].length) {
+        let msg = [
+          `📂 ${file}. ➡️  Cannot update GSI's properties other than Provisioned Throughput and Contributor Insights Specification.`,
+          "***(Official resolution)*** You can create a new GSI with a different name.",
+          `***(non-Official resolution)*** Remove GCI '${el.hash_key}' key in one MR and create a new MR with new|required values.`
+        ].join("\n")
+        warn(msg);
+      }
+    })
+
+
   }, Error())
 }
 

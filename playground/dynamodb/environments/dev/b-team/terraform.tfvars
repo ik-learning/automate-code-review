@@ -48,12 +48,15 @@ dynamodb_table = {
       non_key_attributes = ["statusType"]
     },
     {
-      name               = "site_index"
-      hash_key           = "siteId"
-      range_key          = "sk"
-      projection_type    = "INCLUDE"
-      read_capacity      = null
-      write_capacity     = null
+      name            = "site_index"
+      hash_key        = "siteId"
+      range_key       = "sk"
+      projection_type = "INCLUDE"
+      read_capacity   = null
+      write_capacity  = null
+      # I have added a new column to the existing GSI "combinedPromotionName"
+      # \"Cannot update GSI's properties other than Provisioned Throughput and Contributor Insights Specification. You can create a new GSI with a different name.\"
+      # What to do > Remove GCI key in one MR and create a new MR with new values
       non_key_attributes = ["promotionName", "id", "statusType", "promotionStart", "promotionEnd"]
     },
     {

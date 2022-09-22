@@ -22,9 +22,11 @@ Here is a (non-exhaustive) list of the kinds of things Danger has been used for 
 - [Commands](#commands)
     - [Run Danger file](#run-danger-file)
     - [Docs](#docs)
+    - [Shared pipelines](#shared-pipelines)
 - [Examples](#examples)
     - [How To](#how-to)
     - [Plugins](#plugins)
+    - [Example MRs to Cover](#example-mrs-to-cover)
 - [TODO && Supported Features](#todo-&&-supported-features)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -115,8 +117,10 @@ If you no longer need a global secondary index, you can delete it using the Upda
 
 - [X] Message 'apply after merge'
 - [X] Ensure files has new line
-- [X] Multiple GCI
-  * [X] Hey, unfortunately only one GSI can be operated on at a time, otherwise AWS will complain.
+- [X] Dynamodb
+  * [X] Multiple GCI
+    * [X] Hey, unfortunately only one GSI can be operated on at a time, otherwise AWS will complain.
+  * [X] `non_key_attributes` modification
 - [X] RDS version validation
 - [X] Please use the appropriate MR template, and populate with details and a jira ticket
 - [X] Changelog is missing
