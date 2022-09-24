@@ -93,6 +93,7 @@ npm install
 - [Docker image](https://github.com/orgs/danger/packages/container/package/danger-js)
 - [Docker images. Build Images](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.danger)
 - [Examples](https://snyk.io/advisor/npm-package/danger/functions/danger.markdown)
+- [Official Gitlab Setup](https://danger.systems/js/usage/gitlab.html)
 - [Example 6/10](https://github.com/artsy/metaphysics/blob/main/dangerfile.ts)
 - [Block code be used in Demo](https://yalantis.com/blog/code-review-via-gitlab-merge-requests-code-review-must/)
 
