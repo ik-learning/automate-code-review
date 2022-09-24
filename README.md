@@ -125,18 +125,22 @@ If you no longer need a global secondary index, you can delete it using the Upda
 - [X] Please use the appropriate MR template, and populate with details and a jira ticket
 - [X] Changelog is missing
 - [X] Jira link is missing
-- Du not ren when `[skip ci]
+- [ ]Du not run when `[skip ci]
 - skip some suggestions for renovate bot
-- RDS support deleted files with message
-- Gitlab suggest a change in an MR
-- RDS/Dynamo DB deleted files -> ask PAAS to remove database
+- [ ] RDS support deleted files with message
+  + RDS/Dynamo DB deleted files -> ask PAAS to remove database
+- [ ] Gitlab suggest a change in an MR
 - Sandbox (deleted) on deletion du not remove example. Consider to commment CI logic only. Remove resources from local.
 - Unit tests
 - Kafka aplhabetic
   - [X] partial fix
   - [X] compare prefixes, e.g. where its new prefix of already exist
   - [ ] enforce single format e.g. `-` or `_`
+    * (message) You also seem to be using a different format to the existing supply chain (ie. supply-chain- prefix, and hyphens), has your team chosen to change the format going forward?`
+    * (message) First time team created a topic
+  - [ ] Kafka MR templates
   - [X] msk MR `diff` instead of simple update
   - [X] message `Please can you update the topic details section, and also put the topics in alphabetical order.
 You also seem to be using a different format to the existing supply chain (ie. supply-chain- prefix, and hyphens), has your team chosen to change the format going forward?`
-- Kafka MR templates
+  - Kafka MR templates
+- [ ] Unit tests with fixtures
