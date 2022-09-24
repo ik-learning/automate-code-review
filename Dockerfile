@@ -5,7 +5,10 @@ FROM node:18-alpine
 # RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 # WORKDIR /home/node/app
 
-WORKDIR /home/node/app
+WORKDIR /danger
+
+ENV WORK_DIR "/danger"
+ENV DANGER_GITLAB_HOST "https://gitlab.com"
 
 COPY . ./
 # USER node

@@ -94,6 +94,7 @@ npm install
 - [Docker images. Build Images](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.danger)
 - [Examples](https://snyk.io/advisor/npm-package/danger/functions/danger.markdown)
 - [Example 6/10](https://github.com/artsy/metaphysics/blob/main/dangerfile.ts)
+- [Block code be used in Demo](https://yalantis.com/blog/code-review-via-gitlab-merge-requests-code-review-must/)
 
 ### How To
 
@@ -125,11 +126,12 @@ If you no longer need a global secondary index, you can delete it using the Upda
 - [X] Please use the appropriate MR template, and populate with details and a jira ticket
 - [X] Changelog is missing
 - [X] Jira link is missing
-- [ ]Du not run when `[skip ci]
+- [ ] Do not run when `[skip ci]
 - skip some suggestions for renovate bot
 - [ ] RDS support deleted files with message
   + RDS/Dynamo DB deleted files -> ask PAAS to remove database
 - [ ] Gitlab suggest a change in an MR
+- [ ] Gitlab `task_completion_status: { count: 8, completed_count: 0 }`
 - Sandbox (deleted) on deletion du not remove example. Consider to commment CI logic only. Remove resources from local.
 - Unit tests
 - Kafka aplhabetic
@@ -143,4 +145,9 @@ If you no longer need a global secondary index, you can delete it using the Upda
   - [X] message `Please can you update the topic details section, and also put the topics in alphabetical order.
 You also seem to be using a different format to the existing supply chain (ie. supply-chain- prefix, and hyphens), has your team chosen to change the format going forward?`
   - Kafka MR templates
+- [ ] Messages
+  * [ ] `message('Make sure to test your changes before moving your ticket to Code review.')`
+  * [X] Pull Request size seems relatively large when `danger.gitlab.mr.changes_count: 100`
+  * [ ] `warn("MR is classed as Work in Progress") if gitlab.mr_title.include? "Draft:"`
+  * [ ] Request review in `paas-forum` or send an automated request to slack
 - [ ] Unit tests with fixtures
