@@ -3,7 +3,7 @@ version: '3.8'
 services:
   danger:
     image: registry.gitlab.com/hnbi/platform-as-a-service/test-projects/automate-code-review
-    command: "yarn danger pr --removePreviousComments --d dangerfile.ts $DANGER_PR_URL"
+    command: "yarn danger pr --removePreviousComments --d dangerfile.js $DANGER_PR_URL"
     environment:
       DANGER_GITLAB_HOST: "https://gitlab.com"
       DANGER_PR_URL: ${DANGER_PR_URL}
