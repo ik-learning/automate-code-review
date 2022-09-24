@@ -33,10 +33,13 @@ danger-check:
   #     when: always
   #   - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
   #     when: always
+    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    # - if: '$CI_PIPELINE_SOURCE == $CI_DEFAULT_BRANCH'
+    #   when: never
   variables:
-    ENV: "dev"
-    ASSUME_ROLE: 'TRUE'
-    HELM_DEPLOY_ACTION: "APPLY"
+    DANGER_GITLAB_HOST: "https://gitlab.com"
+    DANGER_GITLAB_API_BASE_URL: "${CI_API_V4_URL}"
+    DANGER_GITLAB_API_TOKEN: "${CI_JOB_TOKEN}"
   script:
-  - env
-  - $PWD
+  # - env
+  - echo $PWD
