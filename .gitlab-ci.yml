@@ -1,5 +1,6 @@
 stages:
- - build
+#  - build
+ - check
 
 variables:
   DOCKER_BUILD_TAG: "stable"
@@ -16,3 +17,21 @@ build-and-push:
   script:
    - docker build -t $CI_REGISTRY_IMAGE:latest .
    - docker push $CI_REGISTRY_IMAGE:latest
+
+danger-check:
+  image:
+    name: "registry.gitlab.com/hnbi/platform-as-a-service/test-projects/automate-code-review:latest"
+    entrypoint: [ '/bin/sh', '-c' ]
+  stage: check
+  # rules:
+  #   - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+  #     when: always
+  #   - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+  #     when: always
+  variables:
+    ENV: "dev"
+    ASSUME_ROLE: 'TRUE'
+    HELM_DEPLOY_ACTION: "APPLY"
+  script:
+  - env
+  - $PWD

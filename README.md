@@ -58,13 +58,13 @@ npm install
 
 ### Docs
 
+- [Emojie](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#symbols)
 - [Gitlab How to](https://danger.systems/js/usage/gitlab.html)
 - [Danger bot](https://docs.gitlab.com/ee/development/dangerbot.html)
 - [Danger Local](https://danger.systems/js/tutorials/fast-feedback.html)
 - [Danger 5 minutes](https://medium.com/@ivan.ha/integrate-danger-js-in-5-minutes-55515bc5355d)
 - [Gitlab source](https://github.com/danger/danger-js/blob/main/source/platforms/gitlab/GitLabGit.ts)
 - [7/10 Gitlab](https://github.com/cangSDARM/dangerjs-self-hosted-gitlab-sample/blob/master/dangerfile.js)
-- [Emojies](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#symbols)
 - [5/10 blog](https://prog.world/automate-review-selection-with-gitlab-ci-and-danger-js)
 
 ### Shared pipelines
