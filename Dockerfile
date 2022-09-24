@@ -13,6 +13,7 @@ ENV DANGER_GITLAB_HOST "https://gitlab.com"
 COPY . ./
 # USER node
 RUN ["rm", "-rf", "./node_modules"]
+RUN ["rm", "dangerfile.js"]
 RUN ["yarn"]
 
 ENTRYPOINT [ "/bin/sh", "-c" ]

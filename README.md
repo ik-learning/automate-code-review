@@ -12,6 +12,10 @@ Here is a (non-exhaustive) list of the kinds of things Danger has been used for 
 - Reviewer roulette
 - Single codebase effort
 
+```sh
+docker pull registry.gitlab.com/hnbi/platform-as-a-service/test-projects/automate-code-review
+```
+
 ---
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
