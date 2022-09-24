@@ -28,12 +28,12 @@ danger-check:
    - docker
    - medium
   cache: {}
-  # rules:
+  rules:
   #   - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
   #     when: always
   #   - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
   #     when: always
-    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     # - if: '$CI_PIPELINE_SOURCE == $CI_DEFAULT_BRANCH'
     #   when: never
   variables:
@@ -41,5 +41,4 @@ danger-check:
     DANGER_GITLAB_API_BASE_URL: "${CI_API_V4_URL}"
     DANGER_GITLAB_API_TOKEN: "${CI_JOB_TOKEN}"
   script:
-  # - env
-  - echo $PWD
+  - env
