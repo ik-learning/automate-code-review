@@ -24,3 +24,5 @@ danger.git.commits.forEach(commit => {
 })
 
 const full = await danger.gitlab.utils.fileContents(file);
+console.log(danger.git.linesOfCode().then(e => { console.log(e) }))
+danger.github.pr.body.includes("[skip ci]")

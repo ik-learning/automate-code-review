@@ -5,6 +5,7 @@
   "author": "IK <ivankatliarchuk@hollandandbarrett.com>",
   "repository": "https://gitlab.com/HnBI/platform-as-a-service/test-projects/automate-code-review",
   "license": "MIT",
+  "type": "module",
   "devDependencies": {},
   "scripts": {
     "prepush": "yarn build; yarn danger:local",
@@ -16,7 +17,7 @@
     "pr:remote-full": "DANGER_TEST_PR='2' yarn danger ci"
   },
   "dependencies": {
-    "danger": "^11.0.5",
+    "danger": "^11.1.2",
     "hcl2-parser": "^1.0.3",
     "js-yaml": "^4.1.0",
     "micromatch": "^4.0.5",

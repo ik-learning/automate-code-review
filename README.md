@@ -2,6 +2,14 @@
 
 `added danger for checking commits compliance `
 
+```
+Danger is an extensible automated checker for merge requests. The rules
+are defined locally by code: it can inspect the current MR changes and
+perform any action based on whatever criteria you define.
+Start using Danger here to automatically apply labels based on the files
+which have been changed.
+```
+
 - [Confluence Guidance](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5712248833/Automate+Code+Review+with+Dagger+Guidance)
 - [10% project](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5454364804/10+Time+Projects)
 - [jira PAAS-1508](https://hbidigital.atlassian.net/browse/PAAS-1508)
@@ -73,7 +81,7 @@ npm install
 - [4/10: Example Gitlab](https://github.com/cangSDARM/dangerjs-self-hosted-gitlab-sample/blob/master/dangerfile.js)
 - [5/10: blog](https://prog.world/automate-review-selection-with-gitlab-ci-and-danger-js)
 - [6/10: blog](https://labs.etsi.org/rep/help/development/dangerbot.md)
-
+- [2/10: setup](https://www.bitrise.io/integrations/steps/danger)
 
 ### Shared pipelines
 
@@ -191,4 +199,4 @@ You also seem to be using a different format to the existing supply chain (ie. s
   * [ ] `warn("MR is classed as Work in Progress") if gitlab.mr_title.include? "Draft:"`
 - [ ] Slack
   * [ ] Request review in `paas-forum` or send and automated request to slack
-- [ ] Unit tests with fixtures
+- [ ] Unit tests with fixtures. [Example](https://github.com/danger/danger-js/blob/main/source/platforms/gitlab/_tests/_gitlab_api.test.ts)
