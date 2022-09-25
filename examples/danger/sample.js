@@ -1,3 +1,4 @@
+// https://github.com/cangSDARM/dangerjs-self-hosted-gitlab-sample/blob/master/dangerfile.js
 const { danger, fail, warn } = require("danger");
 
 const commitFiles = [

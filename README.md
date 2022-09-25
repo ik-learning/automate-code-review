@@ -1,5 +1,7 @@
 # automate-code-review
 
+`added danger for checking commits compliance `
+
 - [Confluence Guidance](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5712248833/Automate+Code+Review+with+Dagger+Guidance)
 - [10% project](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5454364804/10+Time+Projects)
 - [jira PAAS-1508](https://hbidigital.atlassian.net/browse/PAAS-1508)
@@ -68,8 +70,9 @@ npm install
 - [Danger Local](https://danger.systems/js/tutorials/fast-feedback.html)
 - [Danger 5 minutes](https://medium.com/@ivan.ha/integrate-danger-js-in-5-minutes-55515bc5355d)
 - [Gitlab source](https://github.com/danger/danger-js/blob/main/source/platforms/gitlab/GitLabGit.ts)
-- [7/10 Gitlab](https://github.com/cangSDARM/dangerjs-self-hosted-gitlab-sample/blob/master/dangerfile.js)
+- [4/10 Gitlab](https://github.com/cangSDARM/dangerjs-self-hosted-gitlab-sample/blob/master/dangerfile.js)
 - [5/10 blog](https://prog.world/automate-review-selection-with-gitlab-ci-and-danger-js)
+- [6/10 blog](https://labs.etsi.org/rep/help/development/dangerbot.md)
 
 ### Shared pipelines
 
