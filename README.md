@@ -3,11 +3,7 @@
 `added danger for checking commits compliance `
 
 ```
-Danger is an extensible automated checker for merge requests. The rules
-are defined locally by code: it can inspect the current MR changes and
-perform any action based on whatever criteria you define.
-Start using Danger here to automatically apply labels based on the files
-which have been changed.
+Danger is an extensible automated checker for merge requests. The rules are defined locally by code: it can inspect the current MR changes and perform any action based on whatever criteria you define. Start using Danger here to automatically apply labels based on the files which have been changed.
 ```
 
 - [Confluence Guidance](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5712248833/Automate+Code+Review+with+Dagger+Guidance)
@@ -200,3 +196,5 @@ You also seem to be using a different format to the existing supply chain (ie. s
 - [ ] Slack
   * [ ] Request review in `paas-forum` or send and automated request to slack
 - [ ] Unit tests with fixtures. [Example](https://github.com/danger/danger-js/blob/main/source/platforms/gitlab/_tests/_gitlab_api.test.ts)
+- [ ] Aurora
+  * [ ] Supported engine versions [example](https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/jobs/3080939010)
