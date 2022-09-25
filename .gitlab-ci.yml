@@ -51,6 +51,4 @@ danger-check:
     # : "${CI_MERGE_REQUEST_IID}"
   script:
   # - env
-  - echo "$PWD"
-  - ls -la
-  - yarn danger ci
+  - danger.sh
