@@ -148,8 +148,9 @@ If you no longer need a global secondary index, you can delete it using the Upda
 - [X] Please use the appropriate MR template, and populate with details and a jira ticket
 - [X] Changelog is missing
 - [X] Jira link is missing
-- [ ] Do not run when `[skip ci]
-- skip some suggestions for renovate bot
+- [ ] Skip
+  * [ ] Do not run when `[skip ci]`
+  * [ ] Skip some renovate bot MRs
 - [ ] RDS support deleted files with message
   + RDS/Dynamo DB deleted files -> ask PAAS to remove database
 - [ ] Gitlab suggest a change in an MR
@@ -167,9 +168,12 @@ If you no longer need a global secondary index, you can delete it using the Upda
   - [X] message `Please can you update the topic details section, and also put the topics in alphabetical order.
 You also seem to be using a different format to the existing supply chain (ie. supply-chain- prefix, and hyphens), has your team chosen to change the format going forward?`
   - Kafka MR templates
+- [ ] Labels
+  * [ ] `danger-bot`
 - [ ] Messages
   * [ ] `message('Make sure to test your changes before moving your ticket to Code review.')`
   * [X] Pull Request size seems relatively large when `danger.gitlab.mr.changes_count: 100`
   * [ ] `warn("MR is classed as Work in Progress") if gitlab.mr_title.include? "Draft:"`
-  * [ ] Request review in `paas-forum` or send an automated request to slack
+- [ ] Slack
+  * [ ] Request review in `paas-forum` or send and automated request to slack
 - [ ] Unit tests with fixtures
