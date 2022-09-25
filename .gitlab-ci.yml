@@ -47,7 +47,8 @@ danger-check:
   variables:
     DANGER_GITLAB_HOST: "https://gitlab.com"
     DANGER_GITLAB_API_BASE_URL: "${CI_API_V4_URL}"
-    DANGER_GITLAB_API_TOKEN: "${CI_JOB_TOKEN}"
+    # DANGER_GITLAB_API_TOKEN: "${CI_JOB_TOKEN}"
+    DANGER_GITLAB_API_TOKEN: "${DANGER_GITLAB_API_TOKEN}"
     # : "${CI_MERGE_REQUEST_IID}"
   script:
   # - env
