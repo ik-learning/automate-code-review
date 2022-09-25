@@ -5,6 +5,12 @@ stages:
 # variables:
 #   DOCKER_BUILD_TAG: "stable"
 
+.common_rules: &common_rules
+  - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
+    when: never
+  - if: '$DANGER_REVIEW_DISABLED'
+    when: never
+
 .build-and-push:
   image: "docker:stable"
   stage: build
@@ -33,9 +39,11 @@ danger-check:
   #     when: always
   #   - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
   #     when: always
+  - *common_rules
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     # - if: '$CI_PIPELINE_SOURCE == $CI_DEFAULT_BRANCH'
     #   when: never
+
   variables:
     DANGER_GITLAB_HOST: "https://gitlab.com"
     DANGER_GITLAB_API_BASE_URL: "${CI_API_V4_URL}"
