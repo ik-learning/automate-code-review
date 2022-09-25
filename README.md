@@ -81,6 +81,19 @@ npm install
        - if: $CI_SERVER_HOST == "gitlab.com"
 ```
 
+or
+
+```yaml
+include:
+  - project: 'renovate-bot/renovate-runner'
+    file: '/templates/renovate-dind.gitlab-ci.yml'
+
+renovate:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+```
+
 - Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gitlab-ci.yml
 - Another share https://gitlab.com/HnBI/composer-platform/backend/composer/-/blob/main/.gitlab-ci.yml
 - HBi shared pipelines https://gitlab.com/HnBI/shared-projects/shared-gitlab-ci
