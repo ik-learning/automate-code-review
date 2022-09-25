@@ -1,7 +1,10 @@
 # automate-code-review
 
+- [Confluence Guidance](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5712248833/Automate+Code+Review+with+Dagger+Guidance)
 - [10% project](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5454364804/10+Time+Projects)
 - [jira PAAS-1508](https://hbidigital.atlassian.net/browse/PAAS-1508)
+
+The intention of this project is to provide an automated way to rewier MRs
 
 Here is a (non-exhaustive) list of the kinds of things Danger has been used for at GitLab so far:
 
