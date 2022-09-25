@@ -3,6 +3,7 @@
 - [Confluence Guidance](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5712248833/Automate+Code+Review+with+Dagger+Guidance)
 - [10% project](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5454364804/10+Time+Projects)
 - [jira PAAS-1508](https://hbidigital.atlassian.net/browse/PAAS-1508)
+- [Versioning](https://docs.gitlab.com/ee/development/cicd/templates.html#latest-version)
 
 The intention of this project is to provide an automated way to rewier MRs
 
