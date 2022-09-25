@@ -8,8 +8,8 @@ stages:
 .common_rules: &common_rules
   - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
     when: never
-  - if: '$DANGER_REVIEW_DISABLED'
-    when: never
+  # - if: '$DANGER_REVIEW_DISABLED'
+  #   when: never
 
 .build-and-push:
   image: "docker:stable"
