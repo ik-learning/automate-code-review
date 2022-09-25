@@ -28,7 +28,6 @@ build-and-push:
 danger-check:
   image:
     name: "registry.gitlab.com/hnbi/platform-as-a-service/test-projects/automate-code-review:latest"
-    entrypoint: [ '/bin/sh', '-c' ]
   stage: check
   tags:
    - docker

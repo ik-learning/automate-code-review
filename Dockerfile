@@ -8,13 +8,18 @@ FROM node:18-alpine
 WORKDIR /danger
 
 ENV WORK_DIR "/danger"
-ENV DANGER_GITLAB_HOST "https://gitlab.com"
 
 COPY . ./
 # USER node
 RUN ["rm", "-rf", "./node_modules"]
 RUN ["rm", "dangerfile.js"]
 RUN ["yarn"]
+
+COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENV DANGER_GITLAB_HOST "https://gitlab.com"
+ENV PATH /danger/node_modules/bin:$PATH
 
 ENTRYPOINT [ "/bin/sh", "-c" ]
 CMD ["sh"]

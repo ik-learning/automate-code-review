@@ -33,5 +33,16 @@ docker-build: ## Docker image build
 docker-exec-local: ## Docker exec to an image build locally
 	@docker run -it --rm danger
 
+run: ## Run renovate locally
+	docker run --rm -it \
+		-e DANGER_GITLAB_API_TOKEN \
+		-e DANGER_GITLAB_TEAM \
+		-e DANGER_GITLAB_HOST \
+		-e DANGER_PR_URL \
+		-e DANGER_TEST_PR \
+		-w /workspace \
+		-v ${PWD}/dangerfile.js:/workspace/dangerfile.js \
+		danger
+
 docker-exec: ## Docker exec to an image
 	@docker run --rm -it $(DOCKER_IMAGE)
