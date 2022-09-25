@@ -2,6 +2,7 @@ SHELL = /bin/bash -o pipefail
 .ONESHELL:
 .SHELLFLAGS := -eu -o pipefail -c
 
+DOCKER_LOCAL := danger
 DOCKER_IMAGE := hollandandbarrett/k8s-deploy:2.36
 
 help:
@@ -28,12 +29,12 @@ open-mr: ## Run locally and open mr
 	@yarn danger ci
 
 docker-build: ## Docker image build
-	@docker build . --tag danger -f Dockerfile --progress plain
+	@docker build . --tag $(DOCKER_LOCAL) -f Dockerfile --progress plain
 
 docker-exec-local: ## Docker exec to an image build locally
-	@docker run -it --rm danger
+	@docker run -it --rm $(DOCKER_LOCAL)
 
-run: ## Run renovate locally
+run: ## Run Docker locally
 	docker run --rm -it \
 		-e DANGER_GITLAB_API_TOKEN \
 		-e DANGER_GITLAB_TEAM \
@@ -42,7 +43,7 @@ run: ## Run renovate locally
 		-e DANGER_TEST_PR \
 		-w /workspace \
 		-v ${PWD}/dangerfile.js:/workspace/dangerfile.js \
-		danger
+		$(DOCKER_LOCAL)
 
-docker-exec: ## Docker exec to an image
+run-remote: ## Docker exec to an image
 	@docker run --rm -it $(DOCKER_IMAGE)

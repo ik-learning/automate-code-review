@@ -15,8 +15,8 @@ RUN ["rm", "-rf", "./node_modules"]
 RUN ["rm", "dangerfile.js"]
 RUN ["yarn"]
 
-COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY ./entrypoint.sh /usr/local/bin/danger.sh
+RUN chmod +x /usr/local/bin/danger.sh
 
 ENV DANGER_GITLAB_HOST "https://gitlab.com"
 ENV PATH /danger/node_modules/bin:$PATH
