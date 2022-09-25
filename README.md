@@ -66,13 +66,14 @@ npm install
 
 - [Emojie](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#symbols)
 - [Gitlab How to](https://danger.systems/js/usage/gitlab.html)
-- [Danger bot](https://docs.gitlab.com/ee/development/dangerbot.html)
 - [Danger Local](https://danger.systems/js/tutorials/fast-feedback.html)
 - [Danger 5 minutes](https://medium.com/@ivan.ha/integrate-danger-js-in-5-minutes-55515bc5355d)
 - [Gitlab source](https://github.com/danger/danger-js/blob/main/source/platforms/gitlab/GitLabGit.ts)
-- [4/10 Gitlab](https://github.com/cangSDARM/dangerjs-self-hosted-gitlab-sample/blob/master/dangerfile.js)
-- [5/10 blog](https://prog.world/automate-review-selection-with-gitlab-ci-and-danger-js)
-- [6/10 blog](https://labs.etsi.org/rep/help/development/dangerbot.md)
+- [8/10: Gitalb Danger bot](https://docs.gitlab.com/ee/development/dangerbot.html)
+- [4/10: Example Gitlab](https://github.com/cangSDARM/dangerjs-self-hosted-gitlab-sample/blob/master/dangerfile.js)
+- [5/10: blog](https://prog.world/automate-review-selection-with-gitlab-ci-and-danger-js)
+- [6/10: blog](https://labs.etsi.org/rep/help/development/dangerbot.md)
+
 
 ### Shared pipelines
 
@@ -101,6 +102,17 @@ renovate:
 - Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gitlab-ci.yml
 - Another share https://gitlab.com/HnBI/composer-platform/backend/composer/-/blob/main/.gitlab-ci.yml
 - HBi shared pipelines https://gitlab.com/HnBI/shared-projects/shared-gitlab-ci
+
+## SEcrets
+
+- [Project Access Scope](https://docs.gitlab.com/ee/user/project/settings/project_access_tokens.html)
+
+```Make the variable masked so it
+doesn't show up in the job logs. The variable cannot be
+protected, because it needs
+to be present for all branches.
+```
+
 
 ## Examples
 

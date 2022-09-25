@@ -8,6 +8,7 @@ FROM node:18-alpine
 WORKDIR /danger
 
 ENV WORK_DIR "/danger"
+ENV IS_CI "true"
 
 COPY . ./
 # USER node
