@@ -51,4 +51,4 @@ danger-check:
     # : "${CI_MERGE_REQUEST_IID}"
   script:
   # - env
-  - da
+  - yarn danger ci
