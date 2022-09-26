@@ -174,6 +174,8 @@ If you no longer need a global secondary index, you can delete it using the Upda
   + RDS/Dynamo DB deleted files -> ask PAAS to remove database
 - [ ] Gitlab suggest a change in an MR
 - [ ] Gitlab `task_completion_status: { count: 8, completed_count: 0 }`
+- [ ] MR size
+  * [ ] Number of files > 10, should split MR probably
 - Sandbox (deleted) on deletion du not remove example. Consider to commment CI logic only. Remove resources from local.
 - Unit tests
 - Kafka aplhabetic
