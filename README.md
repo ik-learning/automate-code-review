@@ -171,7 +171,8 @@ If you no longer need a global secondary index, you can delete it using the Upda
   * [ ] Do not run when `[skip ci]`
   * [ ] Skip some renovate bot MRs
 - [ ] RDS support deleted files with message
-  + RDS/Dynamo DB deleted files -> ask PAAS to remove database
+  + [ ] RDS/Dynamo DB deleted files -> ask PAAS to remove database
+  * [ ] RDS message `Worth copying the config from another prod instance so that you get the correct settings for backups, multi-az and network connectivity` and validate `Things like multi_az: false, backup_retention_period: 1 and allowed_cidrs set to dev`
 - [ ] Gitlab suggest a change in an MR
 - [ ] Gitlab `task_completion_status: { count: 8, completed_count: 0 }`
 - [ ] MR size
