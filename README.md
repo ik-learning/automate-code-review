@@ -37,6 +37,7 @@ docker pull registry.gitlab.com/hnbi/platform-as-a-service/test-projects/automat
     - [Run Danger file](#run-danger-file)
     - [Docs](#docs)
     - [Shared pipelines](#shared-pipelines)
+- [SEcrets](#secrets)
 - [Examples](#examples)
     - [How To](#how-to)
     - [Plugins](#plugins)
@@ -201,3 +202,7 @@ You also seem to be using a different format to the existing supply chain (ie. s
 - [ ] Unit tests with fixtures. [Example](https://github.com/danger/danger-js/blob/main/source/platforms/gitlab/_tests/_gitlab_api.test.ts)
 - [ ] Aurora
   * [ ] Supported engine versions [example](https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/jobs/3080939010)
+- [ ] SSO,
+  * [ ] link to confluence
+  * [ ] S3 buckets, link to explicit how to request
+- [ ] Migrate to [TS](https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html)
