@@ -17,7 +17,7 @@
     "pr:remote-full": "DANGER_TEST_PR='2' yarn danger ci"
   },
   "dependencies": {
-    "danger": "^11.1.2",
+    "danger": "^11.1.4",
     "hcl2-parser": "^1.0.3",
     "js-yaml": "^4.1.0",
     "micromatch": "^4.0.5",
