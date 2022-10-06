@@ -205,4 +205,5 @@ You also seem to be using a different format to the existing supply chain (ie. s
 - [ ] SSO,
   * [ ] link to confluence
   * [ ] S3 buckets, link to explicit how to request
+  * [ ] Admin or Full access is granted, flag it
 - [ ] Migrate to [TS](https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html)
