@@ -5,6 +5,9 @@ FROM node:18-alpine
 # RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 # WORKDIR /home/node/app
 
+ARG BUILD_VERSION
+ENV VERSION=$BUILD_VERSION
+
 WORKDIR /danger
 
 ENV WORK_DIR "/danger"

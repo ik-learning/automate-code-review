@@ -7,5 +7,6 @@ set -e
 
 export CURRENT_FOLDER="$PWD"
 cd "$WORK_DIR"
+echo "VERSION: $VERSION"
 yarn danger --version
 yarn danger ci --dangerfile $CURRENT_FOLDER/dangerfile.js --removePreviousComments
