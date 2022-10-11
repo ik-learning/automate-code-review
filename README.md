@@ -158,6 +158,7 @@ If you no longer need a global secondary index, you can delete it using the Upda
 
 ## TODO && Supported Features
 
+- [ ] Docker tag. Embedd tag as ARG.
 - [X] Message 'apply after merge'
 - [X] Ensure files has new line
 - [X] Dynamodb
