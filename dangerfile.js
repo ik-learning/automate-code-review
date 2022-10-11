@@ -5,12 +5,13 @@ const { commonChecks, infraChecks, csvEntryAlphabeticOrderAsync, addLabels } = r
   process.env.IS_CI ? "/danger/lib/dangerfile.paas" : "./lib/dangerfile.paas"
 );
 
-(async function () {
-  commonChecks();
-  await infraChecks();
-  await csvEntryAlphabeticOrderAsync();
-})();
+console.log('in dangerfile');
+// (async function () {
+//   commonChecks();
+//   await infraChecks();
+//   await csvEntryAlphabeticOrderAsync();
+// })();
 
-(async function () {
-  await addLabels(['danger-bot']);
-})();
+// (async function () {
+//   await addLabels(['danger-bot']);
+// })();
