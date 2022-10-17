@@ -208,3 +208,4 @@ You also seem to be using a different format to the existing supply chain (ie. s
   * [ ] S3 buckets, link to explicit how to request
   * [ ] Admin or Full access is granted, flag it
 - [ ] Migrate to [TS](https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html)
+- [ ] Sanity check and apply this repo https://hollandandbarrett.slack.com/archives/GKM7H90TH/p1666013132693499
