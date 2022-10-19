@@ -18,7 +18,6 @@ ENV IS_CI "true"
 COPY . ./
 
 RUN ["rm", "-rf", "./node_modules"]
-RUN ["rm", "dangerfile.js"]
 RUN ["yarn"]
 
 COPY ./entrypoint.sh /usr/local/bin/code-review
