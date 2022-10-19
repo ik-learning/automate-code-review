@@ -1,5 +1,6 @@
 stages:
- - build
+ - docker-build
+ - docker-push
  - check
 
 # variables:
@@ -21,6 +22,25 @@ build-and-push:
    - >
     docker build -t $CI_REGISTRY_IMAGE:latest
     --build-arg BUILD_VERSION=$CI_PIPELINE_IID
+    .
+   - docker push $CI_REGISTRY_IMAGE:latest
+  rules:
+  - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  - if: '$CI_PIPELINE_SOURCE == "trigger"'
+    when: never
+
+docker-push:
+  image: "docker:stable"
+  stage: push
+  tags:
+   - docker
+   - medium
+  before_script:
+   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+   - >
+    docker build -t $CI_REGISTRY_IMAGE:latest
+    --build-arg BUILD_VERSION=$CI_PIPELINE_IID
     --label "org.opencontainers.image.title=$CI_PROJECT_TITLE"
     --label "org.opencontainers.image.url=$CI_PROJECT_URL"
     --label "org.opencontainers.image.created=$CI_JOB_STARTED_AT"
@@ -31,6 +51,7 @@ build-and-push:
   rules:
   - if: '$CI_PIPELINE_SOURCE == "trigger"'
     when: never
+  - if: '$CI_COMMIT_BRANCH == "master"'
 
 danger-mr-review:
   image:
