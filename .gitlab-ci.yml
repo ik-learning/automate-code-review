@@ -18,15 +18,21 @@ stages:
 build-and-push:
   image: "docker:stable"
   stage: build
-  when: manual
   tags:
    - docker
    - medium
-  before_script:
-   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-   - docker info
+  # before_script:
+  #  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-   - docker build -t $CI_REGISTRY_IMAGE:latest --build-arg BUILD_VERSION=$CI_PIPELINE_IID .
+   - >
+    docker build -t $CI_REGISTRY_IMAGE:latest
+    --build-arg BUILD_VERSION=$CI_PIPELINE_IID
+    --label "org.opencontainers.image.title=$CI_PROJECT_TITLE"
+    --label "org.opencontainers.image.url=$CI_PROJECT_URL"
+    --label "org.opencontainers.image.created=$CI_JOB_STARTED_AT"
+    --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
+    --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME"
+    .
    - docker push $CI_REGISTRY_IMAGE:latest
 
 danger-check:
