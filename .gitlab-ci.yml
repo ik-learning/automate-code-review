@@ -34,8 +34,11 @@ build-and-push:
     --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME"
     .
    - docker push $CI_REGISTRY_IMAGE:latest
+  rules:
+  - if: '$CI_PIPELINE_SOURCE == "trigger"'
+    when: never
 
-danger-check:
+danger-mr-review:
   image:
     name: "registry.gitlab.com/hnbi/platform-as-a-service/test-projects/automate-code-review:latest"
   stage: check
@@ -44,7 +47,8 @@ danger-check:
    - medium
   cache: {}
   rules:
-  - *common_rules
+  - if: '$CI_PIPELINE_SOURCE == "trigger"'
+    when: always
   variables:
     DANGER_GITLAB_HOST: "https://gitlab.com"
     DANGER_GITLAB_API_BASE_URL: "${CI_API_V4_URL}"
