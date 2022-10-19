@@ -5,7 +5,7 @@ const { commonChecks, infraChecks, csvEntryAlphabeticOrderAsync, addLabels } = r
   process.env.IS_CI ? "/danger/lib/dangerfile.paas" : "./lib/dangerfile.paas"
 );
 
-console.log('in dangerfile');
+// console.log(danger.gitlab.mr);
 // (async function () {
 //   commonChecks();
 //   await infraChecks();
@@ -15,3 +15,11 @@ console.log('in dangerfile');
 // (async function () {
 //   await addLabels(['danger-bot']);
 // })();
+
+if (danger.gitlab.metadata.repoSlug.includes('msk-topics')) {
+  console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
+  (async function () {
+    commonChecks();
+    await csvEntryAlphabeticOrderAsync();
+  })();
+}
