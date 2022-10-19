@@ -3,9 +3,6 @@ stages:
  - docker-push
  - check
 
-# variables:
-#   DOCKER_BUILD_TAG: "stable"
-
 .common_rules: &common_rules
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     when: always

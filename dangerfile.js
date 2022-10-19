@@ -1,7 +1,7 @@
 'use strict';
 // Example dangerfile. Every repo could contain this file in order to benefit from automated MR review
-const { danger, warn, message, markdown, results } = require('danger');
-const { commonChecks, infraChecks, csvEntryAlphabeticOrderAsync, addLabels, jobUrl } = require(
+const { danger, warn, message, markdow } = require('danger');
+const { commonChecks, infraChecks, csvEntryAlphabeticOrderAsync, addLabels, welcomeMsg } = require(
   process.env.IS_CI ? "/danger/lib/dangerfile.paas" : "./lib/dangerfile.paas"
 );
 
@@ -9,7 +9,6 @@ const { commonChecks, infraChecks, csvEntryAlphabeticOrderAsync, addLabels, jobU
 // (async function () {
 //   commonChecks();
 //   await infraChecks();
-//   await csvEntryAlphabeticOrderAsync();
 // })();
 
 if (danger.gitlab.metadata.repoSlug.includes('msk-topics')) {
@@ -21,6 +20,6 @@ if (danger.gitlab.metadata.repoSlug.includes('msk-topics')) {
 }
 
 (async function () {
-  jobUrl(process.env.CI_JOB_URL);
+  welcomeMsg({ url: process.env.CI_JOB_URL });
   await addLabels(['danger-bot']);
 })();
