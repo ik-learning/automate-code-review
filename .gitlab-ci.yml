@@ -66,8 +66,7 @@ danger-mr-review:
     DANGER_GITLAB_API_BASE_URL: "${CI_API_V4_URL}"
     DANGER_GITLAB_API_TOKEN: "${DANGER_GITLAB_API_TOKEN}"
   script:
-  - cat $TRIGGER_PAYLOAD
-  # - danger.sh
+  - code-review
   rules:
   - if: '$CI_PIPELINE_SOURCE == "trigger"'
     when: always
