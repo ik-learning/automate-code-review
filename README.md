@@ -178,5 +178,7 @@ You also seem to be using a different format to the existing supply chain (ie. s
   * [ ] Admin or Full access is granted, flag it
 - [ ] Migrate to [TS](https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html)
 - [ ] Sanity check and apply this repo https://hollandandbarrett.slack.com/archives/GKM7H90TH/p1666013132693499
-- [ ] Automate creation of webhooks!!
+- [ ] Web Hooks
+  - [ ] Automate creation of webhooks
+  - [ ] Trigger a webhook programatically for testing
 - [ ] `Changelog doesn't need to go via MR; just commit, tag and push` [mr](https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config/-/merge_requests/432#note_1141930147)
