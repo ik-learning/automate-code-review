@@ -5,6 +5,7 @@ set -e
 : "$WORK_DIR"
 : "$DANGER_GITLAB_HOST"
 : "$TRIGGER_PAYLOAD"
+: "$CI_JOB_URL"
 
 cd "$WORK_DIR"
 echo "VERSION: $VERSION"
