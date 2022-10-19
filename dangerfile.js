@@ -1,7 +1,7 @@
 'use strict';
 // Example dangerfile. Every repo could contain this file in order to benefit from automated MR review
 const { danger, warn, message, markdown, results } = require('danger');
-const { commonChecks, infraChecks, csvEntryAlphabeticOrderAsync, addLabels } = require(
+const { commonChecks, infraChecks, csvEntryAlphabeticOrderAsync, addLabels, jobUrl } = require(
   process.env.IS_CI ? "/danger/lib/dangerfile.paas" : "./lib/dangerfile.paas"
 );
 

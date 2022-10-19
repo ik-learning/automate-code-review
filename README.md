@@ -127,6 +127,7 @@ If you no longer need a global secondary index, you can delete it using the Upda
 ## TODO && Supported Features
 
 - [ ] Docker tag. Embedd tag as ARG.
+- [ ] Use `TypeScript` instead of plain JS
 - [X] Message 'apply after merge'
 - [X] Ensure files has new line
 - [X] Dynamodb
@@ -179,6 +180,7 @@ You also seem to be using a different format to the existing supply chain (ie. s
 - [ ] Migrate to [TS](https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html)
 - [ ] Sanity check and apply this repo https://hollandandbarrett.slack.com/archives/GKM7H90TH/p1666013132693499
 - [ ] Web Hooks
-  - [ ] Automate creation of webhooks
+  - [ ] [Automate/Simplify creation of webhooks](https://github.com/jdalrymple/gitbeaker/blob/master/packages/core/src/resources/ProjectHooks.ts)
+    * [docs](https://docs.gitlab.com/ee/api/projects.html#add-project-hook)
   - [ ] Trigger a webhook programatically for testing
 - [ ] `Changelog doesn't need to go via MR; just commit, tag and push` [mr](https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config/-/merge_requests/432#note_1141930147)
