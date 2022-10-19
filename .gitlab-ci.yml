@@ -10,7 +10,7 @@ stages:
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     when: always
 
-build-and-push:
+build-and-test:
   image: "docker:stable"
   stage: docker-build
   tags:
@@ -23,13 +23,14 @@ build-and-push:
     docker build -t $CI_REGISTRY_IMAGE:latest
     --build-arg BUILD_VERSION=$CI_PIPELINE_IID
     .
-   - docker push $CI_REGISTRY_IMAGE:latest
+   - docker run --rm $CONTAINER_IMAGE:latest -c "yarn danger --version"
+   - docker run --rm $CONTAINER_IMAGE:latest -c "jq --version"
   rules:
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   - if: '$CI_PIPELINE_SOURCE == "trigger"'
     when: never
 
-docker-push:
+docker-build-push:
   image: "docker:stable"
   stage: docker-push
   tags:
