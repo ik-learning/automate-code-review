@@ -139,7 +139,7 @@ If you no longer need a global secondary index, you can delete it using the Upda
 - [X] Jira link is missing
 - [ ] Skip
   * [ ] Do not run when `[skip ci]`
-  * [ ] Skip some renovate bot MRs
+  * [ ] Skip some renovate bot MRs or do just super simple suggestion
 - [ ] RDS support deleted files with message
   * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are avaialble upgrade options
   + [ ] RDS/Dynamo DB deleted files -> ask PAAS to remove database
