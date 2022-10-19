@@ -128,6 +128,7 @@ If you no longer need a global secondary index, you can delete it using the Upda
 
 - [ ] Docker tag. Embedd tag as ARG.
 - [ ] Use `TypeScript` instead of plain JS
+  * Unit tests
 - [X] Message 'apply after merge'
 - [X] Ensure files has new line
 - [X] Dynamodb
@@ -146,12 +147,13 @@ If you no longer need a global secondary index, you can delete it using the Upda
   * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are avaialble upgrade options
   + [ ] RDS/Dynamo DB deleted files -> ask PAAS to remove database
   * [ ] RDS message `Worth copying the config from another prod instance so that you get the correct settings for backups, multi-az and network connectivity` and validate `Things like multi_az: false, backup_retention_period: 1 and allowed_cidrs set to dev`
-- [ ] Gitlab suggest a change in an MR
-- [ ] Gitlab `task_completion_status: { count: 8, completed_count: 0 }`
-- [ ] MR size
-  * [ ] Number of files > 10, should split MR probably
+- [ ] Gitlab
+  * `task_completion_status: { count: 8, completed_count: 0 }`
+  *  suggest a change in an MR
+- [ ] Flag on MR size
+  * [ ] Number of files > 10, should split MR probably.
+  * [X] MR exceeded treshold.
 - Sandbox (deleted) on deletion du not remove example. Consider to commment CI logic only. Remove resources from local.
-- Unit tests
 - Kafka aplhabetic
   - [X] partial fix
   - [X] compare prefixes, e.g. where its new prefix of already exist
@@ -162,7 +164,6 @@ If you no longer need a global secondary index, you can delete it using the Upda
   - [X] msk MR `diff` instead of simple update
   - [X] message `Please can you update the topic details section, and also put the topics in alphabetical order.
 You also seem to be using a different format to the existing supply chain (ie. supply-chain- prefix, and hyphens), has your team chosen to change the format going forward?`
-  - Kafka MR templates
 - [X] Labels
   * [X] Added label `danger-bot` on code review
 - [ ] Messages
@@ -178,7 +179,6 @@ You also seem to be using a different format to the existing supply chain (ie. s
   * [ ] link to confluence
   * [ ] S3 buckets, link to explicit how to request
   * [ ] Admin or Full access is granted, flag it
-- [ ] Migrate to [TS](https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html)
 - [ ] Sanity check and apply this repo https://hollandandbarrett.slack.com/archives/GKM7H90TH/p1666013132693499
 - [ ] Web Hooks
   - [ ] [Automate/Simplify creation of webhooks](https://github.com/jdalrymple/gitbeaker/blob/master/packages/core/src/resources/ProjectHooks.ts)
