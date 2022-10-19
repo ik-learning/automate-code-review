@@ -138,9 +138,9 @@ If you no longer need a global secondary index, you can delete it using the Upda
 - [X] Please use the appropriate MR template, and populate with details and a jira ticket
 - [X] Changelog is missing
 - [X] Jira link is missing
-- [ ] Skip
+- [X] Skip
   * [X] Do not run when `[skip ci]`
-  * [ ] Skip some Renovate MRs or do just super simple suggestion
+  * [X] Skip MRs with label `renovate-bot`
   * [X] Du not run when MR is `closed`.
 - [ ] RDS support deleted files with message
   * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are avaialble upgrade options
