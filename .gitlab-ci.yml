@@ -12,7 +12,7 @@ stages:
 
 build-and-push:
   image: "docker:stable"
-  stage: build
+  stage: docker-build
   tags:
    - docker
    - medium
