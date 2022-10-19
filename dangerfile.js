@@ -1,8 +1,9 @@
 'use strict';
-// Example dangerfile. Every repo could contain this file in order to benefit from automated MR review
+// Single dangerfile. Support Multiple repositories.
 const { danger, message, warn, fail, markdow } = require('danger');
 const { commonChecks, infraChecks,
   csvEntryAlphabeticOrderAsync, templateShouldBeEnforcedMsk,
+  addManualApplyMessage,
   addLabels, welcomeMsg } = require(
     process.env.IS_CI ? "/danger/lib/dangerfile.paas" : "./lib/dangerfile.paas"
   );
@@ -13,6 +14,7 @@ if (danger.gitlab.metadata.repoSlug.includes('platform-as-a-service/kafka/msk-to
   console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
   (async function () {
     commonChecks();
+    addManualApplyMessage();
     await templateShouldBeEnforcedMsk();
     await csvEntryAlphabeticOrderAsync();
   })();
