@@ -49,6 +49,9 @@ docker-push:
     .
    - docker push $CI_REGISTRY_IMAGE:latest
   rules:
+    - changes:
+      - "*.md"
+      when: never
   - if: '$CI_PIPELINE_SOURCE == "trigger"'
     when: never
   - if: '$CI_COMMIT_BRANCH == "master"'
@@ -66,7 +69,7 @@ danger-mr-review:
     DANGER_GITLAB_API_BASE_URL: "${CI_API_V4_URL}"
     DANGER_GITLAB_API_TOKEN: "${DANGER_GITLAB_API_TOKEN}"
   script:
-  - echo $TRIGGER_PAYLOAD
+  - cat $TRIGGER_PAYLOAD
   # - danger.sh
   rules:
   - if: '$CI_PIPELINE_SOURCE == "trigger"'
