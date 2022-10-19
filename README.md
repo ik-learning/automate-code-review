@@ -158,7 +158,7 @@ If you no longer need a global secondary index, you can delete it using the Upda
   - [ ] enforce single format e.g. `-` or `_`
     * (message) You also seem to be using a different format to the existing supply chain (ie. supply-chain- prefix, and hyphens), has your team chosen to change the format going forward?`
     * (message) First time team created a topic
-  - [ ] Kafka MR templates
+  - [X] Kafka MR templates
   - [X] msk MR `diff` instead of simple update
   - [X] message `Please can you update the topic details section, and also put the topics in alphabetical order.
 You also seem to be using a different format to the existing supply chain (ie. supply-chain- prefix, and hyphens), has your team chosen to change the format going forward?`
