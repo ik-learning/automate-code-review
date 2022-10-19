@@ -139,8 +139,9 @@ If you no longer need a global secondary index, you can delete it using the Upda
 - [X] Changelog is missing
 - [X] Jira link is missing
 - [ ] Skip
-  * [ ] Do not run when `[skip ci]`
-  * [ ] Skip some renovate bot MRs or do just super simple suggestion
+  * [X] Do not run when `[skip ci]`
+  * [ ] Skip some Renovate MRs or do just super simple suggestion
+  * [X] Du not run when MR is `closed`.
 - [ ] RDS support deleted files with message
   * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are avaialble upgrade options
   + [ ] RDS/Dynamo DB deleted files -> ask PAAS to remove database
@@ -185,4 +186,3 @@ You also seem to be using a different format to the existing supply chain (ie. s
   - [ ] Trigger a webhook programatically for testing
 - [ ] `Changelog doesn't need to go via MR; just commit, tag and push` [mr](https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config/-/merge_requests/432#note_1141930147)
 - [X] Provide `CI_JOB_URL` in MR message
-- [ ] Du not run when `# A merge request is is merged or closed`.
