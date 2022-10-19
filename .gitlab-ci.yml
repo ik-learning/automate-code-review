@@ -61,9 +61,6 @@ danger-mr-review:
    - generic
    - medium
   cache: {}
-  rules:
-  - if: '$CI_PIPELINE_SOURCE == "trigger"'
-    when: always
   variables:
     DANGER_GITLAB_HOST: "https://gitlab.com"
     DANGER_GITLAB_API_BASE_URL: "${CI_API_V4_URL}"
@@ -71,3 +68,6 @@ danger-mr-review:
   script:
   - echo $TRIGGER_PAYLOAD
   # - danger.sh
+  rules:
+  - if: '$CI_PIPELINE_SOURCE == "trigger"'
+    when: always
