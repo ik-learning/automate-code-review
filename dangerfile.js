@@ -12,10 +12,6 @@ const { commonChecks, infraChecks, csvEntryAlphabeticOrderAsync, addLabels } = r
 //   await csvEntryAlphabeticOrderAsync();
 // })();
 
-// (async function () {
-//   await addLabels(['danger-bot']);
-// })();
-
 if (danger.gitlab.metadata.repoSlug.includes('msk-topics')) {
   console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
   (async function () {
@@ -23,3 +19,7 @@ if (danger.gitlab.metadata.repoSlug.includes('msk-topics')) {
     await csvEntryAlphabeticOrderAsync();
   })();
 }
+
+(async function () {
+  await addLabels(['danger-bot']);
+})();
