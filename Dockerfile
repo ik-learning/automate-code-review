@@ -10,11 +10,13 @@ ENV VERSION=$BUILD_VERSION
 
 WORKDIR /danger
 
+RUN apk -v add jq
+
 ENV WORK_DIR "/danger"
 ENV IS_CI "true"
 
 COPY . ./
-# USER node
+
 RUN ["rm", "-rf", "./node_modules"]
 RUN ["rm", "dangerfile.js"]
 RUN ["yarn"]

@@ -8,12 +8,6 @@ stages:
 .common_rules: &common_rules
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     when: always
-  #   - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
-  #     when: always
-  #   - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
-  #     when: always
-  #   - if: '$CI_PIPELINE_SOURCE == $CI_DEFAULT_BRANCH'
-  #     when: never
 
 build-and-push:
   image: "docker:stable"
@@ -40,10 +34,10 @@ build-and-push:
 
 danger-mr-review:
   image:
-    name: "registry.gitlab.com/hnbi/platform-as-a-service/test-projects/automate-code-review:latest"
+    name: "$CI_REGISTRY_IMAGE:latest"
   stage: check
   tags:
-   - docker
+   - generic
    - medium
   cache: {}
   rules:
@@ -54,4 +48,5 @@ danger-mr-review:
     DANGER_GITLAB_API_BASE_URL: "${CI_API_V4_URL}"
     DANGER_GITLAB_API_TOKEN: "${DANGER_GITLAB_API_TOKEN}"
   script:
-  - danger.sh
+  - echo $TRIGGER_PAYLOAD
+  # - danger.sh
