@@ -21,5 +21,6 @@ if (danger.gitlab.metadata.repoSlug.includes('msk-topics')) {
 }
 
 (async function () {
+  jobUrl(process.env.CI_JOB_URL);
   await addLabels(['danger-bot']);
 })();
