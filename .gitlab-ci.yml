@@ -31,7 +31,7 @@ build-and-push:
 
 docker-push:
   image: "docker:stable"
-  stage: push
+  stage: docker-push
   tags:
    - docker
    - medium
