@@ -135,7 +135,6 @@ If you no longer need a global secondary index, you can delete it using the Upda
   * [X] Multiple GCI
     * [X] Hey, unfortunately only one GSI can be operated on at a time, otherwise AWS will complain.
   * [X] `non_key_attributes` modification
-- [X] RDS version validation
 - [X] Please use the appropriate MR template, and populate with details and a jira ticket
 - [X] Changelog is missing
 - [X] Jira link is missing
@@ -143,7 +142,11 @@ If you no longer need a global secondary index, you can delete it using the Upda
   * [X] Do not run when `[skip ci]`
   * [X] Skip MRs with label `renovate-bot`
   * [X] Du not run when MR is `closed`.
-- [ ] RDS support deleted files with message
+- [ ] RDS
+  * [ ] RDS engine version validation
+    + [X] `postgress` version validation
+    + [X] `mysql` version validation
+    + [ ] `aurora` version validation
   * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are avaialble upgrade options
   + [ ] RDS/Dynamo DB deleted files -> ask PAAS to remove database
   * [ ] RDS message `Worth copying the config from another prod instance so that you get the correct settings for backups, multi-az and network connectivity` and validate `Things like multi_az: false, backup_retention_period: 1 and allowed_cidrs set to dev`
