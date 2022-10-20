@@ -152,22 +152,20 @@ If you no longer need a global secondary index, you can delete it using the Upda
   * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are avaialble upgrade options
   + [ ] RDS/Dynamo DB deleted files -> ask PAAS to remove database
   * [ ] RDS message `Worth copying the config from another prod instance so that you get the correct settings for backups, multi-az and network connectivity` and validate `Things like multi_az: false, backup_retention_period: 1 and allowed_cidrs set to dev`
-- [ ] Gitlab
-  * `task_completion_status: { count: 8, completed_count: 0 }`
-  *  suggest a change in an MR
-- [ ] Flag on MR size
-  * [ ] Number of files > 10, should split MR probably.
+- [X] Flag on MR size
+  * [X] Number of files > 10, should split MR probably.
   * [X] MR exceeded treshold.
 - Sandbox (deleted) on deletion du not remove example. Consider to commment CI logic only. Remove resources from local.
-- Kafka aplhabetic
+- MSK/Kafka
   - [X] partial fix
   - [X] compare prefixes, e.g. where its new prefix of already exist
   - [ ] enforce single format e.g. `-` or `_`
     * (message) You also seem to be using a different format to the existing supply chain (ie. supply-chain- prefix, and hyphens), has your team chosen to change the format going forward?`
     * (message) First time team created a topic
+  - [X] Added message for topic name consistency
   - [X] Kafka MR templates
-  - [X] msk MR `diff` instead of simple update
-  - [X] message `Please can you update the topic details section, and also put the topics in alphabetical order.
+  - [X] MSK MR `diff` instead of simple update
+  - [X] Message `Please can you update the topic details section, and also put the topics in alphabetical order.
 You also seem to be using a different format to the existing supply chain (ie. supply-chain- prefix, and hyphens), has your team chosen to change the format going forward?`
 - [X] Labels
   * [X] Added label `danger-bot` on code review
@@ -177,6 +175,7 @@ You also seem to be using a different format to the existing supply chain (ie. s
   * [ ] `warn("MR is classed as Work in Progress") if gitlab.mr_title.include? "Draft:"`
 - [ ] Slack
   * [ ] Request review in `paas-forum` or send and automated request to slack
+  * [ ] Post message in slack channel with reviewer name
 - [ ] Unit tests with fixtures. [Example](https://github.com/danger/danger-js/blob/main/source/platforms/gitlab/_tests/_gitlab_api.test.ts)
 - [ ] Aurora
   * [ ] Supported engine versions [example](https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/jobs/3080939010)

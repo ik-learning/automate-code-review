@@ -2,8 +2,8 @@
 // Single dangerfile. Support Multiple repositories.
 const { danger, message, warn, fail, markdow } = require('danger');
 const { commonChecks, infraChecks, skipReview,
-  csvEntryAlphabeticOrderAsync, templateShouldBeEnforcedMsk,
-  addManualApplyMessage,
+  csvEntryAlphabeticOrder, templateShouldBeEnforcedMsk,
+  addManualApplyMessage, links,
   addLabels, welcomeMsg } = require(
     process.env.IS_CI ? "/danger/lib/dangerfile.paas" : "./lib/dangerfile.paas"
   );
@@ -15,7 +15,7 @@ if (!skipReview()) {
       commonChecks();
       addManualApplyMessage();
       await templateShouldBeEnforcedMsk();
-      await csvEntryAlphabeticOrderAsync();
+      await csvEntryAlphabeticOrder();
     })();
   }
 
