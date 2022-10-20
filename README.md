@@ -179,6 +179,8 @@ You also seem to be using a different format to the existing supply chain (ie. s
   * [ ] link to confluence
   * [ ] S3 buckets, link to explicit how to request
   * [ ] Admin or Full access is granted, flag it
+- [ ] S3
+  * [ ] Validate tags
 - [ ] Sanity check and apply this repo https://hollandandbarrett.slack.com/archives/GKM7H90TH/p1666013132693499
 - [ ] Web Hooks
   - [ ] [Automate/Simplify creation of webhooks](https://github.com/jdalrymple/gitbeaker/blob/master/packages/core/src/resources/ProjectHooks.ts)
