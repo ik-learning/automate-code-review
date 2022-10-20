@@ -1,0 +1,168 @@
+{
+  id: 183891544,
+  iid: 3396,
+  project_id: 12501354,
+  title: 'SHT-797: Created parcel events DB in prod',
+  description: '## Details\n' +
+    '\n' +
+    'Create the parcel events DB in prod (already created in dev)\n' +
+    '\n' +
+    'Jira ticket: https: //hbidigital.atlassian.net/browse/SHT-797\n' +
+    '\n' +
+    '(Same ticket as previous MR as I wanted to create the dev instance first, test, then create prod)\n' +
+    '\n' +
+    '## Checklist\n' +
+    '\n' +
+    '- [x
+  ] Read the [RDS confluence guidance
+  ](https: //hbidigital.atlassian.net/wiki/spaces/PAAS/pages/836173888/Requesting+a+SQL+Database+Guidance)\n' +
+    '- [x
+  ] Read the RDS component [readme
+  ](../../blob/master/rds/README.md)\n' +
+    '- [x
+  ] Read the RDS supported [vars definitions
+  ](../../blob/master/rds/terraform/vars.tf)\n' +
+    '- [x
+  ] No changes have been made to the Gitlab pipeline\n' +
+    '- [x
+  ] `Details` section above is updated with relevant information\n' +
+    '- [x
+  ] Created a directory under `rds/environments/ENV/REGION/` following the naming convention (`TEAM-PROJECT`) defined in the confluence page\n' +
+    '- [x
+  ] Created a `terraform.tfvars` file in the new `TEAM-PROJECT` directory created in the above step\n' +
+    '- [x
+  ] Created a `terragrunt.hcl` file in the new `TEAM-PROJECT` directory created in the above step with the content specified in the [README
+  ](https: //gitlab.com/HnBI/platform-as-a-service/infrastructure/-/tree/master/rds/README.md#usage).\n' +
+    '- [x
+  ] Configured `terraform.tfvars` file for all variables defined in `rds/terraform/vars.tf` using guidance in vars.tf and [README
+  ](https: //gitlab.com/HnBI/platform-as-a-service/infrastructure/-/tree/master/rds/README.md)\n' +
+    '- [x
+  ] Verified the `plan` job in the merge request pipeline to confirm only your RDS instance is going to be added and no other changes\n' +
+    '- [x
+  ] Acknowledge that team-based AWS SSO is in place and RDS user credentials will be fetched using the documented [credentials workflow
+  ](../../blob/master/rds/README.md#credential-workflow)',
+  state: 'opened',
+  created_at: '2022-10-19T16: 35: 58.172Z',
+  updated_at: '2022-10-20T09: 22: 19.434Z',
+  merged_by: null,
+  merge_user: null,
+  merged_at: null,
+  closed_by: null,
+  closed_at: null,
+  target_branch: 'master',
+  source_branch: 'SHT-797',
+  user_notes_count: 5,
+  upvotes: 0,
+  downvotes: 0,
+  author: {
+    id: 7602077,
+    username: 'SBull',
+    name: 'Sam Bull',
+    state: 'active',
+    avatar_url: 'https: //gitlab.com/uploads/-/system/user/avatar/7602077/avatar.png',
+    web_url: 'https: //gitlab.com/SBull'
+  },
+  assignees: [],
+  assignee: null,
+  reviewers: [],
+  source_project_id: 12501354,
+  target_project_id: 12501354,
+  labels: [ 'review-bot'
+  ],
+  draft: false,
+  work_in_progress: false,
+  milestone: null,
+  merge_when_pipeline_succeeds: false,
+  merge_status: 'can_be_merged',
+  sha: 'c37cd419752ca5ad5169c30edcc8e50deec24eaf',
+  merge_commit_sha: null,
+  squash_commit_sha: null,
+  discussion_locked: null,
+  should_remove_source_branch: null,
+  force_remove_source_branch: true,
+  reference: '!3396',
+  references: {
+    short: '!3396',
+    relative: '!3396',
+    full: 'HnBI/platform-as-a-service/infrastructure!3396'
+  },
+  web_url: 'https: //gitlab.com/HnBI/platform-as-a-service/infrastructure/-/merge_requests/3396',
+  time_stats: {
+    time_estimate: 0,
+    total_time_spent: 0,
+    human_time_estimate: null,
+    human_total_time_spent: null
+  },
+  squash: true,
+  task_completion_status: { count: 11, completed_count: 11
+  },
+  has_conflicts: false,
+  blocking_discussions_resolved: true,
+  approvals_before_merge: null,
+  subscribed: false,
+  changes_count: '3',
+  latest_build_started_at: '2022-10-20T08: 54: 25.740Z',
+  latest_build_finished_at: '2022-10-20T08: 59: 13.598Z',
+  first_deployed_to_production_at: null,
+  pipeline: {
+    id: 671952547,
+    iid: 65203,
+    project_id: 12501354,
+    sha: 'c37cd419752ca5ad5169c30edcc8e50deec24eaf',
+    ref: 'refs/merge-requests/3396/head',
+    status: 'success',
+    source: 'merge_request_event',
+    created_at: '2022-10-20T08: 54: 23.938Z',
+    updated_at: '2022-10-20T08: 59: 13.607Z',
+    web_url: 'https: //gitlab.com/HnBI/platform-as-a-service/infrastructure/-/pipelines/671952547'
+  },
+  head_pipeline: {
+    id: 671952547,
+    iid: 65203,
+    project_id: 12501354,
+    sha: 'c37cd419752ca5ad5169c30edcc8e50deec24eaf',
+    ref: 'refs/merge-requests/3396/head',
+    status: 'success',
+    source: 'merge_request_event',
+    created_at: '2022-10-20T08: 54: 23.938Z',
+    updated_at: '2022-10-20T08: 59: 13.607Z',
+    web_url: 'https: //gitlab.com/HnBI/platform-as-a-service/infrastructure/-/pipelines/671952547',
+    before_sha: '0000000000000000000000000000000000000000',
+    tag: false,
+    yaml_errors: null,
+    user: {
+      id: 7602077,
+      username: 'SBull',
+      name: 'Sam Bull',
+      state: 'active',
+      avatar_url: 'https: //gitlab.com/uploads/-/system/user/avatar/7602077/avatar.png',
+      web_url: 'https: //gitlab.com/SBull'
+    },
+    started_at: '2022-10-20T08: 54: 25.740Z',
+    finished_at: '2022-10-20T08: 59: 13.598Z',
+    committed_at: null,
+    duration: 123,
+    queued_duration: 1,
+    coverage: null,
+    detailed_status: {
+      icon: 'status_success',
+      text: 'passed',
+      label: 'passed',
+      group: 'success',
+      tooltip: 'passed',
+      has_details: true,
+      details_path: '/HnBI/platform-as-a-service/infrastructure/-/pipelines/671952547',
+      illustration: null,
+      favicon: '/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png'
+    }
+  },
+  diff_refs: {
+    base_sha: '95c1301199e60565d33a680c369470f5deb8d832',
+    head_sha: 'c37cd419752ca5ad5169c30edcc8e50deec24eaf',
+    start_sha: '0b902f4f2f7fc05630b497366692569c69beba96'
+  },
+  merge_error: null,
+  first_contribution: false,
+  user: { can_merge: true
+  }
+}
