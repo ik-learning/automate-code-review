@@ -69,7 +69,7 @@ npm install
 
 ### Docs
 
-- [Emojie](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#symbols)
+- [Emoji](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#symbols)
 - [Gitlab How to](https://danger.systems/js/usage/gitlab.html)
 - [Danger Local](https://danger.systems/js/tutorials/fast-feedback.html)
 - [Danger 5 minutes](https://medium.com/@ivan.ha/integrate-danger-js-in-5-minutes-55515bc5355d)
@@ -79,10 +79,6 @@ npm install
 - [5/10: blog](https://prog.world/automate-review-selection-with-gitlab-ci-and-danger-js)
 - [6/10: blog](https://labs.etsi.org/rep/help/development/dangerbot.md)
 - [2/10: setup](https://www.bitrise.io/integrations/steps/danger)
-
-- Example shared https://gitlab.com/HnBI/fulfilment/test-project/-/blob/master/.gitlab-ci.yml
-- Another share https://gitlab.com/HnBI/composer-platform/backend/composer/-/blob/main/.gitlab-ci.yml
-- HBi shared pipelines https://gitlab.com/HnBI/shared-projects/shared-gitlab-ci
 
 ## Secrets
 
