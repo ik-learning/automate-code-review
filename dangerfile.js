@@ -8,8 +8,6 @@ const { commonChecks, infraChecks, skipReview,
     process.env.IS_CI ? "/danger/lib/dangerfile.paas" : "./lib/dangerfile.paas"
   );
 
-// console.log(danger.gitlab.mr);
-
 if (!skipReview()) {
   if (danger.gitlab.metadata.repoSlug.includes('platform-as-a-service/kafka/msk-topics')) {
     console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
@@ -29,8 +27,10 @@ if (!skipReview()) {
     })();
   }
 
-  (async function () {
-    welcomeMsg({ url: process.env.CI_JOB_URL });
-    await addLabels(['danger-bot']);
-  })();
+  if (process.env.IS_CI) {
+    (async function () {
+      welcomeMsg({ url: process.env.CI_JOB_URL });
+      await addLabels(['review-bot']);
+    })();
+  }
 }
