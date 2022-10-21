@@ -188,3 +188,4 @@ You also seem to be using a different format to the existing supply chain (ie. s
   - [ ] Trigger a webhook programatically for testing
 - [ ] `Changelog doesn't need to go via MR; just commit, tag and push` [mr](https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config/-/merge_requests/432#note_1141930147)
 - [X] Provide `CI_JOB_URL` in MR message
+- [ ] Dependency update with Renovate
