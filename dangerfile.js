@@ -9,11 +9,12 @@ const { commonChecks, infraChecks, skipReview,
   );
 
 if (!skipReview()) {
+  commonChecks();
+
   if (danger.gitlab.metadata.repoSlug.includes('platform-as-a-service/kafka/msk-topics')) {
     console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
+    addManualApplyMessage();
     (async function () {
-      commonChecks();
-      addManualApplyMessage();
       await templateShouldBeEnforcedMsk();
       await csvEntryAlphabeticOrder();
     })();
@@ -22,14 +23,13 @@ if (!skipReview()) {
   if (danger.gitlab.metadata.repoSlug.includes('platform-as-a-service/infrastructure')) {
     console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
     (async function () {
-      commonChecks();
       await infraChecks();
     })();
   }
 
   if (process.env.IS_CI) {
+    welcomeMsg({ url: process.env.CI_JOB_URL });
     (async function () {
-      welcomeMsg({ url: process.env.CI_JOB_URL });
       await addLabels(['review-bot']);
     })();
   }
