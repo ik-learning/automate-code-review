@@ -22,6 +22,7 @@ build-and-test:
     .
    - docker run --rm $CONTAINER_IMAGE:latest -c "yarn danger --version"
    - docker run --rm $CONTAINER_IMAGE:latest -c "jq --version"
+   - docker run --rm $CONTAINER_IMAGE:latest -c "uuidgen --version"
   rules:
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   - if: '$CI_PIPELINE_SOURCE == "trigger"'

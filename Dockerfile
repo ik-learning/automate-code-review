@@ -10,7 +10,7 @@ ENV VERSION=$BUILD_VERSION
 
 WORKDIR /danger
 
-RUN apk -v add jq
+RUN apk -v add jq util-linux
 
 ENV WORK_DIR "/danger"
 ENV IS_CI "true"

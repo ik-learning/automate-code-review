@@ -26,7 +26,7 @@ local: ## Run locally
 	@yarn danger pr $(DANGER_PR_URL)
 
 open-mr: ## Run locally and open mr
-	@yarn danger ci
+	@yarn danger ci --id $(shell uuid) --removePreviousComments
 
 docker-build: ## Docker image build
 	@docker build . --tag $(DOCKER_LOCAL) -f Dockerfile --progress plain
