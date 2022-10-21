@@ -23,4 +23,4 @@ echo "DANGER_TEST_PR: $DANGER_TEST_PR"
 echo "DANGER_PR_URL: $DANGER_PR_URL"
 echo "==================================="
 
-yarn danger ci --removePreviousComments
+yarn danger ci
