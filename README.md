@@ -183,6 +183,7 @@ You also seem to be using a different format to the existing supply chain (ie. s
   * [ ] Admin or Full access is granted, flag it
 - [ ] S3
   * [ ] Validate tags
+  * [ ] Bucket deleted [PR example](https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/merge_requests/3474/diffs#note_1157452019)
 - [ ] Sanity check and apply this repo https://hollandandbarrett.slack.com/archives/GKM7H90TH/p1666013132693499
 - [ ] Web Hooks
   - [ ] [Automate/Simplify creation of webhooks](https://github.com/jdalrymple/gitbeaker/blob/master/packages/core/src/resources/ProjectHooks.ts)
