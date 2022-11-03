@@ -67,6 +67,21 @@ DANGER_TEST_PR='2' yarn danger ci
 npm install
 ```
 
+### Supported Review Cases
+
+#### RDS
+
+##### Modified
+
+**Change Instance Class**
+
+- [ ] Request link to datadog, capacity planning or anything....
+
+```diff
+- instance_class = "db.t3.micro"
++ instance_class = "db.t3.small"
+```
+
 ### Docs
 
 - [Emoji](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#symbols)
@@ -146,6 +161,7 @@ If you no longer need a global secondary index, you can delete it using the Upda
     + [X] `postgress` version validation
     + [X] `mysql` version validation
     + [ ] `aurora` version validation
+    + [X] Instance class modified
   * [ ] Backup retention `│ Error: creating RDS DB Instance (restore to point-in-time) (search-category-api-v2): InvalidParameterValue: The specified instance cannot be restored to a time earlier than 2022-10-20T12:59:32Z because its backup retention period is set to 1 days.`
   * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are avaialble upgrade options
   + [ ] RDS/Dynamo DB deleted files -> ask PAAS to remove database
