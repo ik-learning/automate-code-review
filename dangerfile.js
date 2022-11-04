@@ -4,14 +4,25 @@ const { danger, message, warn, fail, markdow } = require('danger');
 const { commonChecks, infraChecks, skipReview,
   csvEntryAlphabeticOrder, templateShouldBeEnforcedMsk,
   addManualApplyMessage, links,
-  addLabels, welcomeMsg } = require(
+  addLabels, welcomeMsg, changelogs } = require(
     process.env.IS_CI ? "/danger/lib/dangerfile.paas" : "./lib/dangerfile.paas"
   );
+
+const repoSlug = danger.gitlab.metadata.repoSlug.toLowerCase();
+
+const contains = (repository, repoInAList) => {
+  return repoInAList.some(element => {
+    if (repository.includes(element)) {
+      return true;
+    }
+    return false;
+  });
+}
 
 if (!skipReview()) {
   commonChecks();
 
-  if (danger.gitlab.metadata.repoSlug.includes('platform-as-a-service/kafka/msk-topics')) {
+  if (contains(repoSlug, ['platform-as-a-service/kafka/msk-topics'])) {
     console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
     addManualApplyMessage();
     (async function () {
@@ -20,10 +31,17 @@ if (!skipReview()) {
     })();
   }
 
-  if (danger.gitlab.metadata.repoSlug.includes('platform-as-a-service/infrastructure')) {
+  if (contains(repoSlug, ['platform-as-a-service/infrastructure'])) {
     console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
     (async function () {
       await infraChecks();
+    })();
+  }
+
+  if (contains(repoSlug, ['k8s-deploy', 'k8s-cluster-config'])) {
+    console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
+    (async function () {
+      await changelogs();
     })();
   }
 
