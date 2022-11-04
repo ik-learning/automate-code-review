@@ -209,6 +209,11 @@ You also seem to be using a different format to the existing supply chain (ie. s
   - [ ] [Automate/Simplify creation of webhooks](https://github.com/jdalrymple/gitbeaker/blob/master/packages/core/src/resources/ProjectHooks.ts)
     * [docs](https://docs.gitlab.com/ee/api/projects.html#add-project-hook)
   - [ ] Trigger a webhook programatically for testing
-- [ ] `Changelog doesn't need to go via MR; just commit, tag and push` [mr](https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config/-/merge_requests/432#note_1141930147)
+- [ ]
+- [ ] Changelogs
+  - [ ] `Changelog doesn't need to go via MR; just commit, tag and push` [mr](https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config/-/merge_requests/432#note_1141930147)
+  - [X] `This PR modifies multiple files but does not have the CHANGELOG updated.`
+  - [X] `There should be no version until it is released, that is what the [Unreleased] section is for`
+  - [X] `Could you add an entry to the "Unreleased" section of the changelog e.g. -Added|Changed-.`
 - [X] Provide `CI_JOB_URL` in MR message
 - [ ] Dependency update with Renovate
