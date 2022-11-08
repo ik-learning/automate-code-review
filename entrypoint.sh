@@ -2,11 +2,11 @@
 
 set -e
 
-: "$WORK_DIR"
-: "$DANGER_GITLAB_HOST"
+# : "$WORK_DIR"
+# : "$DANGER_GITLAB_HOST"
 : "$TRIGGER_PAYLOAD"
-: "$CI_JOB_URL"
-: "$CI_PIPELINE_IID"
+# : "$CI_JOB_URL"
+# : "$CI_PIPELINE_IID"
 
 cd "$WORK_DIR"
 yarn danger --version
@@ -32,9 +32,8 @@ echo "MR Action: '${MR_ACTION}'. Skip when 'approved'."
 echo "MR Merge Status: ${MR_STATUS}. Skip when not 'can_be_merged'."
 echo "==================================="
 
-if [[ $DANGER_PR_URL != *"/platform-as-a-service/test-projects/"* ]]; then
-  echo "url ok"
-  if [ $MR_STATE == "opened" ] && [ $MR_STATUS == "can_be_merged" ] && [ $MR_ACTION != "approved" ] && [[ $MR_TITLE != *"[skip ci]"* ]] ; then
+if [[ $DANGER_PR_URL != *"/platform-as-a-service/test-projects/"* ]] && [[ $MR_TITLE != *"[skip ci]"* ]]; then
+  if [ $MR_STATE == "opened" ] && [ $MR_STATUS == "can_be_merged" ] && [ $MR_ACTION != "approved" ]; then
     # yarn danger ci --id $(uuidgen)
     yarn danger ci --removePreviousComments
   else
