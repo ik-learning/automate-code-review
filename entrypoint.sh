@@ -29,7 +29,8 @@ echo "MR State: ${MR_STATE}"
 echo "==================================="
 
 if [ $MR_STATE == "opened" ] || [[ !$MR_TITLE =~ "[skip ci]" ]]; then
-  yarn danger ci --id $(uuidgen)
+  # yarn danger ci --id $(uuidgen)
+  yarn danger ci
 else
   echo -e "skip MR review"
 fi

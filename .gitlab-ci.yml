@@ -1,7 +1,7 @@
 stages:
- - docker-build
- - docker-push
- - check
+  - docker-build
+  - docker-push
+  - check
 
 .common_rules: &common_rules
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -11,18 +11,18 @@ build-and-test:
   image: "docker:stable"
   stage: docker-build
   tags:
-   - docker
-   - medium
+    - docker
+    - medium
   before_script:
-   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  -   docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-   - >
+    - >
     docker build -t $CI_REGISTRY_IMAGE:latest
     --build-arg BUILD_VERSION=$CI_PIPELINE_IID
     .
-   - docker run --rm $CONTAINER_IMAGE:latest -c "yarn danger --version"
-   - docker run --rm $CONTAINER_IMAGE:latest -c "jq --version"
-   - docker run --rm $CONTAINER_IMAGE:latest -c "uuidgen --version"
+    - docker run --rm $CONTAINER_IMAGE:latest -c "yarn danger --version"
+    - docker run --rm $CONTAINER_IMAGE:latest -c "jq --version"
+    - docker run --rm $CONTAINER_IMAGE:latest -c "uuidgen --version"
   rules:
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   - if: '$CI_PIPELINE_SOURCE == "trigger"'
@@ -32,12 +32,12 @@ docker-build-push:
   image: "docker:stable"
   stage: docker-push
   tags:
-   - docker
-   - medium
+    - docker
+    - medium
   before_script:
-   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-   - >
+    - >
     docker build -t $CI_REGISTRY_IMAGE:latest
     --build-arg BUILD_VERSION=$CI_PIPELINE_IID
     --label "org.opencontainers.image.title=$CI_PROJECT_TITLE"
@@ -46,7 +46,7 @@ docker-build-push:
     --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
     --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME"
     .
-   - docker push $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:latest
   rules:
   - if: '$CI_PIPELINE_SOURCE == "trigger"'
     when: never
@@ -57,8 +57,8 @@ danger-mr-review:
     name: "$CI_REGISTRY_IMAGE:latest"
   stage: check
   tags:
-   - generic
-   - medium
+    - generic
+    - medium
   cache: {}
   variables:
     DANGER_GITLAB_HOST: "https://gitlab.com"
