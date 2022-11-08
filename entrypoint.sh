@@ -26,15 +26,19 @@ echo "BUNDLE VERSION: $VERSION"
 echo "DANGER_TEST_REPO: $DANGER_TEST_REPO"
 echo "DANGER_TEST_PR: $DANGER_TEST_PR"
 echo "DANGER_PR_URL: $DANGER_PR_URL"
-echo "MR Title: ${MR_TITLE}. Skip when '[skip ci]'."
-echo "MR State: ${MR_STATE}. Skip when not 'opened'."
-echo "MR Action: ${MR_ACTION}. Skip when 'approved'."
+echo "MR Title: '${MR_TITLE}'. Skip when contains '[skip ci]'."
+echo "MR State: '${MR_STATE}'. Skip when state is not 'opened'."
+echo "MR Action: '${MR_ACTION}'. Skip when 'approved'."
 echo "MR Merge Status: ${MR_STATUS}. Skip when not 'can_be_merged'."
 echo "==================================="
 
-if [ $MR_STATE == "opened" ] && [ $MR_STATUS == "can_be_merged" ] && [ $MR_ACTION != "approved" ] || [[ !$MR_TITLE =~ "[skip ci]" ]]; then
-  # yarn danger ci --id $(uuidgen)
-  yarn danger ci --removePreviousComments
-else
-  echo -e "skip MR review"
+if [[ $DANGER_PR_URL != *"/platform-as-a-service/test-projects/"* ]]; then
+  echo "url ok"
+  if [ $MR_STATE == "opened" ] && [ $MR_STATUS == "can_be_merged" ] && [ $MR_ACTION != "approved" ] && [[ $MR_TITLE != *"[skip ci]"* ]] ; then
+    # yarn danger ci --id $(uuidgen)
+    # yarn danger ci --removePreviousComments
+    echo "BINGO"
+  else
+    echo -e "skip MR review"
+  fi
 fi
