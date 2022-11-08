@@ -36,8 +36,7 @@ if [[ $DANGER_PR_URL != *"/platform-as-a-service/test-projects/"* ]]; then
   echo "url ok"
   if [ $MR_STATE == "opened" ] && [ $MR_STATUS == "can_be_merged" ] && [ $MR_ACTION != "approved" ] && [[ $MR_TITLE != *"[skip ci]"* ]] ; then
     # yarn danger ci --id $(uuidgen)
-    # yarn danger ci --removePreviousComments
-    echo "BINGO"
+    yarn danger ci --removePreviousComments
   else
     echo -e "skip MR review"
   fi
