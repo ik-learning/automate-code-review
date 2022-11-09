@@ -29,7 +29,7 @@ echo "DANGER_PR_URL: $DANGER_PR_URL"
 echo "MR Title: '${MR_TITLE}'. Skip when contains '[skip ci]'."
 echo "MR State: '${MR_STATE}'. Skip when state is not 'opened'."
 echo "MR Action: '${MR_ACTION}'. Skip when 'approved'."
-echo "MR Merge Status: ${MR_STATUS}. Skip when not 'can_be_merged'."
+echo "MR Merge Status: '${MR_STATUS}'. Skip when not 'can_be_merged'."
 echo "==================================="
 
 if [[ $DANGER_PR_URL != *"/platform-as-a-service/test-projects/"* ]] && [[ $MR_TITLE != *"[skip ci]"* ]]; then
