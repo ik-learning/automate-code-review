@@ -33,7 +33,7 @@ echo "MR Merge Status: ${MR_STATUS}. Skip when not 'can_be_merged'."
 echo "==================================="
 
 if [[ $DANGER_PR_URL != *"/platform-as-a-service/test-projects/"* ]] && [[ $MR_TITLE != *"[skip ci]"* ]]; then
-  if [ $MR_STATE == "opened" ] && [ $MR_STATUS == "can_be_merged" ] && [ $MR_ACTION != "approved" ]; then
+  if [[ $MR_STATE == "opened" ]] && [[ $MR_STATUS == "can_be_merged" ]] && [[ $MR_ACTION != "approved" ]]; then
     # yarn danger ci --id $(uuidgen)
     yarn danger ci --removePreviousComments
   else
