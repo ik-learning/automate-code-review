@@ -9,16 +9,15 @@ ARG BUILD_VERSION
 ENV VERSION=$BUILD_VERSION
 
 WORKDIR /danger
-
-RUN apk -v add jq util-linux
+# hadolint ignore=DL3018
+RUN apk -v add --no-cache jq util-linux bash
 
 ENV WORK_DIR "/danger"
 ENV IS_CI "true"
 
 COPY . ./
 
-RUN ["rm", "-rf", "./node_modules"]
-RUN ["yarn"]
+RUN ["rm", "-rf", "./node_modules"] && "yarn"
 
 COPY ./entrypoint.sh /usr/local/bin/code-review
 RUN chmod +x /usr/local/bin/code-review
