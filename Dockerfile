@@ -17,7 +17,6 @@ ENV IS_CI "true"
 
 COPY . ./
 
-RUN ls -la
 RUN yarn
 
 COPY ./entrypoint.sh /usr/local/bin/code-review
