@@ -3,7 +3,7 @@
 const { danger, message, warn, fail, markdow } = require('danger');
 const { commonChecks, infraChecks, skipReview,
   csvEntryAlphabeticOrder, templateShouldBeEnforcedMsk,
-  addManualApplyMessage, links,
+  addManualApplyMessage, links, k8sDeploy,
   addLabels, welcomeMsg, changelogs } = require(
     process.env.IS_CI ? "/danger/lib/dangerfile.paas" : "./lib/dangerfile.paas"
   );
@@ -43,6 +43,11 @@ if (contains(repoSlug, ['k8s-deploy', 'k8s-cluster-config'])) {
   (async function () {
     await changelogs();
   })();
+}
+
+if (contains(repoSlug, ['k8s-deploy'])) {
+  console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
+  k8sDeploy();
 }
 
 if (process.env.IS_CI) {

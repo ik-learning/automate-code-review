@@ -217,3 +217,6 @@ You also seem to be using a different format to the existing supply chain (ie. s
   - [X] `Could you add an entry to the "Unreleased" section of the changelog e.g. -Added|Changed-.`
 - [X] Provide `CI_JOB_URL` in MR message
 - [ ] Dependency update with Renovate
+- [ ] `k8s-deploy` specific review
+  + [X] Test in test folder present.
+  + [X] Message with explanation what is required to test changes.
