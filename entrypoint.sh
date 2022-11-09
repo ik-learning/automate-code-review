@@ -2,11 +2,11 @@
 
 set -e
 
-# : "$WORK_DIR"
-# : "$DANGER_GITLAB_HOST"
+: "$WORK_DIR"
+: "$DANGER_GITLAB_HOST"
 : "$TRIGGER_PAYLOAD"
-# : "$CI_JOB_URL"
-# : "$CI_PIPELINE_IID"
+: "$CI_JOB_URL"
+: "$CI_PIPELINE_IID"
 
 cd "$WORK_DIR"
 yarn danger --version
