@@ -30,7 +30,7 @@ export DANGER_TEST_PR=$(cat $TRIGGER_PAYLOAD | jq -r '.object_attributes.iid')
 export DANGER_PR_URL=$(cat $TRIGGER_PAYLOAD | jq -r '.object_attributes.url')
 export MR_STATE=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.state)
 export MR_STATUS=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.merge_status)
-export MR_STATUS_DETAILED=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.merge_status.detailed_merge_status // empty)
+export MR_STATUS_DETAILED=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.merge_status.detailed_merge_status)
 export MR_ACTION=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.action)
 export MR_TITLE=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.title)
 
