@@ -1,0 +1,144 @@
+{
+  "object_kind": "merge_request",
+  "event_type": "merge_request",
+  "user": {
+    "id": 4874322,
+    "name": "Govinder Thandi",
+    "username": "GovinderThandi",
+    "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/4874322/avatar.png",
+    "email": "[REDACTED]"
+  },
+  "project": {
+    "id": 13657938,
+    "name": "k8s-cluster-config",
+    "description": "Configuration resources for a Kubernetes cluster.",
+    "web_url": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config",
+    "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/13657938/41482054-47a3a702-70a2-11e8-9561-de51c5f71220.png",
+    "git_ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/k8s-cluster-config.git",
+    "git_http_url": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config.git",
+    "namespace": "Platform as a Service",
+    "visibility_level": 0,
+    "path_with_namespace": "HnBI/platform-as-a-service/k8s-cluster-config",
+    "default_branch": "master",
+    "ci_config_path": "",
+    "homepage": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config",
+    "url": "git@gitlab.com:HnBI/platform-as-a-service/k8s-cluster-config.git",
+    "ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/k8s-cluster-config.git",
+    "http_url": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config.git"
+  },
+  "object_attributes": {
+    "assignee_id": null,
+    "author_id": 4874322,
+    "created_at": "2022-11-10 13:19:10 UTC",
+    "description": "## Details\n\nUpdating `cluster-autoscaler` priority class to `system-cluster-critical` (spelt correctly this time)\n\nhttps://hbidigital.atlassian.net/browse/PAAS-1453\n\n## Checklist\n\n- [x] `Details` section above is updated with relevant information\n- [x] Read the [Readme](../../blob/master/README.md)\n- [x] [Confluence guidance][confluence.guide] is updated if required\n- [ ] Verified the changes and provided an evidence\n- [x] No changes have been made to the Gitlab pipeline\n- [ ] Verified the `plan` job\n\n[confluence.guide]: https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5324963990/Kubernetes+Cluster+Configuration\n\nCloses PAAS-1453",
+    "head_pipeline_id": 691088856,
+    "id": 188042770,
+    "iid": 450,
+    "last_edited_at": "2022-11-10 13:19:20 UTC",
+    "last_edited_by_id": 4874322,
+    "merge_commit_sha": null,
+    "merge_error": null,
+    "merge_params": {
+      "force_remove_source_branch": "1"
+    },
+    "merge_status": "can_be_merged",
+    "merge_user_id": null,
+    "merge_when_pipeline_succeeds": false,
+    "milestone_id": null,
+    "source_branch": "PAAS-1453-pod-priorities",
+    "source_project_id": 13657938,
+    "state_id": 1,
+    "target_branch": "master",
+    "target_project_id": 13657938,
+    "time_estimate": 0,
+    "title": "Resolve PAAS-1453 \"Pod priorities\"",
+    "updated_at": "2022-11-10 13:19:20 UTC",
+    "updated_by_id": 4874322,
+    "url": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config/-/merge_requests/450",
+    "source": {
+      "id": 13657938,
+      "name": "k8s-cluster-config",
+      "description": "Configuration resources for a Kubernetes cluster.",
+      "web_url": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config",
+      "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/13657938/41482054-47a3a702-70a2-11e8-9561-de51c5f71220.png",
+      "git_ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/k8s-cluster-config.git",
+      "git_http_url": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config.git",
+      "namespace": "Platform as a Service",
+      "visibility_level": 0,
+      "path_with_namespace": "HnBI/platform-as-a-service/k8s-cluster-config",
+      "default_branch": "master",
+      "ci_config_path": "",
+      "homepage": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config",
+      "url": "git@gitlab.com:HnBI/platform-as-a-service/k8s-cluster-config.git",
+      "ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/k8s-cluster-config.git",
+      "http_url": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config.git"
+    },
+    "target": {
+      "id": 13657938,
+      "name": "k8s-cluster-config",
+      "description": "Configuration resources for a Kubernetes cluster.",
+      "web_url": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config",
+      "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/13657938/41482054-47a3a702-70a2-11e8-9561-de51c5f71220.png",
+      "git_ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/k8s-cluster-config.git",
+      "git_http_url": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config.git",
+      "namespace": "Platform as a Service",
+      "visibility_level": 0,
+      "path_with_namespace": "HnBI/platform-as-a-service/k8s-cluster-config",
+      "default_branch": "master",
+      "ci_config_path": "",
+      "homepage": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config",
+      "url": "git@gitlab.com:HnBI/platform-as-a-service/k8s-cluster-config.git",
+      "ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/k8s-cluster-config.git",
+      "http_url": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config.git"
+    },
+    "last_commit": {
+      "id": "4011c5c5511cdd36c3c3d2b1eccfec5b51c4dfe1",
+      "message": "Add stories to changelog\n",
+      "title": "Add stories to changelog",
+      "timestamp": "2022-11-10T13:18:00+00:00",
+      "url": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config/-/commit/4011c5c5511cdd36c3c3d2b1eccfec5b51c4dfe1",
+      "author": {
+        "name": "govinderthandi",
+        "email": "govinderthandi@hollandandbarrett.com"
+      }
+    },
+    "work_in_progress": false,
+    "total_time_spent": 0,
+    "time_change": 0,
+    "human_total_time_spent": null,
+    "human_time_change": null,
+    "human_time_estimate": null,
+    "assignee_ids": [],
+    "reviewer_ids": [],
+    "labels": [],
+    "state": "opened",
+    "blocking_discussions_resolved": true,
+    "first_contribution": false,
+    "detailed_merge_status": "not_approved",
+    "action": "update"
+  },
+  "labels": [],
+  "changes": {
+    "description": {
+      "previous": "## Details\n\nUpdating `cluster-autoscaler` priority class to `system-cluster-critical` (spelt correctly this time)\n\nhttps://hbidigital.atlassian.net/browse/PAAS-1453\n\n## Checklist\n\n- [x] `Details` section above is updated with relevant information\n- [x] Read the [Readme](../../blob/master/README.md)\n- [x] [Confluence guidance][confluence.guide] is updated if required\n- [ ] Verified the changes and provided an evidence\n- [ ] No changes have been made to the Gitlab pipeline\n- [ ] Verified the `plan` job\n\n[confluence.guide]: https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5324963990/Kubernetes+Cluster+Configuration\n\nCloses PAAS-1453",
+      "current": "## Details\n\nUpdating `cluster-autoscaler` priority class to `system-cluster-critical` (spelt correctly this time)\n\nhttps://hbidigital.atlassian.net/browse/PAAS-1453\n\n## Checklist\n\n- [x] `Details` section above is updated with relevant information\n- [x] Read the [Readme](../../blob/master/README.md)\n- [x] [Confluence guidance][confluence.guide] is updated if required\n- [ ] Verified the changes and provided an evidence\n- [x] No changes have been made to the Gitlab pipeline\n- [ ] Verified the `plan` job\n\n[confluence.guide]: https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/5324963990/Kubernetes+Cluster+Configuration\n\nCloses PAAS-1453"
+    },
+    "last_edited_at": {
+      "previous": "2022-11-10 13:19:17 UTC",
+      "current": "2022-11-10 13:19:20 UTC"
+    },
+    "updated_at": {
+      "previous": "2022-11-10 13:19:17 UTC",
+      "current": "2022-11-10 13:19:20 UTC"
+    }
+  },
+  "repository": {
+    "name": "k8s-cluster-config",
+    "url": "git@gitlab.com:HnBI/platform-as-a-service/k8s-cluster-config.git",
+    "description": "Configuration resources for a Kubernetes cluster.",
+    "homepage": "https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config"
+  },
+  "id": "39433694",
+  "ref": "master",
+  "variables": {}
+}
