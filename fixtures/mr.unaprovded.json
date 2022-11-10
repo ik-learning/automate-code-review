@@ -1,0 +1,168 @@
+{
+  "object_kind": "merge_request",
+  "event_type": "merge_request",
+  "user": {
+    "id": 9854903,
+    "name": "Ivan Katliarchuk",
+    "username": "Ikatliarchuk",
+    "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9854903/avatar.png",
+    "email": "[REDACTED]"
+  },
+  "project": {
+    "id": 40654022,
+    "name": "team-based-namespaces",
+    "description": "Manages deployments of team-based namespaces",
+    "web_url": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces",
+    "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/40654022/Screenshot_2022-11-07_at_08.42.41.png",
+    "git_ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+    "git_http_url": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+    "namespace": "kubernetes",
+    "visibility_level": 0,
+    "path_with_namespace": "HnBI/platform-as-a-service/kubernetes/team-based-namespaces",
+    "default_branch": "master",
+    "ci_config_path": "",
+    "homepage": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces",
+    "url": "git@gitlab.com:HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+    "ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+    "http_url": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git"
+  },
+  "object_attributes": {
+    "assignee_id": 10126378,
+    "author_id": 10126378,
+    "created_at": "2022-11-10 15:36:16 UTC",
+    "description": "## Details\n\nUpdate team namespaces based on new naming convention.\n\n## References\n\n[PAAS-1606](https://hbidigital.atlassian.net/browse/PAAS-1606)",
+    "head_pipeline_id": 691438465,
+    "id": 188079945,
+    "iid": 4,
+    "last_edited_at": null,
+    "last_edited_by_id": null,
+    "merge_commit_sha": null,
+    "merge_error": null,
+    "merge_params": {
+      "force_remove_source_branch": "1"
+    },
+    "merge_status": "can_be_merged",
+    "merge_user_id": null,
+    "merge_when_pipeline_succeeds": false,
+    "milestone_id": null,
+    "source_branch": "paas-1606-new-naming-convention",
+    "source_project_id": 40654022,
+    "state_id": 1,
+    "target_branch": "master",
+    "target_project_id": 40654022,
+    "time_estimate": 0,
+    "title": "PAAS-1606 Use new naming convention",
+    "updated_at": "2022-11-10 19:25:00 UTC",
+    "updated_by_id": 12948424,
+    "url": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces/-/merge_requests/4",
+    "source": {
+      "id": 40654022,
+      "name": "team-based-namespaces",
+      "description": "Manages deployments of team-based namespaces",
+      "web_url": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces",
+      "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/40654022/Screenshot_2022-11-07_at_08.42.41.png",
+      "git_ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+      "git_http_url": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+      "namespace": "kubernetes",
+      "visibility_level": 0,
+      "path_with_namespace": "HnBI/platform-as-a-service/kubernetes/team-based-namespaces",
+      "default_branch": "master",
+      "ci_config_path": "",
+      "homepage": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces",
+      "url": "git@gitlab.com:HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+      "ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+      "http_url": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git"
+    },
+    "target": {
+      "id": 40654022,
+      "name": "team-based-namespaces",
+      "description": "Manages deployments of team-based namespaces",
+      "web_url": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces",
+      "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/40654022/Screenshot_2022-11-07_at_08.42.41.png",
+      "git_ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+      "git_http_url": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+      "namespace": "kubernetes",
+      "visibility_level": 0,
+      "path_with_namespace": "HnBI/platform-as-a-service/kubernetes/team-based-namespaces",
+      "default_branch": "master",
+      "ci_config_path": "",
+      "homepage": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces",
+      "url": "git@gitlab.com:HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+      "ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+      "http_url": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git"
+    },
+    "last_commit": {
+      "id": "e31bca1699e5f8c72007c4adf6237391c8e51de6",
+      "message": "Add validation for vertical and team set for each namespace\n",
+      "title": "Add validation for vertical and team set for each namespace",
+      "timestamp": "2022-11-10T17:22:51+00:00",
+      "url": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces/-/commit/e31bca1699e5f8c72007c4adf6237391c8e51de6",
+      "author": {
+        "name": "Julian Nonino",
+        "email": "juliannonino@hollandandbarrett.com"
+      }
+    },
+    "work_in_progress": false,
+    "total_time_spent": 0,
+    "time_change": 0,
+    "human_total_time_spent": null,
+    "human_time_change": null,
+    "human_time_estimate": null,
+    "assignee_ids": [
+      10126378
+    ],
+    "reviewer_ids": [],
+    "labels": [
+      {
+        "id": 27794039,
+        "title": "review-bot",
+        "color": "#6699cc",
+        "project_id": 40654022,
+        "created_at": "2022-11-10 11:16:24 UTC",
+        "updated_at": "2022-11-10 11:16:24 UTC",
+        "template": false,
+        "description": null,
+        "type": "ProjectLabel",
+        "group_id": null
+      }
+    ],
+    "state": "opened",
+    "blocking_discussions_resolved": false,
+    "first_contribution": false,
+    "detailed_merge_status": "not_approved",
+    "action": "unapproved"
+  },
+  "labels": [
+    {
+      "id": 27794039,
+      "title": "review-bot",
+      "color": "#6699cc",
+      "project_id": 40654022,
+      "created_at": "2022-11-10 11:16:24 UTC",
+      "updated_at": "2022-11-10 11:16:24 UTC",
+      "template": false,
+      "description": null,
+      "type": "ProjectLabel",
+      "group_id": null
+    }
+  ],
+  "changes": {},
+  "repository": {
+    "name": "team-based-namespaces",
+    "url": "git@gitlab.com:HnBI/platform-as-a-service/kubernetes/team-based-namespaces.git",
+    "description": "Manages deployments of team-based namespaces",
+    "homepage": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces"
+  },
+  "assignees": [
+    {
+      "id": 10126378,
+      "name": "Julian Nonino",
+      "username": "jnonino-hb",
+      "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/10126378/avatar.png",
+      "email": "[REDACTED]"
+    }
+  ],
+  "id": "39433694",
+  "ref": "master",
+  "variables": {}
+}
