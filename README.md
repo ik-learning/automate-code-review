@@ -160,9 +160,12 @@ If you no longer need a global secondary index, you can delete it using the Upda
   * [X] Do not run when `[skip ci]`
   * [X] Skip MRs with label `renovate-bot`
   * [X] Du not run when MR is `closed`.
+- [ ] ElastiCache
+  - [X] Validate instance class exist message `https://instances.vantage.sh/`
+  - [ ] Validate specific values changed
 - [ ] RDS
   * [ ] RDS engine version validation
-    + [X] `postgress` version validation
+    + [X] `postgres` version validation
     + [X] `mysql` version validation
     + [ ] `aurora` version validation
     + [X] Instance class modified
