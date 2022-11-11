@@ -92,7 +92,7 @@ fi
 
 if [[ $MR_STATE == "opened" ]]; then
   # yarn danger ci --id $(uuidgen) --removePreviousComments
-  yarn danger ci
+  yarn danger ci --removePreviousComments
 else
   echo -e "${BGreen}skip MR review.${NOCOLOR}"
 fi

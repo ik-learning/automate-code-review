@@ -168,7 +168,8 @@ If you no longer need a global secondary index, you can delete it using the Upda
     + [X] `postgres` version validation
     + [X] `mysql` version validation
     + [ ] `aurora` version validation
-    + [ ] `gp2` to `gp3` migration proposal
+    + [X] `gp2` to `gp3` migration proposal
+    + [X] Instance class validation in `prod`
     + [X] Instance class modified
   * [ ] Backup retention `│ Error: creating RDS DB Instance (restore to point-in-time) (search-category-api-v2): InvalidParameterValue: The specified instance cannot be restored to a time earlier than 2022-10-20T12:59:32Z because its backup retention period is set to 1 days.`
   * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are avaialble upgrade options
@@ -201,7 +202,7 @@ You also seem to be using a different format to the existing supply chain (ie. s
 - [ ] Unit tests with fixtures. [Example](https://github.com/danger/danger-js/blob/main/source/platforms/gitlab/_tests/_gitlab_api.test.ts)
 - [ ] Aurora
   * [ ] Supported engine versions [example](https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/jobs/3080939010)
-- [ ] SSO,
+- [ ] SSO
   * [ ] link to confluence
   * [ ] S3 buckets, link to explicit how to request
   * [ ] Admin or Full access is granted, flag it
@@ -213,7 +214,7 @@ You also seem to be using a different format to the existing supply chain (ie. s
   - [ ] [Automate/Simplify creation of webhooks](https://github.com/jdalrymple/gitbeaker/blob/master/packages/core/src/resources/ProjectHooks.ts)
     * [docs](https://docs.gitlab.com/ee/api/projects.html#add-project-hook)
   - [ ] Trigger a webhook programmatically for testing
-- [ ] Changelogs
+- [ ] CHANGELOGs
   - [ ] `Changelog doesn't need to go via MR; just commit, tag and push` [mr](https://gitlab.com/HnBI/platform-as-a-service/k8s-cluster-config/-/merge_requests/432#note_1141930147)
   - [X] `This PR modifies multiple files but does not have the CHANGELOG updated.`
   - [X] `There should be no version until it is released, that is what the [Unreleased] section is for`
