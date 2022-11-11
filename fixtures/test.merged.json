@@ -98,8 +98,8 @@
       "timestamp": "2022-11-09T15:36:38+00:00",
       "url": "https://gitlab.com/HnBI/platform-as-a-service/kubernetes/team-based-namespaces/-/commit/45c8960da953df05bf9423b5bcb3863784af6253",
       "author": {
-        "name": "Julian Nonino",
-        "email": "juliannonino@hollandandbarrett.com"
+        "name": "John Doe",
+        "email": "john@gmail.com"
       }
     },
     "work_in_progress": false,

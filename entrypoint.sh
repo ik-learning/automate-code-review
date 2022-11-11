@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
+# nocasematch shell option for non caseinsensitive regex match
+shopt -s nocasematch
 
 : "$WORK_DIR"
 : "$DANGER_GITLAB_HOST"
@@ -33,12 +35,14 @@ export MR_STATUS=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.merge_status)
 export MR_STATUS_DETAILED=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.detailed_merge_status?)
 export MR_ACTION=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.action)
 export MR_TITLE=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.title)
+export MR_USER_NAME=$(cat $TRIGGER_PAYLOAD | jq -r .user.name)
 
 echo "==================================="
-echo "BUNDLE VERSION: $VERSION"
-echo "DANGER_TEST_REPO: $DANGER_TEST_REPO"
-echo "DANGER_TEST_PR: $DANGER_TEST_PR"
-echo "DANGER_PR_URL: $DANGER_PR_URL"
+echo "BUNDLE VERSION: '${VERSION}'"
+echo "DANGER_TEST_REPO: '${DANGER_TEST_REPO}'"
+echo "DANGER_TEST_PR: '${DANGER_TEST_PR}'"
+echo "DANGER_PR_URL: '${DANGER_PR_URL}'"
+echo "USER NAME: '${MR_USER_NAME}'"
 echo "MR Title: '${MR_TITLE}'. Skip when contains '[skip ci]'."
 echo "MR State: '${MR_STATE}'. Skip when state is not 'opened'."
 echo "MR State Detailed: '${MR_STATUS_DETAILED}'. Skip when state is 'mergeable'."
@@ -73,6 +77,12 @@ if [[ $MR_STATUS != "preparing" ]] && [[ $MR_STATUS != "can_be_merged" ]]; then
   exit 1
 fi
 
+if [[ $MR_USER_NAME =~ "bot" ]]; then
+  echo -e "${BYellow}skip MR review.${NOCOLOR}"
+  echo -e "${BPurple}MR User Nanme: '${MR_USER_NAME}'. Skip when is a 'bot'.${NOCOLOR}"
+  exit 1
+fi
+
 # experimental, no exit yet
 if [[ $MR_STATUS_DETAILED == "mergeable" ]]; then
   echo -e "${BYellow}skip MR review.${NOCOLOR}"
@@ -81,8 +91,8 @@ if [[ $MR_STATUS_DETAILED == "mergeable" ]]; then
 fi
 
 if [[ $MR_STATE == "opened" ]]; then
-  # yarn danger ci --id $(uuidgen)
-  yarn danger ci --removePreviousComments
+  # yarn danger ci --id $(uuidgen) --removePreviousComments
+  yarn danger ci
 else
   echo -e "${BGreen}skip MR review.${NOCOLOR}"
 fi
