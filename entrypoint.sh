@@ -4,11 +4,11 @@ set -e
 # nocasematch shell option for non caseinsensitive regex match
 shopt -s nocasematch
 
-: "$WORK_DIR"
-: "$DANGER_GITLAB_HOST"
+# : "$WORK_DIR"
+# : "$DANGER_GITLAB_HOST"
 : "$TRIGGER_PAYLOAD"
-: "$CI_JOB_URL"
-: "$CI_PIPELINE_IID"
+# : "$CI_JOB_URL"
+# : "$CI_PIPELINE_IID"
 
 cd "$WORK_DIR"
 yarn danger --version
@@ -36,18 +36,20 @@ export MR_STATUS_DETAILED=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.deta
 export MR_ACTION=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.action)
 export MR_TITLE=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.title)
 export MR_USER_NAME=$(cat $TRIGGER_PAYLOAD | jq -r .user.name)
+export MR_LAST_COMMIT_AUTHOR=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.last_commit.author.name)
 
 echo "==================================="
 echo "BUNDLE VERSION: '${VERSION}'"
 echo "DANGER_TEST_REPO: '${DANGER_TEST_REPO}'"
 echo "DANGER_TEST_PR: '${DANGER_TEST_PR}'"
 echo "DANGER_PR_URL: '${DANGER_PR_URL}'"
-echo "USER NAME: '${MR_USER_NAME}'"
 echo "MR Title: '${MR_TITLE}'. Skip when contains '[skip ci]'."
 echo "MR State: '${MR_STATE}'. Skip when state is not 'opened'."
 echo "MR State Detailed: '${MR_STATUS_DETAILED}'. Skip when state is 'mergeable'."
 echo "MR Action: '${MR_ACTION}'. Skip when 'approved'."
 echo "MR Merge Status: '${MR_STATUS}'. Skip when not 'can_be_merged'."
+echo "USER NAME: '${MR_USER_NAME}'."
+echo "Last Commit Author: '${MR_LAST_COMMIT_AUTHOR}'."
 echo "==================================="
 
 # https://docs.gitlab.com/ee/api/merge_requests.html merge requests
@@ -77,7 +79,7 @@ if [[ $MR_STATUS != "preparing" ]] && [[ $MR_STATUS != "can_be_merged" ]]; then
   exit 1
 fi
 
-if [[ $MR_USER_NAME =~ "bot" ]]; then
+if [[ $MR_USER_NAME =~ "bot" ]] || [[ $MR_LAST_COMMIT_AUTHOR =~ "bot" ]]; then
   echo -e "${BYellow}skip MR review.${NOCOLOR}"
   echo -e "${BPurple}MR User Nanme: '${MR_USER_NAME}'. Skip when is a 'bot'.${NOCOLOR}"
   exit 1
