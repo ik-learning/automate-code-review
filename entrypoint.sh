@@ -30,7 +30,7 @@ export DANGER_TEST_PR=$(cat $TRIGGER_PAYLOAD | jq -r '.object_attributes.iid')
 export DANGER_PR_URL=$(cat $TRIGGER_PAYLOAD | jq -r '.object_attributes.url')
 export MR_STATE=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.state)
 export MR_STATUS=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.merge_status)
-export MR_STATUS_DETAILED=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.merge_status.detailed_merge_status)
+export MR_STATUS_DETAILED=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.detailed_merge_status?)
 export MR_ACTION=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.action)
 export MR_TITLE=$(cat $TRIGGER_PAYLOAD | jq -r .object_attributes.title)
 
@@ -46,22 +46,31 @@ echo "MR Action: '${MR_ACTION}'. Skip when 'approved'."
 echo "MR Merge Status: '${MR_STATUS}'. Skip when not 'can_be_merged'."
 echo "==================================="
 
+# https://docs.gitlab.com/ee/api/merge_requests.html merge requests
+# https://docs.gitlab.com/ee/api/merge_requests.html#merge-status merge status
+
 if [[ $MR_ACTION == "unapproved" ]] || [[ $MR_ACTION == "approved" ]]; then
   echo -e "${BYellow}skip MR review.${NOCOLOR}"
   echo -e "${BPurple}MR Action: '${MR_ACTION}'. Skip when 'approved|unapproved'.${NOCOLOR}"
-  exit 0
+  exit 1
 fi
 
 if [[ $DANGER_PR_URL == *"/platform-as-a-service/test-projects/"* ]] || [[ $MR_TITLE == *"[skip ci]"* ]]; then
   echo -e "${BYellow}skip MR review.${NOCOLOR}"
   echo -e "${BPurple}Skip when '[skip ci]' or project is in 'test-projects'.${NOCOLOR}"
-  exit 0
+  exit 1
 fi
 
 if [[ $MR_STATE == "merged" ]]; then
   echo -e "${BYellow}skip MR review.${NOCOLOR}"
   echo -e "${BPurple}Skip when '$MR_STATE' is 'merged'.${NOCOLOR}"
-  exit 0
+  exit 1
+fi
+
+if [[ $MR_STATUS != "preparing" ]] && [[ $MR_STATUS != "can_be_merged" ]]; then
+  echo -e "${BYellow}skip MR review.${NOCOLOR}"
+  echo -e "${BPurple}MR Status: '${MR_STATUS}'. Skip when not 'preparing|can_be_merged'.${NOCOLOR}"
+  exit 1
 fi
 
 # experimental, no exit yet
@@ -71,7 +80,7 @@ if [[ $MR_STATUS_DETAILED == "mergeable" ]]; then
   exit -e "${BCyan}Experimental. Shouldd skip after trial${NOCOLOR}"
 fi
 
-if [[ $MR_STATE == "opened" ]] && [[ $MR_STATUS == "can_be_merged" ]]; then
+if [[ $MR_STATE == "opened" ]]; then
   # yarn danger ci --id $(uuidgen)
   yarn danger ci --removePreviousComments
 else
