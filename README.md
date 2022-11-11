@@ -168,6 +168,7 @@ If you no longer need a global secondary index, you can delete it using the Upda
     + [X] `postgres` version validation
     + [X] `mysql` version validation
     + [ ] `aurora` version validation
+    + [ ] `gp2` to `gp3` migration proposal
     + [X] Instance class modified
   * [ ] Backup retention `│ Error: creating RDS DB Instance (restore to point-in-time) (search-category-api-v2): InvalidParameterValue: The specified instance cannot be restored to a time earlier than 2022-10-20T12:59:32Z because its backup retention period is set to 1 days.`
   * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are avaialble upgrade options
