@@ -4,11 +4,14 @@ set -e
 # nocasematch shell option for non caseinsensitive regex match
 shopt -s nocasematch
 
-# : "$WORK_DIR"
-# : "$DANGER_GITLAB_HOST"
+: "$WORK_DIR"
+: "$DANGER_GITLAB_HOST"
 : "$TRIGGER_PAYLOAD"
-# : "$CI_JOB_URL"
-# : "$CI_PIPELINE_IID"
+: "$CI_JOB_URL"
+: "$CI_PIPELINE_IID"
+
+DANGER_SKIP_WHEN_EMPTY=true
+DANGER_GITLAB_HOST="https://gitlab.com"
 
 cd "$WORK_DIR"
 yarn danger --version

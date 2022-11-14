@@ -19,41 +19,41 @@ const contains = (repository, repoInAList) => {
   });
 }
 
-// if (!skipReview()) {
-commonChecks();
+if (!skipReview()) {
+  commonChecks();
 
-if (contains(repoSlug, ['platform-as-a-service/kafka/msk-topics'])) {
-  console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
-  addManualApplyMessage();
-  (async function () {
-    await templateShouldBeEnforcedMsk();
-    await csvEntryAlphabeticOrder();
-  })();
-}
+  if (contains(repoSlug, ['platform-as-a-service/kafka/msk-topics'])) {
+    console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
+    addManualApplyMessage();
+    (async function () {
+      await templateShouldBeEnforcedMsk();
+      await csvEntryAlphabeticOrder();
+    })();
+  }
 
-if (contains(repoSlug, ['platform-as-a-service/infrastructure'])) {
-  console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
-  (async function () {
-    await infraChecks();
-  })();
-}
+  if (contains(repoSlug, ['platform-as-a-service/infrastructure'])) {
+    console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
+    (async function () {
+      await infraChecks();
+    })();
+  }
 
-if (contains(repoSlug, ['k8s-deploy', 'k8s-cluster-config'])) {
-  console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
-  (async function () {
-    await changelogs();
-  })();
-}
+  if (contains(repoSlug, ['k8s-deploy', 'k8s-cluster-config'])) {
+    console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
+    (async function () {
+      await changelogs();
+    })();
+  }
 
-if (contains(repoSlug, ['k8s-deploy'])) {
-  console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
-  k8sDeploy();
-}
+  if (contains(repoSlug, ['k8s-deploy'])) {
+    console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
+    k8sDeploy();
+  }
 
-if (process.env.IS_CI) {
-  welcomeMsg({ url: process.env.CI_JOB_URL });
-  (async function () {
-    await addLabels(['review-bot']);
-  })();
+  if (process.env.IS_CI) {
+    welcomeMsg({ url: process.env.CI_JOB_URL });
+    (async function () {
+      await addLabels(['review-bot']);
+    })();
+  }
 }
-// }
