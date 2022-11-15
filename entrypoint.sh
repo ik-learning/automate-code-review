@@ -76,9 +76,9 @@ if [[ $MR_STATE == "merged" ]]; then
   exit 1
 fi
 
-if [[ $MR_STATUS != "preparing" ]] && [[ $MR_STATUS != "can_be_merged" ]]; then
+if [[ $MR_STATUS != "preparing" ]] && [[ $MR_STATUS != "can_be_merged" ]] && [[ $MR_STATUS != "unchecked" ]]; then
   echo -e "${BYellow}skip MR review.${NOCOLOR}"
-  echo -e "${BPurple}MR Status: '${MR_STATUS}'. Skip when not 'preparing|can_be_merged'.${NOCOLOR}"
+  echo -e "${BPurple}MR Status: '${MR_STATUS}'. Skip when not 'preparing|can_be_merged|unchecked'.${NOCOLOR}"
   exit 1
 fi
 
