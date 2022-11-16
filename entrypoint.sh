@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-# nocasematch shell option for non caseinsensitive regex match
+# nocasematch shell option for caseinsensitive regex match
 shopt -s nocasematch
 
 : "$WORK_DIR"
@@ -96,7 +96,6 @@ if [[ $MR_STATUS_DETAILED == "mergeable" ]]; then
 fi
 
 if [[ $MR_STATE == "opened" ]]; then
-  # yarn danger ci --id $(uuidgen) --removePreviousComments
   yarn danger ci --removePreviousComments
 else
   echo -e "${BGreen}skip MR review.${NOCOLOR}"
