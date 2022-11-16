@@ -25,8 +25,8 @@ install: ## Install dependencies
 local: ## Run locally
 	@yarn danger pr $(DANGER_PR_URL)
 
-open-mr: ## Run locally and open mr
-	@yarn danger ci --id $(shell uuid) --removePreviousComments
+open-mr: ## Run locally and open mr --id $(shell uuid)
+	@yarn danger ci --removePreviousComments
 
 docker-build: ## Docker image build
 	@docker build . --tag $(DOCKER_LOCAL) -f Dockerfile --progress plain
