@@ -72,7 +72,7 @@ fi
 
 if [[ $MR_STATE == "merged" ]]; then
   echo -e "${BYellow}skip MR review.${NOCOLOR}"
-  echo -e "${BPurple}Skip when '$MR_STATE' is 'merged'.${NOCOLOR}"
+  echo -e "${BPurple}Skip when '$MR_STATE' is not 'opened'.${NOCOLOR}"
   exit 1
 fi
 
