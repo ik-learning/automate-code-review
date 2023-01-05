@@ -165,12 +165,13 @@ If you no longer need a global secondary index, you can delete it using the Upda
   - [ ] Validate specific values changed
 - [ ] RDS
   * [ ] RDS engine version validation
-    + [X] `postgres` version validation
-    + [X] `mysql` version validation
+    + [X] `postgres` version validation.
+    + [X] `mysql` version validation.
     + [ ] `aurora` version validation
     + [X] `gp2` to `gp3` migration proposal
-    + [X] Instance class validation in `prod`
-    + [X] Instance class modified
+    + [X] Instance class validation in `prod`.
+    + [X] Instance class modified.
+    + [X] Reminder to fix deleted resources.
   * [ ] Backup retention `│ Error: creating RDS DB Instance (restore to point-in-time) (search-category-api-v2): InvalidParameterValue: The specified instance cannot be restored to a time earlier than 2022-10-20T12:59:32Z because its backup retention period is set to 1 days.`
   * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are avaialble upgrade options
   + [ ] RDS/Dynamo DB deleted files -> ask PAAS to remove database
