@@ -141,8 +141,10 @@ If you no longer need a global secondary index, you can delete it using the Upda
 
 ## TODO && Supported Features
 
+- [ ] Integrations
+  + [ ] Integrate with notify to review an MR bot
 - [ ] Recurring job
-  - [ ] Iterate over every repository and review the MRs
+  + [ ] Iterate over every repository and review the MRs
 - [ ] Docker tag. Embed tag as ARG.
 - [ ] Use `TypeScript` instead of plain JS
   * Unit tests
