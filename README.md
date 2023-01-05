@@ -141,7 +141,7 @@ If you no longer need a global secondary index, you can delete it using the Upda
 
 ## TODO && Supported Features
 
-- [ ] Docker tag. Embedd tag as ARG.
+- [ ] Docker tag. Embed tag as ARG.
 - [ ] Use `TypeScript` instead of plain JS
   * Unit tests
 - [X] Message 'apply after merge'
@@ -196,6 +196,7 @@ You also seem to be using a different format to the existing supply chain (ie. s
   * [ ] `message('Make sure to test your changes before moving your ticket to Code review.')`
   * [X] Pull Request size seems relatively large when `danger.gitlab.mr.changes_count: 100`
   * [ ] `warn("MR is classed as Work in Progress") if gitlab.mr_title.include? "Draft:"`
+  * [X] Message -> `On release, make sure `version` is updated in `Chart.yaml` file.`
 - [ ] Slack
   * [ ] Request review in `paas-forum` or send and automated request to slack
   * [ ] Post message in slack channel with reviewer name
