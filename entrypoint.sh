@@ -84,7 +84,7 @@ fi
 
 if [[ $MR_USER_NAME =~ "bot" ]] || [[ $MR_LAST_COMMIT_AUTHOR =~ "bot" ]]; then
   echo -e "${BYellow}skip MR review.${NOCOLOR}"
-  echo -e "${BPurple}MR User Nanme: '${MR_USER_NAME}'. Skip when is a 'bot'.${NOCOLOR}"
+  echo -e "${BPurple}MR User Nanme: '${MR_LAST_COMMIT_AUTHOR}'. Skip when is a 'bot'.${NOCOLOR}"
   exit 1
 fi
 
