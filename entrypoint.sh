@@ -55,6 +55,8 @@ echo "USER NAME: '${MR_USER_NAME}'."
 echo "Last Commit Author: '${MR_LAST_COMMIT_AUTHOR}'."
 echo "==================================="
 
+node validate.js
+
 # https://docs.gitlab.com/ee/api/merge_requests.html merge requests
 # https://docs.gitlab.com/ee/api/merge_requests.html#merge-status merge status
 
@@ -72,7 +74,7 @@ fi
 
 if [[ $MR_STATE == "merged" ]]; then
   echo -e "${BYellow}skip MR review.${NOCOLOR}"
-  echo -e "${BPurple}Skip when '$MR_STATE' is 'merged'.${NOCOLOR}"
+  echo -e "${BPurple}Skip when '$MR_STATE' is not 'opened'.${NOCOLOR}"
   exit 1
 fi
 
@@ -84,7 +86,7 @@ fi
 
 if [[ $MR_USER_NAME =~ "bot" ]] || [[ $MR_LAST_COMMIT_AUTHOR =~ "bot" ]]; then
   echo -e "${BYellow}skip MR review.${NOCOLOR}"
-  echo -e "${BPurple}MR User Nanme: '${MR_USER_NAME}'. Skip when is a 'bot'.${NOCOLOR}"
+  echo -e "${BPurple}MR User Nanme: '${MR_LAST_COMMIT_AUTHOR}'. Skip when is a 'bot'.${NOCOLOR}"
   exit 1
 fi
 

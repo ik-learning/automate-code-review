@@ -141,10 +141,15 @@ If you no longer need a global secondary index, you can delete it using the Upda
 
 ## TODO && Supported Features
 
-- [ ] Docker tag. Embedd tag as ARG.
+- [ ] Integrations
+  + [ ] Integrate with notify to review an MR bot
+- [ ] Recurring job
+  + [ ] Iterate over every repository and review the MRs
+- [ ] Docker tag. Embed tag as ARG.
 - [ ] Use `TypeScript` instead of plain JS
   * Unit tests
 - [X] Message 'apply after merge'
+- [ ] Validate instance types `https://instances.vantage.sh/`
 - [X] Ensure files has new line
 - [X] Dynamodb
   * [X] Multiple GCI
@@ -165,12 +170,13 @@ If you no longer need a global secondary index, you can delete it using the Upda
   - [ ] Validate specific values changed
 - [ ] RDS
   * [ ] RDS engine version validation
-    + [X] `postgres` version validation
-    + [X] `mysql` version validation
+    + [X] `postgres` version validation.
+    + [X] `mysql` version validation.
     + [ ] `aurora` version validation
     + [X] `gp2` to `gp3` migration proposal
-    + [X] Instance class validation in `prod`
-    + [X] Instance class modified
+    + [X] Instance class validation in `prod`.
+    + [X] Instance class modified.
+    + [X] Reminder to fix deleted resources.
   * [ ] Backup retention `│ Error: creating RDS DB Instance (restore to point-in-time) (search-category-api-v2): InvalidParameterValue: The specified instance cannot be restored to a time earlier than 2022-10-20T12:59:32Z because its backup retention period is set to 1 days.`
   * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are avaialble upgrade options
   + [ ] RDS/Dynamo DB deleted files -> ask PAAS to remove database
@@ -178,7 +184,8 @@ If you no longer need a global secondary index, you can delete it using the Upda
 - [X] Flag on MR size
   * [X] Number of files > 10, should split MR probably.
   * [X] MR exceeded treshold.
-- Sandbox (deleted) on deletion du not remove example. Consider to commment CI logic only. Remove resources from local.
+- Sandbox
+  * [ ](deleted) on deletion du not remove example. Consider to commment CI logic only. Remove resources from local.
 - MSK/Kafka
   - [X] partial fix
   - [X] compare prefixes, e.g. where its new prefix of already exist
@@ -222,9 +229,6 @@ You also seem to be using a different format to the existing supply chain (ie. s
   - [X] `Could you add an entry to the "Unreleased" section of the changelog e.g. -Added|Changed-.`
 - [X] Provide `CI_JOB_URL` in MR message
 - [ ] Dependency update with Renovate
-- [ ] `k8s-deploy` specific review
+- [X] `k8s-deploy` specific review
   + [X] Test in test folder present.
   + [X] Message with explanation what is required to test changes.
-
-
-https://instances.vantage.sh/
