@@ -3,7 +3,7 @@
 const { danger, message, warn, fail, markdow } = require('danger');
 const { commonChecks, infraChecks, skipReview,
   csvEntryAlphabeticOrder, templateShouldBeEnforcedMsk,
-  addManualApplyMessage, links, k8sDeploy,
+  addManualApplyMessage, links, k8sDeploy, paasManualApplyMessage,
   addLabels, welcomeMsg, changelogs } = require(
     process.env.IS_CI ? "/danger/lib/dangerfile.paas" : "./lib/dangerfile.paas"
   );
@@ -43,6 +43,11 @@ if (!skipReview()) {
     (async function () {
       await changelogs();
     })();
+  }
+
+  if (contains(repoSlug, ['platform-as-a-service/oauth2-proxy'])) {
+    console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
+    paasManualApplyMessage();
   }
 
   if (contains(repoSlug, ['k8s-deploy'])) {
