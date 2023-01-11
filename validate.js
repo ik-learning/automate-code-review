@@ -8,6 +8,10 @@ console.log("=================Validate WebHook payload====================");
 const webhookPayload = files.readFileSync(process.env.TRIGGER_PAYLOAD);
 const { changes  } = JSON.parse(webhookPayload);
 
-console.log(changes)
+if ('description' in changes) {
+  console.log('SKIP Validation');
+  console.log('REASON: description updated');
+  process.exit(1);
+}
 console.log("=====================================");
 console.log(JSON.stringify({ result: "true" }));
