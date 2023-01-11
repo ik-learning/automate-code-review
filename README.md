@@ -162,9 +162,10 @@ If you no longer need a global secondary index, you can delete it using the Upda
 - [X] Changelog is missing
 - [X] Jira link is missing
 - [X] Skip
-  * [X] Do not run when `[skip ci]`
-  * [X] Skip MRs with label `renovate-bot`
+  * [X] Do not run when `[skip ci]`.
+  * [X] Skip MRs with label `renovate-bot`.
   * [X] Du not run when MR is `closed`.
+  * [X] On MR description update.
 - [ ] ElastiCache
   - [X] Validate instance class exist message `https://instances.vantage.sh/`
   - [ ] Validate specific values changed
