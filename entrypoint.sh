@@ -55,6 +55,8 @@ echo "USER NAME: '${MR_USER_NAME}'."
 echo "Last Commit Author: '${MR_LAST_COMMIT_AUTHOR}'."
 echo "==================================="
 
+node validate.js
+
 # https://docs.gitlab.com/ee/api/merge_requests.html merge requests
 # https://docs.gitlab.com/ee/api/merge_requests.html#merge-status merge status
 
