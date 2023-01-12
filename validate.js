@@ -11,6 +11,7 @@ const { changes  } = JSON.parse(webhookPayload);
 if ('description' in changes) {
   console.log('SKIP Validation');
   console.log('REASON: description updated');
+  console.log(JSON.stringify({ result: "false" }));
   console.log("===================================");
   process.exit(1);
 }
