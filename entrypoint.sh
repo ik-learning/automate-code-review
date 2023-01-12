@@ -100,5 +100,5 @@ fi
 if [[ $MR_STATE == "opened" ]]; then
   yarn danger ci --removePreviousComments
 else
-  echo -e "${BGreen}skip MR review.${NOCOLOR}"
+  echo -e "${BGreen}skip MR review, as its state is not 'opened'.${NOCOLOR}"
 fi
