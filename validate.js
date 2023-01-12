@@ -9,7 +9,7 @@ const webhookPayload = files.readFileSync(process.env.TRIGGER_PAYLOAD);
 const { changes  } = JSON.parse(webhookPayload);
 
 if ('description' in changes) {
-  console.log('SKIP Validation');
+  console.log('SKIP Code Review');
   console.log('REASON: description updated');
   console.log(JSON.stringify({ result: "false" }));
   console.log("===================================");
