@@ -19,7 +19,7 @@ const contains = (repository, repoInAList) => {
   });
 }
 
-if (!skipReview()) {
+// if (!skipReview()) {
   commonChecks();
 
   if (contains(repoSlug, ['platform-as-a-service/kafka/msk-topics'])) {
@@ -61,4 +61,4 @@ if (!skipReview()) {
       await addLabels(['review-bot']);
     })();
   }
-}
+// }
