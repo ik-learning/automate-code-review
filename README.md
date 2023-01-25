@@ -156,7 +156,7 @@ If you no longer need a global secondary index, you can delete it using the Upda
     * [X] Hey, unfortunately only one GSI can be operated on at a time, otherwise AWS will complain.
     * [X] Cannot update GSI's properties other than Provisioned Throughput and Contributor Insights Specification
     * [X] Do not process `DynamoDB` logic when there is no change
-    - [ ] Investigate. Throwing an [error](https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/merge_requests/3434#note_1148024107)
+    * [ ] Investigate. Throwing an [error](https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/merge_requests/3434#note_1148024107)
   * [X] `non_key_attributes` modification
 - [X] Please use the appropriate MR template, and populate with details and a jira ticket
 - [X] Changelog is missing
@@ -167,19 +167,20 @@ If you no longer need a global secondary index, you can delete it using the Upda
   * [X] Du not run when MR is `closed`.
   * [X] On MR description update.
 - [ ] ElastiCache
-  - [X] Validate instance class exist message `https://instances.vantage.sh/`
+  - [X] Validate node type exist with the link to `https://instances.vantage.sh/`
   - [ ] Validate specific values changed
 - [ ] RDS
   * [ ] RDS engine version validation
     + [X] `postgres` version validation.
     + [X] `mysql` version validation.
     + [ ] `aurora` version validation
+    + [X] Validate RDS instance class exist with the link to `https://instances.vantage.sh/`
     + [X] `gp2` to `gp3` migration proposal
     + [X] Instance class validation in `prod`.
     + [X] Instance class modified.
     + [X] Reminder to fix deleted resources.
   * [ ] Backup retention `│ Error: creating RDS DB Instance (restore to point-in-time) (search-category-api-v2): InvalidParameterValue: The specified instance cannot be restored to a time earlier than 2022-10-20T12:59:32Z because its backup retention period is set to 1 days.`
-  * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are avaialble upgrade options
+  * [ ] RDS outputs `engine_info.valid_upgrade_targets` have a look where there are available upgrade options
   + [ ] RDS/Dynamo DB deleted files -> ask PAAS to remove database
   * [ ] RDS message `Worth copying the config from another prod instance so that you get the correct settings for backups, multi-az and network connectivity` and validate `Things like multi_az: false, backup_retention_period: 1 and allowed_cidrs set to dev`
 - [X] Flag on MR size
