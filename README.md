@@ -174,6 +174,7 @@ If you no longer need a global secondary index, you can delete it using the Upda
     + [X] `postgres` version validation.
     + [X] `mysql` version validation.
     + [ ] `aurora` version validation
+    + [X] `rds` validate "valid_upgrade_targets" message
     + [X] Validate RDS instance class exist with the link to `https://instances.vantage.sh/`
     + [X] `gp2` to `gp3` migration proposal
     + [X] Instance class validation in `prod`.
