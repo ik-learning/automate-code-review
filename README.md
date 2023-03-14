@@ -185,8 +185,9 @@ If you no longer need a global secondary index, you can delete it using the Upda
   * [ ] RDS message `Worth copying the config from another prod instance so that you get the correct settings for backups, multi-az and network connectivity` and validate `Things like multi_az: false, backup_retention_period: 1 and allowed_cidrs set to dev`
 - [ ] RDS Aurora
    + [X] `aurora` initial validation
-   + [ ] `aurora` version validation
-   + [ ] `aurora` and `instance_type` validation
+   + [X] `aurora` version validation
+   + [X] `aurora` desired version validation
+   + [X] `aurora` and `instance_type` validation
 - [X] Flag on MR size
   * [X] Number of files > 10, should split MR probably.
   * [X] MR exceeded treshold.
