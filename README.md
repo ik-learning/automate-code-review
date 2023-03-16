@@ -156,7 +156,8 @@ If you no longer need a global secondary index, you can delete it using the Upda
     * [X] Hey, unfortunately only one GSI can be operated on at a time, otherwise AWS will complain.
     * [X] Cannot update GSI's properties other than Provisioned Throughput and Contributor Insights Specification
     * [X] Do not process `DynamoDB` logic when there is no change
-    * [ ] Investigate. Throwing an [error](https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/merge_requests/3434#note_1148024107)
+    * [X] Billing mode suggestion.
+    * [X] Investigate. Throwing an [error](https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/merge_requests/3434#note_1148024107)
   * [X] `non_key_attributes` modification
 - [X] Please use the appropriate MR template, and populate with details and a jira ticket
 - [X] Changelog is missing
