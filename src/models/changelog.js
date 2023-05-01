@@ -11,8 +11,10 @@ class Changelog extends Base {
     const chg = this.danger.git.fileMatch("CHANGELOG.md");
     if (!chg.modified && commitFiles > 1) {
       warn('This PR modifies multiple files while CHANGELOG not updated.');
+      this.addWarn('This PR modifies multiple files while CHANGELOG not updated.');
     } else if (!chg.modified && commitFiles == 1) {
       message('This PR modifies single file. Is this changes worthy of the CHANGELOG update?');
+      this.addMsg('This PR modifies single file. Is this changes worthy of the CHANGELOG update?');
     }
   }
 
@@ -38,6 +40,7 @@ class Changelog extends Base {
       let changelogActions = ["Added", "Changed", "Fixed", "Removed"];
       if (changes.length > 1 && firstEl.includes('[Unreleased]') && ["Added", "Changed", "Fixed", "Removed"].some(el => secondEl.includes(el))) {
         message('🤖 Well done!!! Found modified CHANGELOG 🎖🎖🎖.')
+        this.addMsg('🤖 Well done!!! Found modified CHANGELOG 🎖🎖🎖.')
       } else if (changelogActions.some(el => diff.diff.includes(el))) {
         if (changelogActions.some(el => firstEl.includes(el) || secondEl.includes(el))) {
           // console.log('changelog seems legit');
@@ -52,6 +55,7 @@ class Changelog extends Base {
 
   async chartYamlVersionReleased() {
     message('🤖 On release, make sure chart `version` is updated in `Chart.yaml` file.');
+    this.addMsg('🤖 On release, make sure chart `version` is updated in `Chart.yaml` file.');
   }
 
   async run() {

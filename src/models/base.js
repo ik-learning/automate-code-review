@@ -1,8 +1,11 @@
 'use strict';
 
+const { Results } = require('./results');
+
 class Base {
   constructor(danger) {
     this.danger = danger
+    this.result = new Results();
   }
   danger() {
     console.log(this.danger.git);
@@ -14,6 +17,14 @@ class Base {
   get repo() {
     return this.danger.gitlab.metadata.repoSlug.toLowerCase();
   }
+  // add
+  addWarn(msg) {
+    this.result.addWarn(msg)
+  }
+  addMsg(msg) {
+    this.result.addMsg(msg)
+  }
+  //
 
   get committedFiles() {
     return [

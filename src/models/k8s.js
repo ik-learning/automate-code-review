@@ -3,6 +3,7 @@ const { Base } = require('./base');
 // TODO
 // test
 class K8S extends Base {
+
   k8sDeployTestsAdded() {
     console.log('in: k8sDeployTestsAdded');
     message("🤖 Ensure there is an explanation how the change was tested (demo app|screenshots|other)...");
@@ -14,6 +15,7 @@ class K8S extends Base {
     const isEdited = testsCreated.getKeyedPaths().edited.length == 0;
     if (isCreated && isEdited) {
       message('🤖 Is there is a relevant test in ***k8s/sandbox/FEATURE/*** folder?')
+      this.addMsg('🤖 Is there is a relevant test in ***k8s/sandbox/FEATURE/*** folder?')
     }
   }
   run() {
