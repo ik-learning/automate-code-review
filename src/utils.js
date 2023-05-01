@@ -33,10 +33,20 @@ const uniqueArraySize = (...source) => {
   return new Set(...source).size
 }
 
+const containsInList = (repository, repoInAList) => {
+  return repoInAList.some(element => {
+    if (repository.includes(element)) {
+      return true;
+    }
+    return false;
+  });
+}
+
 module.exports = {
   contains,
   hclToJson,
   getHashDifference,
   uniqueArraySize,
-  arrayContainsString
+  arrayContainsString,
+  containsInList,
 };
