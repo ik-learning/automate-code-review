@@ -4,10 +4,11 @@ const match = require('micromatch');
 
 const { links, recommendedRDSStorageTypes,
   auroraRdsRecommendInstanceTypesInDev, rdsConfiguration,
-  rdsRecommendInstanceTypesInDev } = require('../constants');
-  
+  rdsRecommendInstanceTypesInDev, mrTemplates } = require('../constants');
+
 const
-  { uniqueArraySize, arrayContainsString, hclToJson } = require("../utils");
+  { uniqueArraySize, arrayContainsString, hclToJson,
+  contains } = require("../utils");
 
 const { Base } = require('./base');
 // TODO
@@ -233,11 +234,71 @@ class Infrastructure extends Base {
     }
   }
 
+  async templateShouldBeEnforced() {
+    console.log('in: templateShouldBeEnforced');
+    const tfvars = this.danger.git.fileMatch("**.tfvars");
+    const yamlvars = this.danger.git.fileMatch("**.yaml");
+    const tfvarsCreated = tfvars.getKeyedPaths().created;
+    const tfvarsModified = tfvars.getKeyedPaths().modified;
+    const tfvarsDeleted = tfvars.getKeyedPaths().deleted;
+    // TODO: s3 bucket modified bucket, created bucket, deleted bucket
+    let template = {}
+    // TODO: S3 buckets probably slightly differ
+    let tmpCreatedMissing = !contains(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'created']);
+    let tmpModifiedMissing = !contains(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'update']);
+    let tmpDeletedMissing = !contains(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'remove']);
+    // created
+    if (tmpCreatedMissing && tfvarsCreated.length > 0) {
+      // todo: test
+      tfvarsCreated.forEach(file => {
+        const stack = file.split("/")[0];
+        if (stack in templates) {
+          template[stack] = 'created'
+        }
+      })
+    }
+    // updated
+    if (tmpModifiedMissing && tfvarsModified.length > 0) {
+      // todo: test
+      tfvarsModified.forEach(file => {
+        const stack = file.split("/")[0];
+        if (stack in templates) {
+          template[stack] = 'modified'
+        }
+      })
+    }
+    // deleted
+    if (tmpDeletedMissing && tfvarsDeleted.length > 0) {
+      // todo: test
+      tfvarsDeleted.forEach(file => {
+        const stack = file.split("/")[0];
+        if (stack in templates) {
+          template[stack] = 'deleted'
+        }
+      })
+    }
+
+    if (Object.keys(template).length === 1) {
+      Object.entries(template).forEach(([key, value]) => {
+        const mrTemplate = templates[key][value];
+        const mrTemplateWithoutExt = mrTemplate.split('.')[0];
+        const sanitized = mrTemplate.split(" ").join("%20");
+        const link = `https://gitlab.com/${repo}/-/blob/master/.gitlab/merge_request_templates/${sanitized}`;
+        warn(`MR template is missing ***Edit>Description>Choose Template*** [${mrTemplateWithoutExt}](${link}), provide details and a jira ticket...`);
+      });
+    } else if (Object.keys(template).length > 1) {
+      fail(`multiple resources "created|modified|deleted" for stacks in "${Object.keys(template).join('&')}" in a single MR.`)
+    }
+  }
+
+  // TODO: mysql5.7 out of life support add warning with toxic
+
   async run() {
     this.validateElasticCacheRDSInstanceClassExist();
     await this.removeStorageResources();
     await this.ensureRdsCreationValidated();
     await this.ensureRdsAuroraCreationValidated();
+    await this.templateShouldBeEnforced();
   }
 }
 

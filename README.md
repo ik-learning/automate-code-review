@@ -80,25 +80,6 @@ DANGER_TEST_PR='2' yarn danger ci
 npm install
 ```
 
-### Supported Review Cases
-
-#### Storate resources
-
-- [X] Message for a manual action when specific resource to be deleted.
-
-#### RDS
-
-##### Modified
-
-**Change Instance Class**
-
-- [X] Request link to datadog, capacity planning or anything....
-
-```diff
-- instance_class = "db.t3.micro"
-+ instance_class = "db.t3.small"
-```
-
 ### Docs & Blogs
 
 - [Emoji](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#symbols)
