@@ -40,6 +40,21 @@ class Common extends Base {
     });
   }
 
+  welcomeMsg(input) {
+    console.log('in: welcomeMsg');
+    let msg = "👋 Hey there! Thank you for contributing an MR to a repo! 🎉. I'm an experimental MR review 🤖 bot."
+    if (input && typeof input.url !== 'undefined') {
+      let out = [
+        msg + "<br>",
+        `- you can find me [here](${input.url})<br>`,
+        `- [suggest new MR check, share feedback and etc](${links.newIssue})`,
+      ].join("\n")
+      markdown(out)
+    } else {
+      markdown(msg)
+    }
+  }
+
   run() {
     this.reviewLargePR();
     this.jiraStoryMissing();
