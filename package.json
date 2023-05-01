@@ -1,5 +1,5 @@
 {
-  "name": "danger-10-percent-project",
+  "name": "danger-code-review-project",
   "version": "1.0.0",
   "description": "Danger JS example",
   "author": "IK <ivankatliarchuk@hollandandbarrett.com>",
@@ -9,6 +9,7 @@
   "scripts": {
     "prepush": "yarn build; yarn danger:local",
     "danger:local": "yarn danger local --dangerfile dangerfile.js --base run-apply-example",
+    "danger:pr": "danger pr --dangerfile ci/dangerfile.ts $DANGER_PR_URL",
     "local": "yarn danger:local",
     "pr:local-full": "yarn danger pr --d dangerfile.ts --removePreviousComments $DANGER_PR_URL",
     "pr:local": "yarn danger pr --removePreviousComments $DANGER_PR_URL",

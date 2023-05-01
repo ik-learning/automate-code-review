@@ -23,7 +23,7 @@ install: ## Install dependencies
 	@npm install
 
 local: ## Run locally
-	@yarn danger pr $(DANGER_PR_URL)
+	@yarn danger pr --dangerfile dangerfile.js $(DANGER_PR_URL)
 
 open-mr: ## Run locally and open mr --id $(shell uuid)
 	@yarn danger ci --removePreviousComments

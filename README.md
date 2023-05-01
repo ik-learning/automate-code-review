@@ -61,6 +61,18 @@ yarn danger pr --removePreviousComments $DANGER_PR_URL
 DANGER_TEST_PR='2' yarn danger ci
 ```
 
+## Plugins
+
+- [Danger Plugin Toolbox](https://www.npmjs.com/package/danger-plugin-toolbox)
+- [Danger Plugin Jest](https://github.com/macklinu/danger-plugin-jest)
+- [Danger Plugin TsLint](https://github.com/macklinu/danger-plugin-tslint)
+- [Danger Plugin noTestsShortcuts](https://www.npmjs.com/package/danger-plugin-no-test-shortcuts)
+
+## Testing
+
+- [Artsy Emission](https://github.com/artsy/emission/blob/master/package.json)
+- [Jest Testing with typescript](https://danger.systems/js/tutorials/transpilation.html)
+
 ### Run Danger file
 
 ```
@@ -86,7 +98,7 @@ npm install
 + instance_class = "db.t3.small"
 ```
 
-### Docs
+### Docs & Blogs
 
 - [Emoji](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#symbols)
 - [Gitlab How to](https://danger.systems/js/usage/gitlab.html)
@@ -98,6 +110,14 @@ npm install
 - [5/10: blog](https://prog.world/automate-review-selection-with-gitlab-ci-and-danger-js)
 - [6/10: blog](https://labs.etsi.org/rep/help/development/dangerbot.md)
 - [2/10: setup](https://www.bitrise.io/integrations/steps/danger)
+- [6/10: hints](https://prog.world/automate-review-selection-with-gitlab-ci-and-danger-js/)
+- [5/10: hints in ru](https://habr.com/ru/companies/vk/articles/672372/)
+
+### Issues
+
+- [Danger ts](https://github.com/danger/danger-js/issues/1152)
+- [Danger ts](https://github.com/danger/danger-js/issues/1109)
+- [Danger jest](https://github.com/danger/danger-js/pull/193/files)
 
 ## Secrets
 
