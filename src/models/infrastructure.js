@@ -8,7 +8,7 @@ const { links, recommendedRDSStorageTypes,
 
 const
   { uniqueArraySize, arrayContainsString, hclToJson,
-  contains } = require("../utils");
+    contains, getHashDifference } = require("../utils");
 
 const { Base } = require('./base');
 // TODO
@@ -261,8 +261,8 @@ class Infrastructure extends Base {
 
   async templateShouldBeEnforced() {
     console.log('in: templateShouldBeEnforced');
+    const templates = mrTemplates;
     const tfvars = this.danger.git.fileMatch("**.tfvars");
-    const yamlvars = this.danger.git.fileMatch("**.yaml");
     const tfvarsCreated = tfvars.getKeyedPaths().created;
     const tfvarsModified = tfvars.getKeyedPaths().modified;
     const tfvarsDeleted = tfvars.getKeyedPaths().deleted;
@@ -308,7 +308,7 @@ class Infrastructure extends Base {
         const mrTemplate = templates[key][value];
         const mrTemplateWithoutExt = mrTemplate.split('.')[0];
         const sanitized = mrTemplate.split(" ").join("%20");
-        const link = `https://gitlab.com/${repo}/-/blob/master/.gitlab/merge_request_templates/${sanitized}`;
+        const link = `https://gitlab.com/${this.repo}/-/blob/master/.gitlab/merge_request_templates/${sanitized}`;
         warn(`MR template is missing ***Edit>Description>Choose Template*** [${mrTemplateWithoutExt}](${link}), provide details and a jira ticket...`);
       });
     } else if (Object.keys(template).length > 1) {
@@ -353,6 +353,70 @@ class Infrastructure extends Base {
     }
   }
 
+  async ensureDynamoDBSingleKeyModification() {
+    console.log('in: ensureDynamoDBSingleKeyModification');
+    // TODO: consider what to do with LSI?
+    let threshold = 10;
+    const tfvars = this.danger.git.fileMatch("dynamodb/**/*.tfvars", "**/dynamodb/**/*.tfvars");
+    if (uniqueArraySize(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created) > threshold) {
+      warn(`☣️  Skip review as number of "DynamoDB" file changed hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling.`);
+    } else if (tfvars.modified || tfvars.created || tfvars.deleted) {
+      if (tfvars.modified) {
+        tfvars.getKeyedPaths().modified.forEach(async file => {
+          let multipleGCI = false;
+          const diff = await this.danger.git.diffForFile(file);
+          const before = hclToJson(diff.before).dynamodb_table.global_secondary_indexes;
+          const after = hclToJson(diff.after).dynamodb_table.global_secondary_indexes;
+          const singleGCI = 1;
+          if (Math.abs(before.length - after.length) > singleGCI) {
+            console.log('length difference');
+            multipleGCI = true;
+          } else if (getHashDifference(after, before).length > singleGCI) {
+            console.log('multiple changes found while comparing "global secondary indexes"');
+            multipleGCI = true;
+          }
+          if (multipleGCI) {
+            warn(`📂 ***${file}*** ➡️  (Potential issue) Only one GSI can be modified at a time, otherwise AWS will complain..`);
+            return
+          }
+          const beforeHashKeys = before.reduce((obj, item) => (obj[item.name] = item.non_key_attributes, obj), {});
+          // potentially not just `non_key_attributes` cannot be modified.
+          after.filter(el => el.name in beforeHashKeys).forEach(el => {
+            if (el.non_key_attributes !== null && beforeHashKeys[el.name] !== null) {
+              if (el.non_key_attributes.length === 0 && beforeHashKeys[el.name].length === 0) {
+                // skip as length is zero in both cases
+              }
+              else if (el.non_key_attributes !== null && beforeHashKeys[el.name] !== null) {
+                if (el.non_key_attributes.length !== beforeHashKeys[el.name].length) {
+                  let msg = [
+                    `📂 ***${file}*** ➡️  Cannot update GSI's properties other than Provisioned Throughput and Contributor Insights Specification.`,
+                    "***(Official resolution)*** You can create a new GSI with a different name.",
+                    `***(non-Official resolution)*** Remove GCI '${el.name}' key in one MR and create a new MR with new|required values.`
+                  ].join("\n")
+                  warn(msg);
+                }
+              }
+            } else if (el.non_key_attributes === null && beforeHashKeys[el.name] !== null && beforeHashKeys[el.name].length > 1) {
+              let msg = [
+                `📂 ***${file}*** ➡️  Cannot update GSI's properties other than Provisioned Throughput and Contributor Insights Specification.`,
+                "***(Official resolution)*** You can create a new GSI with a different name.",
+                `***(non-Official resolution)*** Remove GCI '${el.name}' key in one MR and create a new MR with new|required values.`
+              ].join("\n")
+              warn(msg);
+            } else if (el.non_key_attributes !== null && beforeHashKeys[el.name] === null && el.non_key_attributes.length > 1) {
+              let msg = [
+                `📂 ***${file}*** ➡️  Cannot update GSI's properties other than Provisioned Throughput and Contributor Insights Specification.`,
+                "***(Official resolution)*** You can create a new GSI with a different name.",
+                `***(non-Official resolution)*** Remove GCI '${el.name}' key in one MR and create a new MR with new|required values.`
+              ].join("\n")
+              warn(msg);
+            }
+          })
+        }, Error())
+      }
+    }
+  }
+
   async run() {
     this.validateElasticCacheRDSInstanceClassExist();
     await this.removeStorageResources();
@@ -361,6 +425,7 @@ class Infrastructure extends Base {
     await this.templateShouldBeEnforced();
     await this.rdsMysql5EndOfLifeDate();
     await this.dynamoDBCommonChecks();
+    await this.ensureDynamoDBSingleKeyModification();
   }
 }
 

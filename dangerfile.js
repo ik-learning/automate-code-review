@@ -1,15 +1,21 @@
 'use strict';
-// Single dangerfile. Support Multiple repositories.
-const { danger, message, warn, fail, markdow } = require('danger');
-const { commonChecks, infraChecks, skipReview,
-  csvEntryAlphabeticOrder, templateShouldBeEnforcedMsk,
-  addManualApplyMessage, links, k8sDeploy, paasManualApplyMessage,
-  addLabels, welcomeMsg, changelogs } = require(
-    process.env.IS_CI ? "/danger/lib/dangerfile.paas" : "./lib/dangerfile.paas"
-  );
+
+const { danger, message, warn, fail, markdown } = require('danger');
+
+const { MSK, CSV, Apply, K8S, Changelog, Common,
+  Infrastructure } = require("./src/models");
+
+let msk = new MSK(danger);
+let csv = new CSV(danger);
+let apply = new Apply(danger);
+let k8s = new K8S(danger);
+let chg = new Changelog(danger);
+let infra = new Infrastructure(danger);
 
 const repoSlug = danger.gitlab.metadata.repoSlug.toLowerCase();
+const web_url = danger.gitlab.mr.web_url;
 
+// move to utils
 const contains = (repository, repoInAList) => {
   return repoInAList.some(element => {
     if (repository.includes(element)) {
@@ -19,46 +25,46 @@ const contains = (repository, repoInAList) => {
   });
 }
 
-if (!skipReview()) {
-  commonChecks();
+// if (!skipReview()) {
+// }
 
-  if (contains(repoSlug, ['platform-as-a-service/kafka/msk-topics'])) {
-    console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
-    addManualApplyMessage();
-    (async function () {
-      await templateShouldBeEnforcedMsk();
-      await csvEntryAlphabeticOrder();
-    })();
-  }
+console.log(`MR "${web_url}" review..`);
+let cmn = new Common(danger);
+cmn.run();
 
-  if (contains(repoSlug, ['platform-as-a-service/infrastructure'])) {
-    console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
-    (async function () {
-      await infraChecks();
-    })();
-  }
+if (contains(repoSlug, ['platform-as-a-service/kafka/msk-topics'])) {
+  apply.addManualApplyMsg();
+  (async function () {
+    await msk.run();
+    await csv.run();
+  })();
+}
 
-  if (contains(repoSlug, ['k8s-deploy', 'k8s-cluster-config'])) {
-    console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
-    (async function () {
-      await changelogs();
-    })();
-  }
+if (contains(repoSlug, ['k8s-deploy', 'k8s-cluster-config'])) {
+  (async function () {
+    await chg.run();
+  })();
+}
 
-  if (contains(repoSlug, ['platform-as-a-service/oauth2-proxy'])) {
-    console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
-    paasManualApplyMessage();
-  }
+if (contains(repoSlug, ['k8s-deploy'])) {
+  k8s.k8sDeployTestsAdded();
+}
 
-  if (contains(repoSlug, ['k8s-deploy'])) {
-    console.log(`MR "${danger.gitlab.mr.web_url}" review..`);
-    k8sDeploy();
-  }
+if (contains(repoSlug, ['platform-as-a-service/oauth2-proxy'])) {
+  apply.addPaasManualApplyMsg();
+}
 
-  if (process.env.IS_CI) {
-    welcomeMsg({ url: process.env.CI_JOB_URL });
-    (async function () {
-      await addLabels(['review-bot']);
-    })();
-  }
+if (contains(repoSlug, ['platform-as-a-service/infrastructure'])) {
+  apply.addManualApplyMsg();
+  (async function () {
+    await infra.run();
+  })();
+}
+
+if (process.env.IS_CI) {
+  cmn.welcomeMsg({ url: process.env.CI_JOB_URL });
+
+  (async function () {
+    await cmn.addLabels(['review-bot']);
+  })();
 }
