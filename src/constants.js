@@ -1,8 +1,5 @@
 'use strict';
 
-// TODO:
-// Move to Base Class danger.
-// Test
 const mrTemplatesMsk = {
   add: 'Create Topic.md',
   update: 'Update Topic.md',
@@ -18,6 +15,7 @@ const links = {
   dynamoDbPriceCalc: "https://dynobase.dev/dynamodb-pricing-calculator/",
   dynamoDbItemSizeCalc: "https://dynobase.dev/dynamodb-capacity-and-item-size-calculator/",
   backOfTheEnvelopeCalc: "http://highscalability.com/blog/2011/1/26/google-pro-tip-use-back-of-the-envelope-calculations-to-choo.html",
+  mysqlRdsEndOfLife: "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Concepts.VersionMgmt.html#MySQL.Concepts.VersionMgmt.ReleaseCalendar",
   nodeTypes: {
     cache: "https://instances.vantage.sh/cache/",
     rds: "https://instances.vantage.sh/rds/",

@@ -46,7 +46,6 @@ class Infrastructure extends Base {
 
   async rdsMysql5EndOfLifeDate() {
     console.log('in: rdsMysql5EndOfLifeDate');
-    let link = "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Concepts.VersionMgmt.html#MySQL.Concepts.VersionMgmt.ReleaseCalendar"
     const tfvars = this.danger.git.fileMatch("rds/**/*.tfvars");
 
     const tfvarsCreated = tfvars.getKeyedPaths().created;
@@ -60,7 +59,7 @@ class Infrastructure extends Base {
         let { family } = data.rds_config.instance_config
         if (family.includes("mysql5")) {
           const text = [
-            `☣️  [MySQL5.7 End of life support is October 2023, when are you planning on upgrading?](${link}).`,
+            `☣️  [MySQL5.7 End of life support is October 2023, when are you planning on upgrading?](${links.mysqlRdsEndOfLife}).`,
             "Can you share a follow-up story on this ticket if you can't upgrade right now?"
           ].join("\n")
           warn(text);
