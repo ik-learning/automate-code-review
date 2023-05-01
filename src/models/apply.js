@@ -19,7 +19,8 @@ class Apply extends Base {
   }
 
   addPaasManualApplyMsg() {
-
+    console.log('in: addPaasManualApplyMsg');
+    message("🔰  PaaS need to merge and apply changes...");
   }
 
   async run() {
