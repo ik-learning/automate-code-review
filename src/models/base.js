@@ -9,6 +9,7 @@ class Base {
     this.repository = null;
     this.committedfiles = null;
     this.updatedfiles = null;
+    this.prId = danger.gitlab.metadata.pullRequestID;
   }
   danger() {
     console.log(this.danger.git);
@@ -19,7 +20,7 @@ class Base {
 
   get repo() {
     if (!this.repository) {
-      this.repository = this.danger.gitlab.metadata.repoSlug.toLowerCase();
+      this.repository = this.danger.gitlab.metadata.repoSlug;
     }
     return this.repository;
   }

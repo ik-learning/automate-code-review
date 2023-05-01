@@ -3,11 +3,6 @@
 // TODO:
 // Move to Base Class danger.
 // Test
-const
-  // deprecated
-  repo = danger.gitlab.metadata.repoSlug,
-  prId = danger.gitlab.metadata.pullRequestID;
-
 const mrTemplatesMsk = {
   add: 'Create Topic.md',
   update: 'Update Topic.md',
@@ -114,8 +109,6 @@ const auroraRdsRecommendInstanceTypesInDev = [
 ]
 
 module.exports = {
-  repo,
-  prId,
   mrTemplates,
   mrTemplatesMsk,
   rdsRecommendInstanceTypesInDev,

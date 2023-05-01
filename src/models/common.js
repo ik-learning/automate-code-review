@@ -1,5 +1,7 @@
 'use strict';
 
+const { links } = require('../constants');
+
 const { error } = require('console');
 const { Base } = require('./base');
 
@@ -52,6 +54,16 @@ class Common extends Base {
       markdown(out)
     } else {
       markdown(msg)
+    }
+  }
+
+  async addLabels(input) {
+    console.log('in: addLabels');
+    const mrLabels = this.danger.gitlab.mr.labels
+    const changes = [...mrLabels, ...input.filter(el => !mrLabels.includes(el, 0))];
+    if (mrLabels.length < changes.length) {
+      const mr = await this.danger.gitlab.api.MergeRequests.edit(this.repo, this.prId, { labels: [...mrLabels, ...input] })
+      console.log(`updated labels '${changes}' for mr '${this.prId}'`)
     }
   }
 

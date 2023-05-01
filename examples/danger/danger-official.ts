@@ -1,3 +1,4 @@
+// https://github.com/danger/danger-js/blob/main/dangerfile.ts
 // Because we don't get to use the d.ts, we can pass in a subset here.
 // This means we can re-use the type infra from the app, without having to
 // fake the import.
