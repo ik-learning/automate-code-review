@@ -1,5 +1,6 @@
 'use strict';
 const array = require('lodash/array');
+
 const { Base } = require('./base');
 
 // TODO
