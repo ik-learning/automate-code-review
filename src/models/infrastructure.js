@@ -316,6 +316,43 @@ class Infrastructure extends Base {
     }
   }
 
+  // DynamoDB
+  async dynamoDBCommonChecks() {
+    console.log('in: dynamoDBCommonChecks');
+    const tfvars = this.danger.git.fileMatch("dynamodb/**/*.tfvars", "**/dynamodb/**/*.tfvars");
+
+    // currently turned off
+    if (false && (tfvars.modified || tfvars.edited || tfvars.created)) {
+      const commitFiles = new Set([
+        ...tfvars.getKeyedPaths().modified,
+        ...tfvars.getKeyedPaths().edited,
+        ...tfvars.getKeyedPaths().created,
+      ]);
+      commitFiles.forEach(async file => {
+        const diff = await this.danger.git.diffForFile(file);
+        const after = hclToJson(diff.after).dynamodb_table.global_secondary_indexes;
+        // check for billing mode
+        const { billing_mode } = hclToJson(diff.after).dynamodb_table;
+
+        if (billing_mode === 'PAY_PER_REQUEST') {
+          // let msg = `📂 ${ file }. ➡️  (💸 saving) The "billing_mode PAY_PER_REQUEST" is not recommended and in general will cost HBi more then it should.`
+          let msg = `📂 ${file}. ➡️ The "billing_mode PAY_PER_REQUEST" is configured. Make sure to share usage pattern e.g. number of requests, item size and other relevant information in MR description.`
+          // let msg = `📂 ${ file }. ➡️ The "billing_mode PAY_PER_REQUEST" is configured. The 💸  cost is being dependant on workload, and needs careful consideration.`
+          let out = [
+            msg + "<br>",
+            '- Has provisioned mode been considered?',
+            `- You can find [Guidance here](${links.noSqlDraftReq})<br>`,
+            `- DynamoDB [item size Calculator](${links.dynamoDbItemSizeCalc})`,
+            `- DynamoDB [pricing Calculator](${links.dynamoDbPriceCalc})`,
+          ].join("\n")
+
+          message(out);
+        }
+
+      })
+    }
+  }
+
   async run() {
     this.validateElasticCacheRDSInstanceClassExist();
     await this.removeStorageResources();
@@ -323,6 +360,7 @@ class Infrastructure extends Base {
     await this.ensureRdsAuroraCreationValidated();
     await this.templateShouldBeEnforced();
     await this.rdsMysql5EndOfLifeDate();
+    await this.dynamoDBCommonChecks();
   }
 }
 
