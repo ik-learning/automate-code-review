@@ -12,7 +12,7 @@ class Base {
   }
 
   get repo() {
-    return this.danger.gitlab.metadata.repoSlug;
+    return this.danger.gitlab.metadata.repoSlug.toLowerCase();
   }
 
   get committedFiles() {
