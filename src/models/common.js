@@ -1,5 +1,6 @@
 'use strict';
 
+const { error } = require('console');
 const { Base } = require('./base');
 
 // TODO
@@ -10,7 +11,7 @@ class Common extends Base {
     console.log('in: reviewLargePR');
     const filesThreshold = 10;
     if (this.danger.gitlab.mr.changes_count > filesThreshold) {
-      warn(`:exclamation: Pull Request size seems relatively large. If Pull Request contains multiple changes, split each into separate PR for faster, and simplified review. Gitlab API rate limiting throttle 'review-bot' on large MRs.`);
+      fail(`:exclamation: Pull Request size seems relatively large. If Pull Request contains multiple changes, split each into separate PR for faster, and simplified review. Gitlab API rate limiting throttle 'review-bot' on large MRs.`);
     }
   }
 
