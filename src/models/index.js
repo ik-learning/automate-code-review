@@ -6,6 +6,7 @@ const { Apply } = require('./apply');
 const { Changelog } = require('./changelog');
 const { Common } = require('./common');
 const { Infrastructure } = require('./infrastructure');
+const { Checks } = require('./checks');
 
 module.exports = {
   MSK,
@@ -14,5 +15,6 @@ module.exports = {
   Apply,
   Changelog,
   Common,
-  Infrastructure
+  Infrastructure,
+  Checks,
 }
