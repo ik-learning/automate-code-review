@@ -11,6 +11,10 @@ class Base {
   git() {
     console.log(this.danger.git);
   }
+
+  run() {
+    throw new Error('You have to implement the method run()!');
+  }
 }
 
 module.exports = {
