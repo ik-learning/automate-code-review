@@ -1,15 +1,22 @@
+'use strict';
 
 class Base {
-
   constructor(danger) {
     this.danger = danger
   }
-
   danger() {
     console.log(this.danger.git);
   }
   git() {
     console.log(this.danger.git);
+  }
+
+  get committedFiles() {
+    return [
+      ...this.danger.git.created_files,
+      ...this.danger.git.deleted_files,
+      ...this.danger.git.modified_files,
+    ]
   }
 
   run() {

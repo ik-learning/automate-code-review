@@ -67,6 +67,7 @@ DANGER_TEST_PR='2' yarn danger ci
 - [Danger Plugin Jest](https://github.com/macklinu/danger-plugin-jest)
 - [Danger Plugin TsLint](https://github.com/macklinu/danger-plugin-tslint)
 - [Danger Plugin noTestsShortcuts](https://www.npmjs.com/package/danger-plugin-no-test-shortcuts)
+- [PR Higene](https://www.npmjs.com/package/danger-plugin-pr-hygiene)
 
 ## Testing
 
@@ -131,8 +132,8 @@ npm install
 - [https://github.com/realm/jazzy/blob/master/Dangerfile](https://github.com/realm/jazzy/blob/master/Dangerfile)
 - [https://github.com/samdmarshall/danger/blob/master/Dangerfile](https://github.com/samdmarshall/danger/blob/master/Dangerfile)
 - [https://github.com/artsy/emission/blob/master/dangerfile.ts](https://github.com/artsy/emission/blob/master/dangerfile.ts)
-- a lot in DSL [https://github.com/danger/danger-js/blob/main/dangerfile.ts](https://github.com/danger/danger-js/blob/main/dangerfile.ts)
-- plugins [https://danger.systems/js/](https://danger.systems/js/)
+- [https://github.com/danger/danger-js/blob/main/dangerfile.ts](https://github.com/danger/danger-js/blob/main/dangerfile.ts)
+- [Plugins: official docs](https://danger.systems/js/)
 - [https://github.com/rizalibnu/danger-plugin-pull-request](https://github.com/rizalibnu/danger-plugin-pull-request)
 - [Docker image](https://github.com/orgs/danger/packages/container/package/danger-js)
 - [Docker images. Build Images](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.danger)
@@ -146,14 +147,6 @@ npm install
 - [Gitlab Templates](https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml)
 - [Danger Github Action](https://github.com/MeilCli/danger-action)
 - [Gitlab Node API](https://github.com/jdalrymple/gitbeaker)
-
-```
-If you no longer need a global secondary index, you can delete it using the UpdateTable operation. You can delete only one global secondary index per UpdateTable operation. While the global secondary index is being deleted, there is no effect on any read or write activity in the parent table.
-```
-
-### Plugins
-
-- [PR Higene](https://www.npmjs.com/package/danger-plugin-pr-hygiene)
 
 ### Example MRs to Cover
 
