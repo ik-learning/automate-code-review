@@ -4,6 +4,7 @@ const { CSV } = require('./csv');
 const { K8S } = require('./k8s');
 const { Apply } = require('./apply');
 const { Changelog } = require('./changelog');
+const { Common } = require('./common');
 
 module.exports = {
   MSK,
@@ -11,4 +12,5 @@ module.exports = {
   K8S,
   Apply,
   Changelog,
+  Common
 }

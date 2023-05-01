@@ -8,6 +8,7 @@ class Base {
     this.result = new Results();
     this.repository = null;
     this.committedfiles = null;
+    this.updatedfiles = null;
   }
   danger() {
     console.log(this.danger.git);
@@ -22,7 +23,7 @@ class Base {
     }
     return this.repository;
   }
-  
+
   get committedFiles() {
     if (!this.committedfiles) {
       this.committedfiles = [
@@ -33,6 +34,16 @@ class Base {
     }
     return this.committedfiles;
   }
+
+  get updatedFiles() {
+    if (!this.updatedfiles) {
+      this.updatedfiles = [
+        ...this.danger.git.created_files,
+        ...this.danger.git.modified_files,
+      ]
+    }
+    return this.updatedfiles;
+  };
 
   // to review
   addWarn(msg) {
