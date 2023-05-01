@@ -3,8 +3,7 @@
 const { Base } = require('./base');
 const
   { contains } = require("../utils");
-const {
-  repo, mrTemplatesMsk } = require('../constants');
+const { mrTemplatesMsk } = require('../constants');
 
 // TODO
 // test
@@ -33,7 +32,7 @@ class MSK extends Base {
           const template = mrTemplatesMsk[action];
           const templateWithoutExt = template.split('.')[0];
           const sanitized = template.split(" ").join("%20");
-          const link = `https://gitlab.com/${repo}/-/blob/master/.gitlab/merge_request_templates/${sanitized}`;
+          const link = `https://gitlab.com/${this.repo}/-/blob/master/.gitlab/merge_request_templates/${sanitized}`;
           warn(`MR template is missing ***Edit>Description>Choose Template*** [${templateWithoutExt}](${link}), provide details and a jira ticket...`);
         }
       });

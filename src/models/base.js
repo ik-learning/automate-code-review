@@ -11,6 +11,10 @@ class Base {
     console.log(this.danger.git);
   }
 
+  get repo() {
+    return this.danger.gitlab.metadata.repoSlug;
+  }
+
   get committedFiles() {
     return [
       ...this.danger.git.created_files,
