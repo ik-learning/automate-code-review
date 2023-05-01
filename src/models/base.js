@@ -6,6 +6,8 @@ class Base {
   constructor(danger) {
     this.danger = danger
     this.result = new Results();
+    this.repository = null;
+    this.committedfiles = null;
   }
   danger() {
     console.log(this.danger.git);
@@ -15,9 +17,24 @@ class Base {
   }
 
   get repo() {
-    return this.danger.gitlab.metadata.repoSlug.toLowerCase();
+    if (!this.repository) {
+      this.repository = this.danger.gitlab.metadata.repoSlug.toLowerCase();
+    }
+    return this.repository;
   }
-  // add
+  
+  get committedFiles() {
+    if (!this.committedfiles) {
+      this.committedfiles = [
+        ...this.danger.git.created_files,
+        ...this.danger.git.deleted_files,
+        ...this.danger.git.modified_files,
+      ]
+    }
+    return this.committedfiles;
+  }
+
+  // to review
   addWarn(msg) {
     this.result.addWarn(msg)
   }
@@ -25,14 +42,6 @@ class Base {
     this.result.addMsg(msg)
   }
   //
-
-  get committedFiles() {
-    return [
-      ...this.danger.git.created_files,
-      ...this.danger.git.deleted_files,
-      ...this.danger.git.modified_files,
-    ]
-  }
 
   run() {
     throw new Error('You have to implement the method run()!');
