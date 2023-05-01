@@ -44,6 +44,32 @@ class Infrastructure extends Base {
     }
   };
 
+  async rdsMysql5EndOfLifeDate() {
+    console.log('in: rdsMysql5EndOfLifeDate');
+    let link = "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Concepts.VersionMgmt.html#MySQL.Concepts.VersionMgmt.ReleaseCalendar"
+    const tfvars = this.danger.git.fileMatch("rds/**/*.tfvars");
+
+    const tfvarsCreated = tfvars.getKeyedPaths().created;
+    const tfvarsModified = tfvars.getKeyedPaths().modified;
+    const varsMerged = tfvarsCreated.concat(tfvarsModified);
+
+    if (tfvars.modified || tfvars.created) {
+      varsMerged.forEach(async file => {
+        const diff = await this.danger.git.diffForFile(file);
+        const data = hclToJson(diff.after);
+        let { family } = data.rds_config.instance_config
+        if (family.includes("mysql5")) {
+          const text = [
+            `☣️  [MySQL5.7 End of life support is October 2023, when are you planning on upgrading?](${link}).`,
+            "Can you share a follow-up story on this ticket if you can't upgrade right now?"
+          ].join("\n")
+          warn(text);
+        }
+
+      }, Error())
+    }
+  }
+
   async ensureRdsCreationValidated() {
     console.log('in: ensureRdsCreationValidated');
     const tfvars = this.danger.git.fileMatch("rds/**/*.tfvars");
@@ -291,14 +317,13 @@ class Infrastructure extends Base {
     }
   }
 
-  // TODO: mysql5.7 out of life support add warning with toxic
-
   async run() {
     this.validateElasticCacheRDSInstanceClassExist();
     await this.removeStorageResources();
     await this.ensureRdsCreationValidated();
     await this.ensureRdsAuroraCreationValidated();
     await this.templateShouldBeEnforced();
+    await this.rdsMysql5EndOfLifeDate();
   }
 }
 
