@@ -4,7 +4,7 @@ const hcl = require("hcl2-parser");
 const hash = require('object-hash');
 
 // helper functions
-const contains = (target, pattern) => {
+const sentenceContainsValues = (target, pattern) => {
   let result = 0;
   let targetLowerCase = target.toLowerCase();
   pattern.forEach(function (word) {

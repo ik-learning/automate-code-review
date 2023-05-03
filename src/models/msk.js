@@ -2,7 +2,7 @@
 
 const { Base } = require('./base');
 const
-  { contains } = require("../utils");
+  { sentenceContainsValues } = require("../utils");
 const { mrTemplatesMsk } = require('../constants');
 
 // TODO
@@ -21,11 +21,11 @@ class MSK extends Base {
         const before = diff.before.split('\n').slice(1).filter((a) => a).length;
         const after = diff.after.split('\n').slice(1).filter((a) => a).length;
         let action = null;
-        if (before > after && !contains(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'remove'])) {
+        if (before > after && !sentenceContainsValues(this.danger.gitlab.mr.description, ['## checklist', 'remove'])) {
           action = 'remove'
-        } else if (before < after && !contains(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'added'])) {
+        } else if (before < after && !sentenceContainsValues(this.danger.gitlab.mr.description, ['## checklist', 'added'])) {
           action = 'add'
-        } else if (before == after && !contains(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'update'])) {
+        } else if (before == after && !sentenceContainsValues(this.danger.gitlab.mr.description, ['## checklist', 'update'])) {
           action = 'update'
         }
         if (action) {
