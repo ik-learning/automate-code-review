@@ -18,11 +18,19 @@ const inputInCollection = (target, collection) => {
   return collection.includes(target, 0)
 }
 
-const getHashDifference = (firstArr, secondArr) => {
-  return firstArr.filter(first => {
-    // could do without hashing, e.g. key buy key comparison
-    return !secondArr.some(second => hash(first) === hash(second));
-  })
+const isDiff = (first, second, diff) => {
+  if (Array.isArray(first) && Array.isArray(second)) {
+
+    if (Math.abs(first.length - second.length) > diff) {
+      return true;
+    }
+    return second.filter(el => {
+      // could do without hashing, e.g. key buy key comparison
+      return !first.some(second => hash(el) === hash(second));
+    }).length > diff;
+  } else {
+    return false;
+  }
 };
 
 const hclToJson = source => {
@@ -44,9 +52,9 @@ const containsInList = (repository, repoInAList) => {
 
 module.exports = {
   sentenceContainsValues,
-  hclToJson,
-  getHashDifference,
-  uniqueArraySize,
   inputInCollection,
+  isDiff,
+  hclToJson,
+  uniqueArraySize,
   containsInList,
 };

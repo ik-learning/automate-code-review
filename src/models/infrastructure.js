@@ -8,7 +8,7 @@ const { links, recommendedRDSStorageTypes,
 
 const
   { uniqueArraySize, inputInCollection, hclToJson,
-    sentenceContainsValues, getHashDifference } = require("../utils");
+    sentenceContainsValues, isDiff } = require("../utils");
 
 const { Base } = require('./base');
 // TODO
@@ -359,19 +359,12 @@ class Infrastructure extends Base {
     } else if (tfvars.modified || tfvars.created || tfvars.deleted) {
       if (tfvars.modified) {
         tfvars.getKeyedPaths().modified.forEach(async file => {
-          let multipleGCI = false;
           const diff = await this.danger.git.diffForFile(file);
           const before = hclToJson(diff.before).dynamodb_table.global_secondary_indexes;
           const after = hclToJson(diff.after).dynamodb_table.global_secondary_indexes;
-          const singleGCI = 1;
-          if (Math.abs(before.length - after.length) > singleGCI) {
-            console.log('length difference');
-            multipleGCI = true;
-          } else if (getHashDifference(after, before).length > singleGCI) {
+          const maxDiff = 1;
+          if (isDiff(before, after, maxDiff)) {
             console.log('multiple changes found while comparing "global secondary indexes"');
-            multipleGCI = true;
-          }
-          if (multipleGCI) {
             warn(`📂 ***${file}*** ➡️  (Potential issue) Only one GSI can be modified at a time, otherwise AWS will complain..`);
             return
           }

@@ -1,6 +1,6 @@
 
 const { sentenceContainsValues,
-  inputInCollection } = require('../src/utils');
+  inputInCollection, isDiff } = require('../src/utils');
 
 describe("Test utils.js ...", () => {
 
@@ -19,11 +19,145 @@ describe("Test utils.js ...", () => {
   })
 
   describe("inputInCollection(string,collection[string]))", () => {
-    test('1', () => {
+    test('input is in collection', () => {
       expect(inputInCollection('mysql', ['mysql', 'postgres'])).toBeTruthy();
     });
-    test('2', () => {
+    test('input not in collection', () => {
       expect(inputInCollection('dynamo', ['mysql', 'postgres'])).toBeFalsy();
     });
   })
+
+  describe("isDiff(collection,  collection)", () => {
+
+    test('object length is more then one', () => {
+      let first = ["one", "two", "three"];
+      let second = ["one"];
+      expect(isDiff(first, second, 1)).toBeTruthy();
+    });
+
+    test('two objects similar', () => {
+      let first = [
+        {
+          hash_key: 'basketId',
+          name: 'idx_by_basket_id',
+          non_key_attributes: [],
+          projection_type: 'KEYS_ONLY',
+          range_key: '',
+          read_capacity: null,
+          write_capacity: null
+        },
+        {
+          hash_key: 'customerId',
+          name: 'idx_by_customer_id',
+          non_key_attributes: [],
+          projection_type: 'KEYS_ONLY',
+          range_key: 'id',
+          read_capacity: null,
+          write_capacity: null
+        },
+        {
+          hash_key: 'customerEmail',
+          name: 'idx_by_customer_email',
+          non_key_attributes: [],
+          projection_type: 'KEYS_ONLY',
+          range_key: 'id',
+          read_capacity: null,
+          write_capacity: null
+        }
+      ];
+      let second = [
+        {
+          hash_key: 'basketId',
+          name: 'idx_by_basket_id',
+          non_key_attributes: [],
+          projection_type: 'KEYS_ONLY',
+          range_key: '',
+          read_capacity: null,
+          write_capacity: null
+        },
+        {
+          hash_key: 'customerId',
+          name: 'idx_by_customer_id',
+          non_key_attributes: [],
+          projection_type: 'KEYS_ONLY',
+          range_key: 'id',
+          read_capacity: null,
+          write_capacity: null
+        },
+        {
+          hash_key: 'customerEmail',
+          name: 'idx_by_customer_email',
+          non_key_attributes: [],
+          projection_type: 'KEYS_ONLY',
+          range_key: 'id',
+          read_capacity: null,
+          write_capacity: null
+        }
+      ];
+      expect(isDiff(first, second, 1)).toBeFalsy();
+    });
+
+    test('single key different', () => {
+      let first = [
+        {
+          hash_key: 'basketId',
+          name: 'idx_by_basket_id',
+          non_key_attributes: [],
+          projection_type: 'KEYS_ONLY',
+          range_key: '',
+          read_capacity: null,
+          write_capacity: null
+        },
+        {
+          hash_key: 'customerId',
+          name: 'idx_by_customer_id',
+          non_key_attributes: [],
+          projection_type: 'KEYS_ONLY',
+          range_key: 'id',
+          read_capacity: null,
+          write_capacity: null
+        },
+        {
+          hash_key: 'customerEmail',
+          name: 'idx_by_customer_email',
+          non_key_attributes: [],
+          projection_type: 'KEYS_ONLY',
+          range_key: 'id',
+          read_capacity: null,
+          write_capacity: null
+        }
+      ];
+      let second = [
+        {
+          hash_key: 'basketId',
+          name: 'idx_by_basket_id',
+          non_key_attributes: [],
+          projection_type: 'KEYS_ONLY',
+          range_key: '',
+          read_capacity: null,
+          write_capacity: null
+        },
+        {
+          hash_key: 'customerId',
+          name: 'idx_by_customer_id_x',
+          non_key_attributes: [],
+          projection_type: 'KEYS_ONLY',
+          range_key: 'id',
+          read_capacity: null,
+          write_capacity: null
+        },
+        {
+          hash_key: 'customerEmail',
+          name: 'idx_by_customer_email',
+          non_key_attributes: [],
+          projection_type: 'KEYS_ONLY',
+          range_key: 'id',
+          read_capacity: 1,
+          write_capacity: null
+        }
+      ];
+      expect(isDiff(first, second, 1)).toBeTruthy();
+    });
+  })
+
 })
