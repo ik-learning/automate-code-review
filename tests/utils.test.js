@@ -1,6 +1,7 @@
 
 const { sentenceContainsValues,
-  inputInCollection, isDiff } = require('../src/utils');
+  inputInCollection, isDiff,
+  uniqueElementsCount} = require('../src/utils');
 
 describe("Test utils.js ...", () => {
 
@@ -157,6 +158,17 @@ describe("Test utils.js ...", () => {
         }
       ];
       expect(isDiff(first, second, 1)).toBeTruthy();
+    });
+  })
+
+  describe("uniqueElementsCount(collection[any]))", () => {
+
+    it.each([
+      [['one', 'one', 'two', 'two'], 2],
+      [['one', 'one'], 1],
+      [['one', 'two', 'three'], 3],
+    ])('collection of elements %p contains unique %p', (elements, result) => {
+      expect(uniqueElementsCount(elements)).toEqual(result);
     });
   })
 

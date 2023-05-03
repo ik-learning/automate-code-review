@@ -37,7 +37,7 @@ const hclToJson = source => {
   return hcl.parseToObject(source)[0];
 }
 
-const uniqueArraySize = (...source) => {
+const uniqueElementsCount = (...source) => {
   return new Set(...source).size
 }
 
@@ -55,6 +55,6 @@ module.exports = {
   inputInCollection,
   isDiff,
   hclToJson,
-  uniqueArraySize,
+  uniqueElementsCount,
   containsInList,
 };

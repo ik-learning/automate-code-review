@@ -7,7 +7,7 @@ const { links, recommendedRDSStorageTypes,
   rdsRecommendInstanceTypesInDev, mrTemplates } = require('../constants');
 
 const
-  { uniqueArraySize, inputInCollection, hclToJson,
+  { uniqueElementsCount, inputInCollection, hclToJson,
     sentenceContainsValues, isDiff } = require("../utils");
 
 const { Base } = require('./base');
@@ -96,12 +96,12 @@ class Infrastructure extends Base {
     }
 
     if (tfvars.modified || tfvars.created || tfvars.deleted) {
-      if (uniqueArraySize(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created) > threshold) {
+      if (uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created) > threshold) {
         warn(`☣️  Skip review as number of "RDS" file changed hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling.`);
       }
-      if (uniqueArraySize(tfvars.getKeyedPaths().edited) > 1
-        || uniqueArraySize(tfvars.getKeyedPaths().modified) > 1
-        || uniqueArraySize(tfvars.getKeyedPaths().deleted) > 1) {
+      if (uniqueElementsCount(tfvars.getKeyedPaths().edited) > 1
+        || uniqueElementsCount(tfvars.getKeyedPaths().modified) > 1
+        || uniqueElementsCount(tfvars.getKeyedPaths().deleted) > 1) {
         warn(`☣️  Multiple RDS configurations modified in single MR. Is this expected?`);
       }
       if (tfvars.created) {
@@ -354,7 +354,7 @@ class Infrastructure extends Base {
     // TODO: consider what to do with LSI?
     let threshold = 10;
     const tfvars = this.danger.git.fileMatch("dynamodb/**/*.tfvars", "**/dynamodb/**/*.tfvars");
-    if (uniqueArraySize(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created) > threshold) {
+    if (uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created) > threshold) {
       warn(`☣️  Skip review as number of "DynamoDB" file changed hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling.`);
     } else if (tfvars.modified || tfvars.created || tfvars.deleted) {
       if (tfvars.modified) {
