@@ -1,5 +1,7 @@
 # automate-code-review
 
+- [Story](https://hbidigital.atlassian.net/browse/PAAS-1508)
+
 `added danger for checking commits compliance `
 
 ```
@@ -139,9 +141,10 @@ npm install
   + [ ] Integrate with notify to review an MR bot
 - [ ] Recurring job
   + [ ] Iterate over every repository and review the MRs
-- [ ] Docker tag. Embed tag as ARG.
 - [ ] Use `TypeScript` instead of plain JS
   * Unit tests
+  * TS lint
+- [ ] Docker tag.
 - [X] Message 'apply after merge'
 - [ ] Validate instance types `https://instances.vantage.sh/`
 - [X] Ensure files has new line

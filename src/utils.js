@@ -5,10 +5,10 @@ const hash = require('object-hash');
 
 // helper functions
 const contains = (target, pattern) => {
-  // TODO: probably compare lowercase too
   let result = 0;
+  let targetLowerCase = target.toLowerCase();
   pattern.forEach(function (word) {
-    result = result + target.includes(word);
+    result = result + targetLowerCase.includes(word);
   });
   return (result === pattern.length)
 };

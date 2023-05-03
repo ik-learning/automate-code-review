@@ -34,6 +34,9 @@ docker-build: ## Docker image build
 docker-exec-local: ## Docker exec to an image build locally
 	@docker run -it --rm $(DOCKER_LOCAL)
 
+test: ## Run tests
+	@yarn run test
+
 run: ## Run Docker locally
 	docker run --rm -it \
 		-e DANGER_GITLAB_API_TOKEN \
