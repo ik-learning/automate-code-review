@@ -9,10 +9,10 @@ class Changelog extends Base {
   async changelogPresent() {
     console.log('in: changelogPresent');
     const chg = this.danger.git.fileMatch("CHANGELOG.md");
-    if (!chg.modified && commitFiles > 1) {
+    if (!chg.modified && this.committedfiles > 1) {
       warn('This PR modifies multiple files while CHANGELOG not updated.');
       this.addWarn('This PR modifies multiple files while CHANGELOG not updated.');
-    } else if (!chg.modified && commitFiles == 1) {
+    } else if (!chg.modified && this.committedfiles == 1) {
       message('This PR modifies single file. Is this changes worthy of the CHANGELOG update?');
       this.addMsg('This PR modifies single file. Is this changes worthy of the CHANGELOG update?');
     }
