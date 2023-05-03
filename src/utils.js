@@ -10,12 +10,12 @@ const sentenceContainsValues = (target, pattern) => {
   pattern.forEach(function (word) {
     result = result + targetLowerCase.includes(word);
   });
-  return (result === pattern.length)
+  return (result === pattern.length);
 };
 
 // Collection to contain a string
-const arrayContainsString = (collection, input) => {
-  return collection.includes(input, 0)
+const inputInCollection = (target, collection) => {
+  return collection.includes(target, 0)
 }
 
 const getHashDifference = (firstArr, secondArr) => {
@@ -43,10 +43,10 @@ const containsInList = (repository, repoInAList) => {
 }
 
 module.exports = {
-  contains,
+  sentenceContainsValues,
   hclToJson,
   getHashDifference,
   uniqueArraySize,
-  arrayContainsString,
+  inputInCollection,
   containsInList,
 };

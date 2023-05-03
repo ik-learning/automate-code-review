@@ -7,8 +7,8 @@ const { links, recommendedRDSStorageTypes,
   rdsRecommendInstanceTypesInDev, mrTemplates } = require('../constants');
 
 const
-  { uniqueArraySize, arrayContainsString, hclToJson,
-    contains, getHashDifference } = require("../utils");
+  { uniqueArraySize, inputInCollection, hclToJson,
+    sentenceContainsValues, getHashDifference } = require("../utils");
 
 const { Base } = require('./base');
 // TODO
@@ -39,8 +39,8 @@ class Infrastructure extends Base {
     );
     const tfvarsDeleted = tfvars.getKeyedPaths().deleted;
     if (tfvars.deleted && tfvarsDeleted.length > 0) {
-        message(`🤖 Make sure to add [skip ci] and request from Platform team manual resources removal...`);
-        message(`🤖 (Reminder for a Platform team) We should fix failing pipeline! CI probably is Failing as it can't find a related infrastructure folder anymore.`);
+      message(`🤖 Make sure to add [skip ci] and request from Platform team manual resources removal...`);
+      message(`🤖 (Reminder for a Platform team) We should fix failing pipeline! CI probably is Failing as it can't find a related infrastructure folder anymore.`);
     }
   };
 
@@ -141,7 +141,7 @@ class Infrastructure extends Base {
           // make sure the recommended engine class is used
           // https://github.com/hashicorp/terraform-provider-aws/issues/27702
           // https://github.com/hashicorp/terraform-provider-aws/pull/27670
-          if (arrayContainsString(['mysql', 'postgres'], engine) && storage_type in recommendedRDSStorageTypes) {
+          if (inputInCollection(engine, ['mysql', 'postgres']) && storage_type in recommendedRDSStorageTypes) {
             const recommended = recommendedRDSStorageTypes[storage_type];
             warn(`📂 ${file}. ✏️ (Optional) Recommended \`storage_type\` is \`${recommended}\` as it provides better performance and cost efficiency as opposite to  \'${storage_type}\'. [Docs and Migration AWS migration Guide](${links.gp2gp3Migration}) and [UserGuide](${links.rdsUserGuide}).`)
           }
@@ -170,10 +170,7 @@ class Infrastructure extends Base {
               console.log(`before: ${before}, after: ${after}`);
               message(`🤖 (Experimental|Optional) Instance class modified. Worth to provide a link to datadog dashboard, monitor, relevant capacity planning calculations...`);
             }
-            // TODO: remove false when GP3 is supported. Would assume only by new RDS types.
-            // https://github.com/hashicorp/terraform-provider-aws/issues/27702
-            // https://github.com/hashicorp/terraform-provider-aws/pull/27670
-            if (arrayContainsString(['mysql', 'postgres'], engine) && storage_type in recommendedRDSStorageTypes) {
+            if (inputInCollection(engine, ['mysql', 'postgres']) && storage_type in recommendedRDSStorageTypes) {
               const recommended = recommendedRDSStorageTypes[storage_type];
               message(`📂 ${file}. ✏️ (Optional) Recommended \`storage_type\` is \`${recommended}\` as it provides better performance and cost efficiency as opposite to \'${storage_type}\'. [Docs and Migration AWS migration Guide](${links.gp2gp3Migration}).`)
             }
@@ -268,9 +265,9 @@ class Infrastructure extends Base {
     // TODO: s3 bucket modified bucket, created bucket, deleted bucket
     let template = {}
     // TODO: S3 buckets probably slightly differ
-    let tmpCreatedMissing = !contains(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'created']);
-    let tmpModifiedMissing = !contains(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'update']);
-    let tmpDeletedMissing = !contains(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'remove']);
+    let tmpCreatedMissing = !sentenceContainsValues(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'created']);
+    let tmpModifiedMissing = !sentenceContainsValues(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'update']);
+    let tmpDeletedMissing = !sentenceContainsValues(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'remove']);
     // created
     if (tmpCreatedMissing && tfvarsCreated.length > 0) {
       // todo: test

@@ -1,5 +1,6 @@
 
-const { sentenceContainsValues } = require('../src/utils');
+const { sentenceContainsValues,
+  inputInCollection } = require('../src/utils');
 
 describe("Test utils.js ...", () => {
 
@@ -17,7 +18,12 @@ describe("Test utils.js ...", () => {
     });
   })
 
-  describe("contains(string,array[string]))", () => {
-
+  describe("inputInCollection(string,collection[string]))", () => {
+    test('1', () => {
+      expect(inputInCollection('mysql', ['mysql', 'postgres'])).toBeTruthy();
+    });
+    test('2', () => {
+      expect(inputInCollection('dynamo', ['mysql', 'postgres'])).toBeFalsy();
+    });
   })
 })
