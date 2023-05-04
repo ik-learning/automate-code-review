@@ -199,7 +199,6 @@ describe("Test utils.js ...", () => {
           deletion_window_in_days = 10
         }
         `
-      console.log(hclParse(hclString).resource.aws_kms_key.example)
       expect(hclParse(hclString).resource.aws_kms_key.example).toStrictEqual([{ deletion_window_in_days: 10, description: 'kms-key-1' }]);
     });
   })
