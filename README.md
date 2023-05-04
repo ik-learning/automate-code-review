@@ -75,6 +75,7 @@ DANGER_TEST_PR='2' yarn danger ci
 
 - [Artsy Emission](https://github.com/artsy/emission/blob/master/package.json)
 - [Jest Testing with typescript](https://danger.systems/js/tutorials/transpilation.html)
+- [Jest: docs expect](https://jestjs.io/docs/expect)
 
 ### Run Danger file
 
