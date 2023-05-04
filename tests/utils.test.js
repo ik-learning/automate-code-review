@@ -36,6 +36,12 @@ describe("Test utils.js ...", () => {
       expect(isDiff(first, second, 1)).toBeTruthy();
     });
 
+    test('single element is not a collection', () => {
+      let first = "one";
+      let second = ["one"];
+      expect(isDiff(first, second, 1)).toBeFalsy();
+    });
+
     test('two objects similar', () => {
       let first = [
         {
