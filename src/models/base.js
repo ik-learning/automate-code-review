@@ -7,10 +7,10 @@ class Base {
   constructor(danger) {
     this.danger = danger
     this.result = new Results();
-    this.repository = null;
-    this.committedfiles = null;
-    this.updatedfiles = null;
     this.prId = danger.gitlab.metadata.pullRequestID;
+    this._repository = null;
+    this._committedFiles = null;
+    this._updatedFiles = null;
   }
   danger() {
     console.log(this.danger.git);
@@ -20,31 +20,31 @@ class Base {
   }
 
   get repo() {
-    if (!this.repository) {
-      this.repository = this.danger.gitlab.metadata.repoSlug;
+    if (!this._repository) {
+      this._repository = this.danger.gitlab.metadata.repoSlug;
     }
-    return this.repository;
+    return this._repository;
   }
 
   get committedFiles() {
-    if (!this.committedfiles) {
-      this.committedfiles = [
+    if (!this._committedFiles) {
+      this._committedFiles = [
         ...this.danger.git.created_files,
         ...this.danger.git.deleted_files,
         ...this.danger.git.modified_files,
       ]
     }
-    return this.committedfiles;
+    return this._committedFiles;
   }
 
   get updatedFiles() {
-    if (!this.updatedfiles) {
-      this.updatedfiles = [
+    if (!this._updatedFiles) {
+      this._updatedFiles = [
         ...this.danger.git.created_files,
         ...this.danger.git.modified_files,
       ]
     }
-    return this.updatedfiles;
+    return this._updatedFiles;
   };
 
   // to review
