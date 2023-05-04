@@ -1,6 +1,6 @@
 
 const { sentenceContainsValues,
-  inputInCollection, isDiff,
+  inputInCollection, isDiff, hclParse,
   uniqueElementsCount, isInCollection } = require('../src/utils');
 
 describe("Test utils.js ...", () => {
@@ -183,4 +183,18 @@ describe("Test utils.js ...", () => {
     });
   })
 
+  describe("hclParse(string))", () => {
+
+    test('parse valid hcl input', () => {
+      const hclString = `
+        # Create a resource
+        resource "aws_kms_key" "example" {
+          description             = "kms-key-1"
+          deletion_window_in_days = 10
+        }
+        `
+      console.log(hclParse(hclString).resource.aws_kms_key.example)
+      expect(hclParse(hclString).resource.aws_kms_key.example).toStrictEqual([{ deletion_window_in_days: 10, description: 'kms-key-1' }]);
+    });
+  })
 })

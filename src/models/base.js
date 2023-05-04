@@ -1,7 +1,8 @@
 'use strict';
 
 const { Results } = require('./results');
-
+// TODO
+// test
 class Base {
   constructor(danger) {
     this.danger = danger
@@ -55,6 +56,7 @@ class Base {
   }
   //
 
+  // abstract methods
   run() {
     throw new Error('You have to implement the method run()!');
   }

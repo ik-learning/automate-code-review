@@ -33,7 +33,7 @@ const isDiff = (first, second, diff) => {
   }
 };
 
-const hclToJson = source => {
+const hclParse = source => {
   return hcl.parseToObject(source)[0];
 }
 
@@ -41,9 +41,9 @@ const uniqueElementsCount = (...source) => {
   return new Set(...source).size
 }
 
-const containsInList = (repository, repoInAList) => {
-  return repoInAList.some(element => {
-    if (repository.includes(element)) {
+const isInCollection = (target, collection) => {
+  return collection.some(element => {
+    if (target.includes(element)) {
       return true;
     }
     return false;
@@ -54,7 +54,7 @@ module.exports = {
   sentenceContainsValues,
   inputInCollection,
   isDiff,
-  hclToJson,
+  hclParse,
   uniqueElementsCount,
-  containsInList,
+  isInCollection,
 };
