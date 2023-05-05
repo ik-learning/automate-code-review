@@ -54,8 +54,8 @@ class Changelog extends Base {
   }
 
   async chartYamlVersionReleased() {
+    console.log('in: chartYamlVersionReleased');
     message('🤖 On release, make sure chart `version` is updated in `Chart.yaml` file.');
-    this.addMsg('🤖 On release, make sure chart `version` is updated in `Chart.yaml` file.');
   }
 
   async run() {
