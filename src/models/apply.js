@@ -8,7 +8,7 @@ class Apply extends Base {
   addManualApplyMsg() {
     console.log('in: addManualApplyMessage');
     // manual apply advice should be added to an MR
-    const result = this.committedFiles.filter((val) => {
+    const result = this.committedFiles.filter(val => {
       return [
         'terraform', '.gitlab-ci.yml', 'ci.yml', 'environments'
       ].some(el => val.includes(el))
@@ -18,7 +18,7 @@ class Apply extends Base {
     }
   }
 
-  addPaasManualApplyMsg() {
+  async addPaasManualApplyMsg() {
     console.log('in: addPaasManualApplyMsg');
     message("🔰  PaaS need to merge and apply changes...");
   }

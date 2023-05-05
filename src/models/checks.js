@@ -22,7 +22,6 @@ class Checks extends Base {
     }
 
     this.danger.gitlab.mr.labels.forEach(label => {
-      // || label === 'review-bot'
       if (label === 'renovate-bot') {
         console.log(`skip MR review as label 'renovate-bot' found.`);
         return true;
