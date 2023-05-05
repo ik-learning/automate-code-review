@@ -7,7 +7,7 @@ const { links, recommendedRDSStorageTypes,
   rdsRecommendInstanceTypesInDev, mrTemplates } = require('../constants');
 
 const
-  { uniqueElementsCount, inputInCollection, hclToJson,
+  { uniqueElementsCount, inputInCollection, hclParse,
     sentenceContainsValues, isDiff } = require("../utils");
 
 const { Base } = require('./base');
@@ -55,12 +55,12 @@ class Infrastructure extends Base {
     if (tfvars.modified || tfvars.created) {
       varsMerged.forEach(async file => {
         const diff = await this.danger.git.diffForFile(file);
-        const data = hclToJson(diff.after);
+        const data = hclParse(diff.after);
         let { family } = data.rds_config.instance_config
         if (family.includes("mysql5")) {
           const text = [
             `☣️  [MySQL5.7 End of life support is October 2023, when are you planning on upgrading?](${links.mysqlRdsEndOfLife}).`,
-            "Can you share a follow-up story on this ticket if you can't upgrade right now?"
+            "Can you share a follow-up story if you can't upgrade right now?"
           ].join("\n")
           warn(text);
         }
@@ -108,7 +108,7 @@ class Infrastructure extends Base {
         // validate instance class in dev
         match(tfvarsCreated, ['**/dev/**'], {}).forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
-          let data = hclToJson(diff.after);
+          let data = hclParse(diff.after);
           let { instance_class, engine, engine_version } = data.rds_config.instance_config
           if (engine === 'postgres' && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
             warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider different class \`${rdsRecommendInstanceTypesInDev}\` ...`);
@@ -119,7 +119,7 @@ class Infrastructure extends Base {
 
         tfvarsCreated.forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
-          const data = hclToJson(diff.after);
+          const data = hclParse(diff.after);
           let { engine, engine_version, family, storage_type, instance_class } = data.rds_config.instance_config
           let rdsEngineVersion = rdsConfiguration[engine].engine_version
           let rdsFamily = rdsConfiguration[engine].family
@@ -155,14 +155,14 @@ class Infrastructure extends Base {
           // instance classes
           // - instance_class = "db.t3.micro"
           // + instance_class = "db.t3.small"
-          const beforeRDSConfig = hclToJson(diff.before).rds_config
-          const afterRDSConfig = hclToJson(diff.after).rds_config
+          const beforeRDSConfig = hclParse(diff.before).rds_config
+          const afterRDSConfig = hclParse(diff.after).rds_config
           if (typeof beforeRDSConfig === 'undefined' || typeof afterRDSConfig === 'undefined') {
             console.log('skip validation as one of the values is "not defined".')
           } else {
             const before = beforeRDSConfig.instance_config.instance_class;
             const after = afterRDSConfig.instance_config.instance_class;
-            const data = hclToJson(diff.after);
+            const data = hclParse(diff.after);
             let { engine, storage_type } = data.rds_config.instance_config
             if (before !== after && !infoMessages.has('instance_classes') &&
               !(storage_type in recommendedRDSStorageTypes)) {
@@ -217,7 +217,7 @@ class Infrastructure extends Base {
       if (tfvars.created) {
         tfvarsCreated.forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
-          const data = hclToJson(diff.after).cluster_config;
+          const data = hclParse(diff.after).cluster_config;
           const instance_type = data.instance_type;
 
           if (file.includes('environments/sandbox/') || file.includes('environments/dev/')) {
@@ -232,13 +232,13 @@ class Infrastructure extends Base {
       if (tfvars.modified) {
         await tfvarsModified.forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
-          const beforeConfig = hclToJson(diff.before).cluster_config;
-          const afterConfig = hclToJson(diff.after).cluster_config;
+          const beforeConfig = hclParse(diff.before).cluster_config;
+          const afterConfig = hclParse(diff.after).cluster_config;
           if (typeof afterConfig === 'undefined') {
             console.log('skip validation as one of the values is "not defined".')
           } else {
             const after = afterConfig.cluster_config;
-            const data = hclToJson(diff.after).cluster_config;
+            const data = hclParse(diff.after).cluster_config;
             const instance_type = data.instance_type;
             const { engine_name, engine_sql_version } = data.engine;
 
@@ -326,9 +326,9 @@ class Infrastructure extends Base {
       ]);
       commitFiles.forEach(async file => {
         const diff = await this.danger.git.diffForFile(file);
-        const after = hclToJson(diff.after).dynamodb_table.global_secondary_indexes;
+        const after = hclParse(diff.after).dynamodb_table.global_secondary_indexes;
         // check for billing mode
-        const { billing_mode } = hclToJson(diff.after).dynamodb_table;
+        const { billing_mode } = hclParse(diff.after).dynamodb_table;
 
         if (billing_mode === 'PAY_PER_REQUEST') {
           // let msg = `📂 ${ file }. ➡️  (💸 saving) The "billing_mode PAY_PER_REQUEST" is not recommended and in general will cost HBi more then it should.`
@@ -351,8 +351,8 @@ class Infrastructure extends Base {
 
   async ensureDynamoDBSingleKeyModification() {
     console.log('in: ensureDynamoDBSingleKeyModification');
-    // TODO: consider what to do with LSI?
-    let threshold = 10;
+    const threshold = 10;
+    const maxDiff = 1;
     const tfvars = this.danger.git.fileMatch("dynamodb/**/*.tfvars", "**/dynamodb/**/*.tfvars");
     if (uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created) > threshold) {
       warn(`☣️  Skip review as number of "DynamoDB" file changed hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling.`);
@@ -360,9 +360,8 @@ class Infrastructure extends Base {
       if (tfvars.modified) {
         tfvars.getKeyedPaths().modified.forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
-          const before = hclToJson(diff.before).dynamodb_table.global_secondary_indexes;
-          const after = hclToJson(diff.after).dynamodb_table.global_secondary_indexes;
-          const maxDiff = 1;
+          const before = hclParse(diff.before).dynamodb_table.global_secondary_indexes;
+          const after = hclParse(diff.after).dynamodb_table.global_secondary_indexes;
           if (isDiff(before, after, maxDiff)) {
             console.log('multiple changes found while comparing "global secondary indexes"');
             warn(`📂 ***${file}*** ➡️  (Potential issue) Only one GSI can be modified at a time, otherwise AWS will complain..`);
