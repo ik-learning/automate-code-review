@@ -6,15 +6,17 @@ const { Base } = require('./base');
 // tests
 class Changelog extends Base {
 
+  // TODO: test it
   async changelogPresent() {
     console.log('in: changelogPresent');
     const chg = this.danger.git.fileMatch("CHANGELOG.md");
-    if (!chg.modified && this.committedFiles > 1) {
+    if (chg.modified) {
+      // do nothing. changelog modified
+      return;
+    } else if (this.committedFiles > 1) {
       warn('This PR modifies multiple files while CHANGELOG not updated.');
-      this.addWarn('This PR modifies multiple files while CHANGELOG not updated.');
-    } else if (!chg.modified && this.committedFiles == 1) {
+    } else if (this.committedFiles == 1) {
       message('This PR modifies single file. Is this changes worthy of the CHANGELOG update?');
-      this.addMsg('This PR modifies single file. Is this changes worthy of the CHANGELOG update?');
     }
   }
 
@@ -40,10 +42,9 @@ class Changelog extends Base {
       let changelogActions = ["Added", "Changed", "Fixed", "Removed"];
       if (changes.length > 1 && firstEl.includes('[Unreleased]') && ["Added", "Changed", "Fixed", "Removed"].some(el => secondEl.includes(el))) {
         message('🤖 Well done!!! Found modified CHANGELOG 🎖🎖🎖.')
-        this.addMsg('🤖 Well done!!! Found modified CHANGELOG 🎖🎖🎖.')
       } else if (changelogActions.some(el => diff.diff.includes(el))) {
         if (changelogActions.some(el => firstEl.includes(el) || secondEl.includes(el))) {
-          // console.log('changelog seems legit');
+
         } else {
           warn('🌶  There should be no version until it is released, that is what the `[Unreleased]` section is for.');
         }
