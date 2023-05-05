@@ -385,7 +385,8 @@ class Infrastructure extends Base {
               else if (el.non_key_attributes.length !== beforeHashKeys[el.name].length) {
                 warn(msg);
               }
-            } else if (el.non_key_attributes === null && beforeHashKeys[el.name] !== null && beforeHashKeys[el.name].length > 1) {
+            // TODO: it should be a better logic
+            } else if (el.non_key_attributes === null && beforeHashKeys[el.name] && beforeHashKeys[el.name].length > 1) {
               warn(msg);
             } else if (el.non_key_attributes && beforeHashKeys[el.name] === null && el.non_key_attributes.length > 1) {
               warn(msg);
