@@ -358,7 +358,7 @@ class Infrastructure extends Base {
       warn(`☣️  Skip review as number of "DynamoDB" file changed hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling.`);
     } else if (tfvars.modified || tfvars.created || tfvars.deleted) {
       if (tfvars.modified) {
-        tfvars.getKeyedPaths().modified.forEach(async file => {
+        new Set(tfvars.getKeyedPaths().modified).forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
           const before = hclParse(diff.before).dynamodb_table.global_secondary_indexes;
           const after = hclParse(diff.after).dynamodb_table.global_secondary_indexes;
@@ -367,36 +367,26 @@ class Infrastructure extends Base {
             warn(`📂 ***${file}*** ➡️  (Potential issue) Only one GSI can be modified at a time, otherwise AWS will complain..`);
             return
           }
+          // TODO: extract this method
           const beforeHashKeys = before.reduce((obj, item) => (obj[item.name] = item.non_key_attributes, obj), {});
-          // potentially not just `non_key_attributes` cannot be modified.
+          // TODO: optional extract this logic
           after.filter(el => el.name in beforeHashKeys).forEach(el => {
+            // TODO: explicity test this logic
+            let msg = [
+              `📂 ***${file}*** ➡️  Cannot update GSI's properties other than ***Provisioned Throughput*** and ***Contributor Insights Specification***.`,
+              "***(Official resolution)*** You can create a new GSI with a different name.",
+              `***(non-Official resolution)*** Remove GCI '${el.name}' key in one MR and create a new MR with new|required values.`
+            ].join("\n")
             if (el.non_key_attributes !== null && beforeHashKeys[el.name] !== null) {
               if (el.non_key_attributes.length === 0 && beforeHashKeys[el.name].length === 0) {
                 // skip as length is zero in both cases
               }
-              else if (el.non_key_attributes !== null && beforeHashKeys[el.name] !== null) {
-                if (el.non_key_attributes.length !== beforeHashKeys[el.name].length) {
-                  let msg = [
-                    `📂 ***${file}*** ➡️  Cannot update GSI's properties other than Provisioned Throughput and Contributor Insights Specification.`,
-                    "***(Official resolution)*** You can create a new GSI with a different name.",
-                    `***(non-Official resolution)*** Remove GCI '${el.name}' key in one MR and create a new MR with new|required values.`
-                  ].join("\n")
-                  warn(msg);
-                }
+              else if (el.non_key_attributes.length !== beforeHashKeys[el.name].length) {
+                warn(msg);
               }
             } else if (el.non_key_attributes === null && beforeHashKeys[el.name] !== null && beforeHashKeys[el.name].length > 1) {
-              let msg = [
-                `📂 ***${file}*** ➡️  Cannot update GSI's properties other than Provisioned Throughput and Contributor Insights Specification.`,
-                "***(Official resolution)*** You can create a new GSI with a different name.",
-                `***(non-Official resolution)*** Remove GCI '${el.name}' key in one MR and create a new MR with new|required values.`
-              ].join("\n")
               warn(msg);
             } else if (el.non_key_attributes !== null && beforeHashKeys[el.name] === null && el.non_key_attributes.length > 1) {
-              let msg = [
-                `📂 ***${file}*** ➡️  Cannot update GSI's properties other than Provisioned Throughput and Contributor Insights Specification.`,
-                "***(Official resolution)*** You can create a new GSI with a different name.",
-                `***(non-Official resolution)*** Remove GCI '${el.name}' key in one MR and create a new MR with new|required values.`
-              ].join("\n")
               warn(msg);
             }
           })
