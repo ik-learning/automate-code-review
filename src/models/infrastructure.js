@@ -377,7 +377,8 @@ class Infrastructure extends Base {
               "***(Official resolution)*** You can create a new GSI with a different name.",
               `***(non-Official resolution)*** Remove GCI '${el.name}' key in one MR and create a new MR with new|required values.`
             ].join("\n")
-            if (el.non_key_attributes !== null && beforeHashKeys[el.name] !== null) {
+            if (el.non_key_attributes && beforeHashKeys[el.name]) {
+              // TODO: could me a shared method
               if (el.non_key_attributes.length === 0 && beforeHashKeys[el.name].length === 0) {
                 // skip as length is zero in both cases
               }
@@ -386,7 +387,7 @@ class Infrastructure extends Base {
               }
             } else if (el.non_key_attributes === null && beforeHashKeys[el.name] !== null && beforeHashKeys[el.name].length > 1) {
               warn(msg);
-            } else if (el.non_key_attributes !== null && beforeHashKeys[el.name] === null && el.non_key_attributes.length > 1) {
+            } else if (el.non_key_attributes && beforeHashKeys[el.name] === null && el.non_key_attributes.length > 1) {
               warn(msg);
             }
           })
