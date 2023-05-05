@@ -13,9 +13,9 @@ class Changelog extends Base {
     if (chg.modified) {
       // do nothing. changelog modified
       return;
-    } else if (this.committedFiles > 1) {
+    } else if (this.committedFiles.length > 1) {
       warn('This PR modifies multiple files while CHANGELOG not updated.');
-    } else if (this.committedFiles == 1) {
+    } else if (this.committedFiles.length == 1) {
       message('This PR modifies single file. Is this changes worthy of the CHANGELOG update?');
     }
   }
