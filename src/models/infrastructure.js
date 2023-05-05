@@ -110,13 +110,13 @@ class Infrastructure extends Base {
           const diff = await this.danger.git.diffForFile(file);
           let data = hclParse(diff.after);
           let { instance_class, engine, engine_version } = data.rds_config.instance_config
-          if (engine === 'postgres' && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
+
+          if (engine === 'postgres' && instance_class && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
             warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider different class \`${rdsRecommendInstanceTypesInDev}\` ...`);
-          } else if (engine === 'mysql' && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
+          } else if (engine === 'mysql' && instance_class && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
             warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider different types|class \`${rdsRecommendInstanceTypesInDev}\` ...`);
           }
         }, Error());
-
         tfvarsCreated.forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
           const data = hclParse(diff.after);
