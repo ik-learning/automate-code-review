@@ -26,6 +26,18 @@ variables:
     - echo "Docker version > ${BETA_VERSION}"
     - docker load -i image.tar
 
+.trigger-mr-default: &trigger-mr-default
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+.trigger-default: &trigger-default
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  changes:
+  - "Dockerfile"
+  - "*.js"
+  - "src/*"
+  - "tests/*"
+  - ".gitlab-ci.yml"
+
 build:
   tags:
     - docker
@@ -46,7 +58,9 @@ build:
       --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
       --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME" .
     - docker save $IMAGE -o image.tar
+  rules:
     - !reference [.rule-never-on-schedule, rules]
+
 
 test:
   image: "docker:stable"
@@ -62,12 +76,8 @@ test:
   rules:
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   - !reference [.rule-never-on-schedule, rules]
-  - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-    changes:
-      - "Dockerfile"
-      - "*.js"
-      - "src/*"
-      - ".gitlab-ci.yml"
+  - *trigger-mr-default
+  - *trigger-default
 
 push:
   image: "docker:stable"
@@ -81,14 +91,8 @@ push:
     - !reference [.template:docker-load, script]
     - docker push $CI_REGISTRY_IMAGE:latest
   rules:
-  - if: '$CI_PIPELINE_SOURCE == "trigger"'
-    when: never
-  - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-    changes:
-      - "Dockerfile"
-      - "*.js"
-      - "src/*"
-      - ".gitlab-ci.yml"
+  - !reference [.rule-never-on-schedule, rules]
+  - *trigger-default
 
 danger-mr-review:
   image:
