@@ -73,10 +73,10 @@ test:
   before_script:
     - !reference [.template:docker-load, script]
   script:
-    - docker run --rm $CONTAINER_IMAGE:latest -c "echo $BETA_VERSION"
-    - docker run --rm $CONTAINER_IMAGE:latest -c "yarn danger --version"
-    - docker run --rm $CONTAINER_IMAGE:latest -c "jq --version"
-    - docker run --rm $CONTAINER_IMAGE:latest -c "uuidgen --version"
+    - docker run --rm $IMAGE -c "echo $BETA_VERSION"
+    - docker run --rm $IMAGE -c "yarn danger --version"
+    - docker run --rm $IMAGE -c "jq --version"
+    - docker run --rm $IMAGE -c "uuidgen --version"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - !reference [.rule-never-on-schedule, rules]
