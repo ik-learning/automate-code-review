@@ -7,6 +7,7 @@ stages:
 
 variables:
   BETA_VERSION: beta-$CI_COMMIT_SHORT_SHA
+  IMAGE: $CI_REGISTRY_IMAGE:latest
 
 .rule-never-on-schedule:
   rules:
@@ -49,7 +50,7 @@ build:
   script:
     - env
     - >
-      docker build -t $CI_REGISTRY_IMAGE:latest
+      docker build -t $IMAGE
       --build-arg BUILD_VERSION=$CI_PIPELINE_IID
       --build-arg BETA_VERSION=$BETA_VERSION
       --label "org.opencontainers.image.title=$CI_PROJECT_TITLE"
@@ -69,6 +70,8 @@ test:
   tags:
     - docker
     - medium
+  before_script:
+    - !reference [.template:docker-load, script]
   script:
     - docker run --rm $CONTAINER_IMAGE:latest -c "echo $BETA_VERSION"
     - docker run --rm $CONTAINER_IMAGE:latest -c "yarn danger --version"
@@ -88,8 +91,8 @@ push:
     - medium
   before_script:
     - !reference [.template:image-registry-login, script]
-  script:
     - !reference [.template:docker-load, script]
+  script:
     - docker push $CI_REGISTRY_IMAGE:latest
   rules:
     - !reference [.rule-never-on-schedule, rules]
