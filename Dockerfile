@@ -22,6 +22,12 @@ RUN yarn
 COPY ./entrypoint.sh /usr/local/bin/code-review
 RUN chmod +x /usr/local/bin/code-review
 
+ARG BUILD_VERSION
+ENV BUILD_VERSION=$BUILD_VERSION
+
+ARG BETA_VERSION
+ENV BETA_VERSION=$BETA_VERSION
+
 ENV DANGER_GITLAB_HOST "https://gitlab.com"
 ENV PATH /danger/node_modules/bin:$PATH
 

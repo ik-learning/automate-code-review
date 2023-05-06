@@ -1,24 +1,57 @@
 stages:
   - docker-build
+  - docker-test
+  # TODO: unit tests
   - docker-push
   - check
+
+variables:
+  BETA_VERSION: beta-$CI_COMMIT_SHORT_SHA
 
 .common_rules: &common_rules
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     when: always
 
-build-and-test:
-  image: "docker:stable"
+.template:image-registry-login:
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+.template:docker-load:
+  script:
+    - echo "Docker version > ${BETA_VERSION}"
+    - docker load -i image.tar
+
+build:
+  tags:
+    - docker
   stage: docker-build
+  artifacts:
+    expire_in: 30 mins
+    paths:
+      - image.tar
+  script:
+    - env
+    - >
+      docker build -t $CI_REGISTRY_IMAGE:latest
+      --build-arg BUILD_VERSION=$CI_PIPELINE_IID
+      --build-arg BETA_VERSION=$BETA_VERSION
+      --label "org.opencontainers.image.title=$CI_PROJECT_TITLE"
+      --label "org.opencontainers.image.url=$CI_PROJECT_URL"
+      --label "org.opencontainers.image.created=$CI_JOB_STARTED_AT"
+      --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
+      --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME" .
+    - docker save $IMAGE -o image.tar
+
+test:
+  image: "docker:stable"
+  stage: docker-test
   tags:
     - docker
     - medium
-  before_script:
-  -   docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - >
-      docker build -t $CI_REGISTRY_IMAGE:latest
-      --build-arg BUILD_VERSION=$CI_PIPELINE_IID .
+    - !reference [.template:docker-load, script]
+
+    - docker run --rm $CONTAINER_IMAGE:latest -c "echo $BETA_VERSION"
     - docker run --rm $CONTAINER_IMAGE:latest -c "yarn danger --version"
     - docker run --rm $CONTAINER_IMAGE:latest -c "jq --version"
     - docker run --rm $CONTAINER_IMAGE:latest -c "uuidgen --version"
@@ -27,32 +60,25 @@ build-and-test:
   - if: '$CI_PIPELINE_SOURCE == "trigger"'
     when: never
 
-docker-build-push:
+push:
   image: "docker:stable"
   stage: docker-push
   tags:
     - docker
     - medium
   before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - !reference [.template:docker-login, script]
   script:
-    - >
-      docker build -t $CI_REGISTRY_IMAGE:latest
-      --build-arg BUILD_VERSION=$CI_PIPELINE_IID
-      --label "org.opencontainers.image.title=$CI_PROJECT_TITLE"
-      --label "org.opencontainers.image.url=$CI_PROJECT_URL"
-      --label "org.opencontainers.image.created=$CI_JOB_STARTED_AT"
-      --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
-      --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME" .
+    - !reference [.template:docker-load, script]
     - docker push $CI_REGISTRY_IMAGE:latest
   rules:
   - if: '$CI_PIPELINE_SOURCE == "trigger"'
     when: never
-  - if: '$CI_COMMIT_BRANCH == "master"'
+  - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
     changes:
       - "Dockerfile"
       - "*.js"
-      - "lib/*"
+      - "src/*"
       - ".gitlab-ci.yml"
 
 danger-mr-review:
