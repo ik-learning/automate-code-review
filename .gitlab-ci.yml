@@ -49,8 +49,6 @@ test:
     - docker
     - medium
   script:
-    - !reference [.template:image-registry-login, script]
-
     - docker run --rm $CONTAINER_IMAGE:latest -c "echo $BETA_VERSION"
     - docker run --rm $CONTAINER_IMAGE:latest -c "yarn danger --version"
     - docker run --rm $CONTAINER_IMAGE:latest -c "jq --version"
@@ -67,7 +65,7 @@ push:
     - docker
     - medium
   before_script:
-    - !reference [.template:docker-login, script]
+    - !reference [.template:image-registry-login, script]
   script:
     - !reference [.template:docker-load, script]
     - docker push $CI_REGISTRY_IMAGE:latest
