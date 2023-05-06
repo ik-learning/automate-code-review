@@ -41,6 +41,7 @@ build:
       --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
       --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME" .
     - docker save $IMAGE -o image.tar
+    - !reference [.rule-never-on-schedule, rules]
 
 test:
   image: "docker:stable"
@@ -55,8 +56,13 @@ test:
     - docker run --rm $CONTAINER_IMAGE:latest -c "uuidgen --version"
   rules:
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-  - if: '$CI_PIPELINE_SOURCE == "trigger"'
-    when: never
+  - !reference [.rule-never-on-schedule, rules]
+  - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    changes:
+      - "Dockerfile"
+      - "*.js"
+      - "src/*"
+      - ".gitlab-ci.yml"
 
 push:
   image: "docker:stable"
