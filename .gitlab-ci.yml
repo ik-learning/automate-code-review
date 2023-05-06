@@ -8,6 +8,11 @@ stages:
 variables:
   BETA_VERSION: beta-$CI_COMMIT_SHORT_SHA
 
+.rule-never-on-schedule:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PARENT_PIPELINE_SOURCE == "schedule"' # never on schedules
+      when: never
+
 .common_rules: &common_rules
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     when: always
