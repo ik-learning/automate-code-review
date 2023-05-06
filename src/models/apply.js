@@ -1,19 +1,18 @@
 'use strict';
 
 const { Base } = require('./base');
-// TODO
-// test
+
 class Apply extends Base {
 
-  addManualApplyMsg() {
+  async addManualApplyMsg() {
     console.log('in: addManualApplyMessage');
-    // manual apply advice should be added to an MR
+    // TODO: move to utils
     const result = this.committedFiles.filter(val => {
       return [
         'terraform', '.gitlab-ci.yml', 'ci.yml', 'environments'
       ].some(el => val.includes(el))
     });
-    if (result.length > 0) {
+    if (result.length) {
       message("🔰  You'll need to run the manual apply job when changes merged...")
     }
   }
@@ -21,10 +20,6 @@ class Apply extends Base {
   async addPaasManualApplyMsg() {
     console.log('in: addPaasManualApplyMsg');
     message("🔰  PaaS need to merge and apply changes...");
-  }
-
-  async run() {
-    console.log('nothing shared');
   }
 }
 
