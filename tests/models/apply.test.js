@@ -26,6 +26,7 @@ describe("test models/apply.js ...", () => {
     return target.addManualApplyMsg().then(() => {
       expect(dm.message).toHaveBeenCalledTimes(1);
       expect(dm.message).toHaveBeenCalledWith("🔰  You'll need to run the manual apply job when changes merged...");
+      expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('need to run the manual apply'));
     })
   })
 
