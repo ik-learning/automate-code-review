@@ -49,7 +49,7 @@ test:
     - docker
     - medium
   script:
-    - !reference [.template:docker-load, script]
+    - !reference [.template:image-registry-login, script]
 
     - docker run --rm $CONTAINER_IMAGE:latest -c "echo $BETA_VERSION"
     - docker run --rm $CONTAINER_IMAGE:latest -c "yarn danger --version"
