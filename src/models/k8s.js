@@ -1,25 +1,24 @@
 'use strict';
 const { Base } = require('./base');
-// TODO
-// test
+
 class K8S extends Base {
 
-  k8sDeployTestsAdded() {
+  async k8sDeployTestsAdded() {
     console.log('in: k8sDeployTestsAdded');
-    message("🤖 Ensure there is an explanation how the change was tested (demo app|screenshots|other)...");
-    const testsCreated = this.danger.git.fileMatch(
-      "k8s/sandbox/**/*.(yml|yaml)"
+    message("🤖 Make sure that there is a description of how the change was tested using the demo app, including screenshots and any other relevant information....");
+    const targets = this.danger.git.fileMatch(
+      "k8s/sandbox/**/*.(yml|yaml)",
+      "k8s/helm/**/tests/**/*.(yml|yaml)"
     );
-    const isCreated = testsCreated.getKeyedPaths().created.length == 0;
-    const isModified = testsCreated.getKeyedPaths().modified.length == 0;
-    const isEdited = testsCreated.getKeyedPaths().edited.length == 0;
-    if (isCreated && isEdited) {
-      message('🤖 Is there is a relevant test in ***k8s/sandbox/FEATURE/*** folder?')
-      this.addMsg('🤖 Is there is a relevant test in ***k8s/sandbox/FEATURE/*** folder?')
+    const isTestNotCreatedAndNotModified = targets.modified && !targets.created
+      || !targets.modified && targets.created
+      || targets.modified && targets.created  ? false : true;
+    console.info("--------")
+    console.info(targets)
+    console.info("--------")
+    if (isTestNotCreatedAndNotModified) {
+      message('🤖 Is there is a relevant test in `k8s/helm/hbi-deployment/tests OR k8s/sandbox/**/*` folders?')
     }
-  }
-  run() {
-    console.log(this.danger.git);
   }
 }
 
