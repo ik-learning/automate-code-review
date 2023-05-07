@@ -78,7 +78,6 @@ test:
     - docker run --rm $IMAGE -c "jq --version"
     - docker run --rm $IMAGE -c "uuidgen --version"
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - !reference [.rule-never-on-schedule, rules]
     - *trigger-mr-default
     - *trigger-default

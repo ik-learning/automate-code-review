@@ -99,6 +99,7 @@ npm install
 - [2/10: setup](https://www.bitrise.io/integrations/steps/danger)
 - [6/10: hints](https://prog.world/automate-review-selection-with-gitlab-ci-and-danger-js/)
 - [5/10: hints in ru](https://habr.com/ru/companies/vk/articles/672372/)
+- [6/10: Block code that is used in Demo](https://yalantis.com/blog/code-review-via-gitlab-merge-requests-code-review-must/)
 
 ### Issues
 
@@ -123,8 +124,6 @@ npm install
 - [Docker images. Build Images](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.danger)
 - [Examples](https://snyk.io/advisor/npm-package/danger/functions/danger.markdown)
 - [Official Gitlab Setup 3/10](https://danger.systems/js/usage/gitlab.html)
-- [Example 6/10](https://github.com/artsy/metaphysics/blob/main/dangerfile.ts)
-- [Block code be used in Demo](https://yalantis.com/blog/code-review-via-gitlab-merge-requests-code-review-must/)
 
 ### How To
 
