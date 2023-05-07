@@ -39,22 +39,22 @@ describe("test models/msk.js ...", () => {
 
   it("should ... when target file not modified", () => {
     dm.danger.git.fileMatch = chainsmoker.default({ modified: ['topics.csv'] });
-    dm.danger.gitlab.mr.description = setUpTestScenario('models/__fixtures__/msk/added.topics.description-ok.txt')
+    dm.danger.gitlab.mr.description = setUpTestScenario('models/__fixtures__/msk/added-topics.description-ok.txt')
     dm.danger.git.diffForFile = (file) => {
-      return setUpTestScenarioObject('models/__fixtures__/msk/added.topics.csv.json')
+      return setUpTestScenarioObject('models/__fixtures__/msk/added-topics.diff.csv.json')
     }
     return target.templateShouldBeEnforcedMsk().then(() => {
       expect(dm.message).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledTimes(0);
       expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('the team should decide which'));
-      // expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('template is missing'));
     })
   })
 
   it.only("should post message on templateShouldBeEnforcedMsk", () => {
     dm.danger.git.fileMatch = chainsmoker.default({ modified: ['topics.csv'] });
-    dm.danger.gitlab.mr.description = setUpTestScenario('models/__fixtures__/msk/added.topics.description-not-ok.txt')
+    dm.danger.gitlab.mr.description = setUpTestScenario('models/__fixtures__/msk/added-topics.description-bad.txt')
     dm.danger.git.diffForFile = (file) => {
-      return setUpTestScenarioObject('models/__fixtures__/msk/added.topics.csv.json')
+      return setUpTestScenarioObject('models/__fixtures__/msk/added-topics.diff.csv.json')
     }
     return target.templateShouldBeEnforcedMsk().then(() => {
       expect(dm.message).toHaveBeenCalledTimes(1);
@@ -64,7 +64,32 @@ describe("test models/msk.js ...", () => {
     })
   })
 
+  it.only("should post message on templateShouldBeEnforcedMsk", () => {
+    dm.danger.git.fileMatch = chainsmoker.default({ modified: ['topics.csv'] });
+    dm.danger.gitlab.mr.description = setUpTestScenario('models/__fixtures__/msk/removed-topics.description-bad.txt')
+    dm.danger.git.diffForFile = (file) => {
+      return setUpTestScenarioObject('models/__fixtures__/msk/removed-topics-diff.csv.json')
+    }
+    return target.templateShouldBeEnforcedMsk().then(() => {
+      expect(dm.message).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledTimes(1);
+      expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('the team should decide which'));
+      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('template is missing'));
+    })
+  })
 
+  it("should post message on templateShouldBeEnforcedMsk", () => {
+    dm.danger.git.fileMatch = chainsmoker.default({ modified: ['topics.csv'] });
+    dm.danger.gitlab.mr.description = setUpTestScenario('models/__fixtures__/msk/removed-topics.description-ok.txt')
+    dm.danger.git.diffForFile = (file) => {
+      return setUpTestScenarioObject('models/__fixtures__/msk/removed-topics-diff.csv.json')
+    }
+    return target.templateShouldBeEnforcedMsk().then(() => {
+      expect(dm.message).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledTimes(0);
+      expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('the team should decide which'));
+    })
+  })
 
   it("should not post a message when templateShouldBeEnforcedMsk() in cases when target file not modified", () => {
     dm.danger.git.fileMatch = chainsmoker.default({ modified: [], created: [], deleted: [], edited: [] });
