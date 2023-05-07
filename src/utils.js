@@ -2,6 +2,7 @@
 
 const hcl = require("hcl2-parser");
 const hash = require('object-hash');
+const fs = require('fs');
 
 // helper functions
 const sentenceContainsValues = (target, pattern) => {
@@ -56,6 +57,18 @@ const filesMatchPath = (files, paths) => {
   });
 }
 
+/**
+ * Write data to file.
+ *
+ * example usage: writeFileSync(process.cwd() + "/tests/models/__fixtures__/msk/topics.diff.csv", JSON.stringify(diff))
+ *
+ * @param {string} filename
+ * @param {string} data
+ */
+const writeFileSync = (filename, data) => {
+  fs.writeFileSync(filename, data)
+}
+
 module.exports = {
   sentenceContainsValues,
   inputInCollection,
@@ -64,4 +77,5 @@ module.exports = {
   uniqueElementsCount,
   isInCollection,
   filesMatchPath,
+  writeFileSync,
 };
