@@ -13,9 +13,6 @@ class K8S extends Base {
     const isTestNotCreatedAndNotModified = targets.modified && !targets.created
       || !targets.modified && targets.created
       || targets.modified && targets.created  ? false : true;
-    console.info("--------")
-    console.info(targets)
-    console.info("--------")
     if (isTestNotCreatedAndNotModified) {
       message('🤖 Is there is a relevant test in `k8s/helm/hbi-deployment/tests OR k8s/sandbox/**/*` folders?')
     }

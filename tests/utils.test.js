@@ -1,5 +1,5 @@
 
-const { sentenceContainsValues,
+const { sentenceContainsValues, filesMatchPath,
   inputInCollection, isDiff, hclParse,
   uniqueElementsCount, isInCollection } = require('../src/utils');
 
@@ -202,4 +202,12 @@ describe("Test utils.js ...", () => {
       expect(hclParse(hclString).resource.aws_kms_key.example).toStrictEqual([{ deletion_window_in_days: 10, description: 'kms-key-1' }]);
     });
   })
+
+  it.each([
+    [['.gitlab-ci.yml'], ['terraform'], 0],
+    [['.gitlab-ci.yml'], ['ci.yml'], 1],
+    [['dynamodb/environments/datalake/eu-west-1/erasure/terraform.tfvars'], ['.gitlab-ci.yml', 'environments'], 1],
+  ])('should filesMatchPath', (files, paths, result) => {
+    expect(filesMatchPath(files, paths).length).toBe(result)
+  });
 })

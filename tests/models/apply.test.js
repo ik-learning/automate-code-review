@@ -14,10 +14,20 @@ let target;
 describe("test models/apply.js ...", () => {
 
   beforeEach(() => {
-    dm.message = jest.fn();
-    dm.danger = jest.fn();
-    dm.danger.gitlab = jest.fn();
-    dm.danger.gitlab.metadata = jest.fn();
+    dm = {
+      message: jest.fn(),
+      danger: {
+        git: {
+          fileMatch: jest.fn(),
+        },
+        gitlab: {
+          metadata: {
+            pullRequestID: jest.fn()
+          }
+        },
+      },
+    }
+
     target = new Apply(dm.danger);
   })
 
@@ -43,5 +53,4 @@ describe("test models/apply.js ...", () => {
       expect(dm.message).toHaveBeenCalledWith("🔰  PaaS need to merge and apply changes...");
     })
   })
-
 })

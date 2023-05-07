@@ -50,6 +50,12 @@ const isInCollection = (target, collection) => {
   });
 }
 
+const filesMatchPath = (files, paths) => {
+  return files.filter(val => {
+    return paths.some(el => val.includes(el))
+  });
+}
+
 module.exports = {
   sentenceContainsValues,
   inputInCollection,
@@ -57,4 +63,5 @@ module.exports = {
   hclParse,
   uniqueElementsCount,
   isInCollection,
+  filesMatchPath,
 };

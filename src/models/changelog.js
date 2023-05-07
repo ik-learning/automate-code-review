@@ -14,9 +14,9 @@ class Changelog extends Base {
       // do nothing. changelog modified
       return;
     } else if (this.committedFiles.length > 1) {
-      warn('This PR modifies multiple files while CHANGELOG not updated.');
+      warn('This PR modifies multiple files. Please add a changelog entry to a CHANGELOG.md noting your changes.');
     } else if (this.committedFiles.length == 1) {
-      message('This PR modifies single file. Is this changes worthy of the CHANGELOG update?');
+      message('This PR modifies single file. Is this changes worthy of the CHANGELOG update noting your changes?');
     }
   }
 
@@ -26,9 +26,9 @@ class Changelog extends Base {
     const isForReview = this.danger.git.modified_files.length > 1;
     if (chg.modified && isForReview) {
       const chgModified = chg.getKeyedPaths().modified;
-      const diff = await this.danger.git.diffForFile(chgModified[0]);
-      let changes = diff.diff.split('\n').filter(a => a.replaceAll(/\s/g, '') !== '');
-      console.log("changelog: ", changes);
+      const diffInFile = await this.danger.git.diffForFile(chgModified[0]);
+      let changes = diffInFile.diff.split('\n').filter(a => a.replaceAll(/\s/g, '') !== '');
+      // console.debug("\t\tchangelog: ", changes);
       // example
       // [
       //   ' ## [Unreleased]',
@@ -42,7 +42,7 @@ class Changelog extends Base {
       let changelogActions = ["Added", "Changed", "Fixed", "Removed"];
       if (changes.length > 1 && firstEl.includes('[Unreleased]') && ["Added", "Changed", "Fixed", "Removed"].some(el => secondEl.includes(el))) {
         message('🤖 Well done!!! Found modified CHANGELOG 🎖🎖🎖.')
-      } else if (changelogActions.some(el => diff.diff.includes(el))) {
+      } else if (changelogActions.some(el => diffInFile.diff.includes(el))) {
         if (changelogActions.some(el => firstEl.includes(el) || secondEl.includes(el))) {
 
         } else {
