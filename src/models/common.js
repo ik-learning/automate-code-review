@@ -13,7 +13,7 @@ class Common extends Base {
     console.log('in: reviewLargePR');
     const filesThreshold = 10;
     if (this.danger.gitlab.mr.changes_count > filesThreshold) {
-      fail(`:exclamation: Pull Request size seems relatively large. If Pull Request contains multiple changes, split each into separate PR for faster, and simplified review. Gitlab API rate limiting throttle 'review-bot' on large MRs.`);
+      fail(`:warning: Pull Request size seems relatively large. Please consider breaking it up into smaller chunks... Gitlab API rate limiting throttle 'review-bot' on large MRs.`);
     }
   }
 
@@ -42,6 +42,18 @@ class Common extends Base {
     });
   }
 
+  async mrInfoCheck() {
+    if (danger.gitlab.mr.description.length < 10) {
+      warn("This MR needs a sufficiently accurate description.");
+    }
+
+    if (danger.gitlab.mr.title.toLocaleUpperCase().includes("WIP")) {
+      warn(
+        "If you want merge this MR, it's required to rename WIP part to something else."
+      );
+    }
+  }
+
   welcomeMsg(input) {
     console.log('in: welcomeMsg');
     let msg = "👋 Hey there! Thank you for contributing an MR to a repo! 🎉. I'm an experimental MR review 🤖 bot."
@@ -68,6 +80,7 @@ class Common extends Base {
   }
 
   run() {
+    this.mrInfoCheck();
     this.reviewLargePR();
     this.jiraStoryMissing();
     this.ensureFileHasNewline();
