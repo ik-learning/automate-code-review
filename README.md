@@ -65,11 +65,13 @@ DANGER_TEST_PR='2' yarn danger ci
 
 ## Plugins
 
+- [Plugins: official docs](https://danger.systems/js/)
 - [Danger Plugin Toolbox](https://www.npmjs.com/package/danger-plugin-toolbox)
 - [Danger Plugin Jest](https://github.com/macklinu/danger-plugin-jest)
 - [Danger Plugin TsLint](https://github.com/macklinu/danger-plugin-tslint)
 - [Danger Plugin noTestsShortcuts](https://www.npmjs.com/package/danger-plugin-no-test-shortcuts)
-- [PR Higene](https://www.npmjs.com/package/danger-plugin-pr-hygiene)
+- [Danger Plugin: PR Higene](https://www.npmjs.com/package/danger-plugin-pr-hygiene)
+- [Danger Plugin: pull request](https://github.com/rizalibnu/danger-plugin-pull-request)
 
 ## Testing
 
@@ -101,7 +103,7 @@ npm install
 ### Issues
 
 - [Danger ts](https://github.com/danger/danger-js/issues/1152)
-- [Danger ts](https://github.com/danger/danger-js/issues/1109)
+- [Danger ts. How to](https://github.com/danger/danger-js/issues/1109)
 - [Danger jest](https://github.com/danger/danger-js/pull/193/files)
 
 ## Secrets
@@ -117,8 +119,6 @@ npm install
 - [https://github.com/samdmarshall/danger/blob/master/Dangerfile](https://github.com/samdmarshall/danger/blob/master/Dangerfile)
 - [https://github.com/artsy/emission/blob/master/dangerfile.ts](https://github.com/artsy/emission/blob/master/dangerfile.ts)
 - [https://github.com/danger/danger-js/blob/main/dangerfile.ts](https://github.com/danger/danger-js/blob/main/dangerfile.ts)
-- [Plugins: official docs](https://danger.systems/js/)
-- [https://github.com/rizalibnu/danger-plugin-pull-request](https://github.com/rizalibnu/danger-plugin-pull-request)
 - [Docker image](https://github.com/orgs/danger/packages/container/package/danger-js)
 - [Docker images. Build Images](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.danger)
 - [Examples](https://snyk.io/advisor/npm-package/danger/functions/danger.markdown)

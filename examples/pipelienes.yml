@@ -1,0 +1,9 @@
+triage-ops:
+  needs: []
+  extends:
+    - .triage-ops
+  stage: triage-ops
+  parallel:
+    matrix:
+      - OS: ['debian:bullseye']
+        RUBY: ['2.7', '3.0']
