@@ -125,11 +125,6 @@ npm install
 - [Examples](https://snyk.io/advisor/npm-package/danger/functions/danger.markdown)
 - [Official Gitlab Setup 3/10](https://danger.systems/js/usage/gitlab.html)
 
-### How To
-
-- [Gitlab Templates](https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml)
-- [Danger Github Action](https://github.com/MeilCli/danger-action)
-- [Gitlab Node API](https://github.com/jdalrymple/gitbeaker)
 
 ### Example MRs to Cover
 
