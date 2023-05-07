@@ -5,6 +5,12 @@ const hash = require('object-hash');
 const fs = require('fs');
 
 // helper functions
+/**
+ * A sentence contains all the values from a pattern.
+ * @param {*} target
+ * @param {*} pattern
+ * @returns true or false
+ */
 const sentenceContainsValues = (target, pattern) => {
   let result = 0;
   let targetLowerCase = target.toLowerCase();

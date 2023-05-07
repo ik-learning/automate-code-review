@@ -1,0 +1,7 @@
+{
+  "before": "topic,replication_factor,partitions,config\nfulfilment_expired_orders_v1_hbi_order_event_dlq,3,3\nfulfilment_expired_orders_v1,3,3\nfulfilment_new_subscriptions_v1,3,3\nfulfilment_oms_erasures_v1,3,1\nfulfilment_order_count_global_temp,3,3\nfulfilment_order_count_global_v1,3,3\nfulfilment_routed_orders_temp,3,3\nfulfilment_routed_orders_v1_hbi_order_event_dlq,3,3\nfulfilment_routed_orders_v1_routed_orders_consumer_group_v1_dlq,3,3\nfulfilment_routed_orders_v1,3,3\n",
+  "after": "topic,replication_factor,partitions,config\nfulfilment_expired_orders_v1_hbi_order_event_dlq,3,3\nfulfilment_expired_orders_v1,3,3\nfulfilment_new_subscriptions_v1,3,3\nfulfilment_oms_erasures_v1,3,1,retention.ms=3456000000\nfulfilment_order_count_global_temp,3,3\nfulfilment_order_count_global_v1,3,3\nfulfilment_routed_orders_temp,3,3\nfulfilment_routed_orders_v1_hbi_order_event_dlq,3,3\nfulfilment_routed_orders_v1_routed_orders_consumer_group_v1_dlq,3,3\nfulfilment_routed_orders_v1,3,3\n",
+  "diff": " fulfilment_expired_orders_v1_hbi_order_event_dlq,3,3\n fulfilment_expired_orders_v1,3,3\n fulfilment_new_subscriptions_v1,3,3\n-fulfilment_oms_erasures_v1,3,1\n+fulfilment_oms_erasures_v1,3,1,retention.ms=3456000000\n fulfilment_order_count_global_temp,3,3\n fulfilment_order_count_global_v1,3,3\n fulfilment_routed_orders_temp,3,3",
+  "added": "+fulfilment_oms_erasures_v1,3,1,retention.ms=3456000000",
+  "removed": "-fulfilment_oms_erasures_v1,3,1"
+}
