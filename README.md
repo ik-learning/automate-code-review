@@ -55,12 +55,8 @@ docker pull registry.gitlab.com/hnbi/platform-as-a-service/test-projects/automat
 ## Commands
 
 ```sh
-docker pull ghcr.io/danger/danger-js:11.1.2
-yarn danger:local
-# locally test
-yarn danger pr $DANGER_PR_URL
-yarn danger pr --removePreviousComments $DANGER_PR_URL
-DANGER_TEST_PR='2' yarn danger ci
+npm install
+mk local
 ```
 
 ## Plugins
@@ -72,18 +68,16 @@ DANGER_TEST_PR='2' yarn danger ci
 - [Danger Plugin noTestsShortcuts](https://www.npmjs.com/package/danger-plugin-no-test-shortcuts)
 - [Danger Plugin: PR Higene](https://www.npmjs.com/package/danger-plugin-pr-hygiene)
 - [Danger Plugin: pull request](https://github.com/rizalibnu/danger-plugin-pull-request)
+- [Danger: extensions](https://github.com/elementsinteractive/danger)
+- [Danger: toolbox](https://github.com/sogame/danger-plugin-toolbox/blob/master/docs/utilities.md)
+- [Danger Plugin: kirinus](https://www.npmjs.com/package/danger-plugin-kirinus)
 
 ## Testing
 
 - [Artsy Emission](https://github.com/artsy/emission/blob/master/package.json)
 - [Jest Testing with typescript](https://danger.systems/js/tutorials/transpilation.html)
 - [Jest: docs expect](https://jestjs.io/docs/expect)
-
-### Run Danger file
-
-```
-npm install
-```
+- [Jest: how to use jest](https://geshan.com.np/blog/2022/07/jest-tohavebeencalledwith/)
 
 ### Docs & Blogs
 
@@ -124,7 +118,6 @@ npm install
 - [Docker images. Build Images](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.danger)
 - [Examples](https://snyk.io/advisor/npm-package/danger/functions/danger.markdown)
 - [Official Gitlab Setup 3/10](https://danger.systems/js/usage/gitlab.html)
-
 
 ### Example MRs to Cover
 
