@@ -6,9 +6,8 @@ const { Base } = require('./base');
 // tests
 class Changelog extends Base {
 
-  // TODO: test it
-  async changelogPresent() {
-    console.log('in: changelogPresent');
+  async changelogNotPresent() {
+    console.log('in: changelogNotPresent');
     const chg = this.danger.git.fileMatch("CHANGELOG.md");
     if (chg.modified) {
       // do nothing. changelog modified
@@ -16,7 +15,7 @@ class Changelog extends Base {
     } else if (this.committedFiles.length > 1) {
       warn('This PR modifies multiple files. Please add a changelog entry to a CHANGELOG.md noting your changes.');
     } else if (this.committedFiles.length == 1) {
-      message('This PR modifies single file. Is this changes worthy of the CHANGELOG update noting your changes?');
+      warn('This PR modifies single file. Is this changes worthy of the CHANGELOG update noting your changes?');
     }
   }
 
@@ -60,7 +59,7 @@ class Changelog extends Base {
   }
 
   async run() {
-    await this.changelogPresent();
+    await this.changelogNotPresent();
     await this.changelogUnreleased();
     await this.chartYamlVersionReleased();
   }
