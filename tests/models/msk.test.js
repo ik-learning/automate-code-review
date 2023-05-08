@@ -46,8 +46,8 @@ describe("test models/msk.js ...", () => {
     [{ modified: ['topics.csv'] }, 'updated-topics.description-bad.txt', 'updated-topics-diff.csv.json', 1, 1],
   ])('should post messages on templateShouldBeEnforcedMsk when topic created|updated|removed',
     (keyedPaths, description, csvDiff, messageTimes, warnTimes) => {
+      target.mrDescription = setUpTestScenario(`models/__fixtures__/msk/${description}`)
       dm.danger.git.fileMatch = chainsmoker.default(keyedPaths);
-      dm.danger.gitlab.mr.description = setUpTestScenario(`models/__fixtures__/msk/${description}`)
       dm.danger.git.diffForFile = (file) => {
         return setUpTestScenarioObject(`models/__fixtures__/msk/${csvDiff}`)
       }

@@ -15,6 +15,10 @@ const { Base } = require('./base');
 // test
 class Infrastructure extends Base {
 
+  // TODO: test
+  /**
+   *
+   */
   validateElasticCacheRDSInstanceClassExist() {
     console.log('in: validateElasticCacheRDSInstanceClassExist');
     const tfvars = this.danger.git.fileMatch("(elasticache|rds)/**/*.tfvars");
@@ -23,14 +27,18 @@ class Infrastructure extends Base {
       const tfvarsRDS = this.danger.git.fileMatch("rds/**");
       if (tfvarsCache.created || tfvarsCache.modified) {
         const link = links.nodeTypes['cache']
-        message(`🔰  When in doubt. Available [cache node types](${link})`)
+        message(`🔰  When in doubt, available [cache node types](${link})`)
       } else if (tfvarsRDS.created || tfvarsRDS.modified) {
         const link = links.nodeTypes['rds']
-        message(`🔰  When in doubt, you can validate instance class. Available [rds instance classes](${link})`)
+        message(`🔰  When in doubt, available [rds instance classes](${link})`)
       }
     }
   }
 
+  // TODO: test
+  /**
+   *
+   */
   async removeStorageResources() {
     console.log('in: removeStorageResources');
     const tfvars = this.danger.git.fileMatch(
@@ -44,15 +52,20 @@ class Infrastructure extends Base {
     }
   };
 
+  // TODO: test
+  /**
+   *
+   */
   async rdsMysql5EndOfLifeDate() {
     console.log('in: rdsMysql5EndOfLifeDate');
     const tfvars = this.danger.git.fileMatch("rds/**/*.tfvars");
-
-    const tfvarsCreated = tfvars.getKeyedPaths().created;
-    const tfvarsModified = tfvars.getKeyedPaths().modified;
-    const varsMerged = tfvarsCreated.concat(tfvarsModified);
-
     if (tfvars.modified || tfvars.created) {
+
+      const tfvarsCreated = tfvars.getKeyedPaths().created;
+      const tfvarsModified = tfvars.getKeyedPaths().modified;
+      // merge them
+      const varsMerged = tfvarsCreated.concat(tfvarsModified);
+
       varsMerged.forEach(async file => {
         const diff = await this.danger.git.diffForFile(file);
         const data = hclParse(diff.after);
@@ -88,12 +101,13 @@ class Infrastructure extends Base {
       ].join("\n")
       warn(details)
     }
+    // TODO: check more specific e.g. dev and prod contains
     if (tfvarsCreated.length > 1) {
       message('🤖 Do you need **prod** immediately too, or can it be split out and deployed later (ie. will you be using it today?).');
     }
 
     if (tfvars.modified || tfvars.created) {
-      message('🤖 Make sure to verify the `plan` job in the merge request pipeline and compare "engine_info.valid_upgrade_targets" output attribute with desired engine version .');
+      message('🤖 Make sure to verify the `plan` job in the merge request pipeline and compare "engine_info.valid_upgrade_targets" output attribute with desired engine version.');
     }
 
     if (tfvars.modified || tfvars.created || tfvars.deleted) {
@@ -150,9 +164,6 @@ class Infrastructure extends Base {
         let infoMessages = new Set();
         await tfvarsModified.forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
-          // instance classes
-          // - instance_class = "db.t3.micro"
-          // + instance_class = "db.t3.small"
           const beforeRDSConfig = hclParse(diff.before).rds_config
           const afterRDSConfig = hclParse(diff.after).rds_config
           if (typeof beforeRDSConfig === 'undefined' || typeof afterRDSConfig === 'undefined') {
@@ -166,7 +177,7 @@ class Infrastructure extends Base {
               !(storage_type in recommendedRDSStorageTypes)) {
               infoMessages.add('instance_classes')
               console.log(`before: ${before}, after: ${after}`);
-              message(`🤖 (Experimental|Optional) Instance class modified. Worth to provide a link to datadog dashboard, monitor, relevant capacity planning calculations...`);
+              message(`🤖 Instance class modified. Worth to provide a link to datadog dashboard, monitor, relevant capacity planning calculations...`);
             }
             if (inputInCollection(engine, ['mysql', 'postgres']) && storage_type in recommendedRDSStorageTypes) {
               const recommended = recommendedRDSStorageTypes[storage_type];
@@ -180,6 +191,7 @@ class Infrastructure extends Base {
     }
   }
 
+  // TODO: test
   async ensureRdsAuroraCreationValidated() {
     console.log('in: ensureAuroraRdsCreationValidated');
 
@@ -201,7 +213,7 @@ class Infrastructure extends Base {
       ].join("\n")
       warn(details)
     }
-
+    // TODO: check more specific e.g. dev and prod contains
     if (tfvarsCreated.length > 1) {
       message('🤖 Do you need **prod** immediately too, or can it be split out and deployed later (ie. will you be using it today?).');
     }
@@ -253,6 +265,7 @@ class Infrastructure extends Base {
     }
   }
 
+  // TODO: test
   async templateShouldBeEnforced() {
     console.log('in: templateShouldBeEnforced');
     const templates = mrTemplates;
@@ -260,13 +273,14 @@ class Infrastructure extends Base {
     const tfvarsCreated = tfvars.getKeyedPaths().created;
     const tfvarsModified = tfvars.getKeyedPaths().modified;
     const tfvarsDeleted = tfvars.getKeyedPaths().deleted;
-    // TODO: s3 bucket modified bucket, created bucket, deleted bucket
+
     let template = {}
-    // TODO: S3 buckets probably slightly differ
-    let tmpCreatedMissing = !sentenceContainsValues(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'created']);
-    let tmpModifiedMissing = !sentenceContainsValues(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'update']);
-    let tmpDeletedMissing = !sentenceContainsValues(this.danger.gitlab.mr.description.toLowerCase(), ['## checklist', 'remove']);
+    let tmpCreatedMissing = !sentenceContainsValues(this.mrDescription, ['## checklist', 'created']);
+    let tmpModifiedMissing = !sentenceContainsValues(this.mrDescription, ['## checklist', 'update']);
+    let tmpDeletedMissing = !sentenceContainsValues(this.mrDescription, ['## checklist', 'remove']);
     // created
+    // TODO: can we merge them and run it once?
+    // TODO: can we change logic e.g. run it less times, do pre-processing?
     if (tmpCreatedMissing && tfvarsCreated.length > 0) {
       // todo: test
       tfvarsCreated.forEach(file => {

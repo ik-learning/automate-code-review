@@ -7,6 +7,7 @@ class Base {
   constructor(danger) {
     this.danger = danger
     this.prId = danger.gitlab.metadata.pullRequestID;
+    this.mrDescription = danger.gitlab.mr.description.toLowerCase()
     this.#repository = null;
     this.#updatedFiles = null;
     this._committedFiles = null;

@@ -20,6 +20,9 @@ describe("test models/apply.js ...", () => {
         gitlab: {
           metadata: {
             pullRequestID: jest.fn()
+          },
+          mr: {
+            description: '',
           }
         },
       },

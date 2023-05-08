@@ -22,6 +22,9 @@ describe("test models/k8s.js ...", () => {
         gitlab: {
           metadata: {
             pullRequestID: jest.fn()
+          },
+          mr: {
+            description: '',
           }
         },
       },

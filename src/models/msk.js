@@ -23,11 +23,11 @@ class MSK extends Base {
         const diff = await this.danger.git.diffForFile(file);
         const before = diff.before.split(new_line).slice(1).filter((a) => a).length;
         const after = diff.after.split(new_line).slice(1).filter((a) => a).length;
-        if (before > after && !sentenceContainsValues(this.danger.gitlab.mr.description, ['## checklist', 'remove'])) {
+        if (before > after && !sentenceContainsValues(this.mrDescription, ['## checklist', 'remove'])) {
           warn(this.#composeMsg('remove'));
-        } else if (before < after && !sentenceContainsValues(this.danger.gitlab.mr.description, ['## checklist', 'added'])) {
+        } else if (before < after && !sentenceContainsValues(this.mrDescription, ['## checklist', 'added'])) {
           warn(this.#composeMsg('add'));
-        } else if (!sentenceContainsValues(this.danger.gitlab.mr.description, ['## checklist', 'update'])) {
+        } else if (!sentenceContainsValues(this.mrDescription, ['## checklist', 'update'])) {
           warn(this.#composeMsg('update'));
         }
       });

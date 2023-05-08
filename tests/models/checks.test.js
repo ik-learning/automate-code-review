@@ -7,7 +7,7 @@ let dm = danger;
 const { Checks } = require("../../src/models");
 let target;
 
-describe("test models/k8s.js ...", () => {
+describe("test models/checks.js ...", () => {
   beforeEach(() => {
     global.message = (input) => dm.message(input);
     dm = {
@@ -20,7 +20,8 @@ describe("test models/k8s.js ...", () => {
           },
           mr: {
             state: '',
-            title: ''
+            title: '',
+            description: '',
           },
           approvals: {}
         },

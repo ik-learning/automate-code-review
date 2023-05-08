@@ -30,7 +30,8 @@ describe("test models/changelog.js ...", () => {
           },
           mr: {
             state: '',
-            title: ''
+            title: '',
+            description: '',
           },
           approvals: {}
         },
