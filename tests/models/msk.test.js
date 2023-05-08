@@ -67,4 +67,59 @@ describe("test models/msk.js ...", () => {
     })
   })
 
+  it("should post a message when csvEntryAlphabeticOrder() not in alphabetic order", () => {
+    const nonAlphabetic = 'models/__fixtures__/msk/topics-added-diff.non-order.csv.json';
+    dm.danger.git.fileMatch = chainsmoker.default({ modified: ['msk-topics.csv'] });
+    dm.danger.git.diffForFile = (file) => {
+      if (file === 'msk-topics.csv') return setUpTestScenarioObject(nonAlphabetic)
+    }
+    const topics = `
++ 168 sc_wms_inbound_container_closed,3,6
++ 169 sc_wms_inbound_container_closed_error,3,1
++ 170 sc_wms_movement_completed,3,6
++ 171 sc_wms_task_status_changed,3,6`
+    return target.csvEntryAlphabeticOrder().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining(topics));
+    })
+  })
+
+  it("should post a message when csvEntryAlphabeticOrder() not in alphabetic order topics added not in order", () => {
+    const nonAlphabetic = 'models/__fixtures__/msk/topics-added-diff.non-order.split.csv.json';
+    dm.danger.git.fileMatch = chainsmoker.default({ modified: ['msk-topics.csv'] });
+    dm.danger.git.diffForFile = (file) => {
+      if (file === 'msk-topics.csv') return setUpTestScenarioObject(nonAlphabetic)
+    }
+    const topics = `
++ 76 test-topic-code-review,2,3
++ 146 oaftfer-upsert-events,3,3`
+    return target.csvEntryAlphabeticOrder().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining(topics));
+    })
+  })
+
+  it("should post a message when csvEntryAlphabeticOrder() in alphabetic order and single topic added in order", () => {
+    const nonAlphabetic = 'models/__fixtures__/msk/topic-added-diff.order.csv.json';
+    dm.danger.git.fileMatch = chainsmoker.default({ modified: ['msk-topics.csv'] });
+    dm.danger.git.diffForFile = (file) => {
+      if (file === 'msk-topics.csv') return setUpTestScenarioObject(nonAlphabetic)
+    }
+    return target.csvEntryAlphabeticOrder().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(0);
+    })
+  })
+
+  it("should post a message when csvEntryAlphabeticOrder() and topic updated", () => {
+    const nonAlphabetic = 'models/__fixtures__/msk/topics-updated-diff.order.csv.json';
+    dm.danger.git.fileMatch = chainsmoker.default({ modified: ['msk-topics.csv'] });
+    dm.danger.git.diffForFile = (file) => {
+      if (file === 'msk-topics.csv') return setUpTestScenarioObject(nonAlphabetic)
+    }
+    return target.csvEntryAlphabeticOrder().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(0);
+      expect(dm.message).toHaveBeenCalledTimes(0);
+    })
+  })
+
 })
