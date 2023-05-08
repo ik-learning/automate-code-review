@@ -14,11 +14,13 @@ describe("test models/common.js ...", () => {
     global.message = (input) => dm.message(input);
     global.warn = (input) => dm.warn(input);
     global.fail = (input) => dm.fail(input);
+    global.markdown = (input) => dm.markdown(input);
 
     dm = {
       message: jest.fn(),
       warn: jest.fn(),
       fail: jest.fn(),
+      markdown: jest.fn(),
       danger: {
         git: {
           fileMatch: jest.fn(),
@@ -134,6 +136,18 @@ Closes PTS-1478
     target.mrInfoCheck();
     expect(dm.warn).toHaveBeenCalledTimes(1);
     expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('rename WIP part'));
+  })
+
+  it("should post a message when welcomeMsg() and link is provided", () => {
+    target.welcomeMsg({ url: "https://google.com"});
+    expect(dm.markdown).toHaveBeenCalledTimes(1);
+    expect(dm.markdown).toHaveBeenCalledWith(expect.stringContaining('share feedback and etc'));
+  })
+
+  it("should post a message when welcomeMsg() and link is not provided", () => {
+    target.welcomeMsg();
+    expect(dm.markdown).toHaveBeenCalledTimes(1);
+    expect(dm.markdown).toHaveBeenCalledWith(expect.stringContaining('contributing an MR'));
   })
 
 })
