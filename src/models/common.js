@@ -21,15 +21,13 @@ class Common extends Base {
     console.log('in: jiraStoryMissing');
     if (this.danger.gitlab.mr.state === 'opened') {
       const isJira = (this.danger.gitlab.mr.title + this.danger.gitlab.mr.description).includes("hbidigital.atlassian.net/browse")
-      const isCloses = (this.danger.gitlab.mr.description).includes("Closes")
-      if (!isJira || !isCloses) {
+      const isCloses = this.danger.gitlab.mr.description.includes("Closes")
+      if (!isJira && !isCloses) {
         warn('Make sure there is a link provided to the relevant Jira story.')
-      } else {
-        console.log('link to jira found')
       }
     }
   }
-
+  // TODO
   ensureFileHasNewline() {
     console.log('in: ensureHasNewLine');
     // ensure all files have newlines
@@ -42,7 +40,7 @@ class Common extends Base {
     });
   }
 
-  async mrInfoCheck() {
+  mrInfoCheck() {
     if (danger.gitlab.mr.description.length < 10) {
       warn("This MR needs a sufficiently accurate description.");
     }
