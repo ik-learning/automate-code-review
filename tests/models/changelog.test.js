@@ -75,47 +75,47 @@ describe("test models/changelog.js ...", () => {
     })
   });
 
-  // it.each([
-  //   [0, { modified: ['CHANGELOG.md'], created: [], deleted: [], edited: [] },
-  //     { created_files: ['CHANGELOG.md'], deleted_files: [], modified_files: [] }],
-  //   [0, { modified: [], created: [], deleted: ['k8s/helm/cron.yaml'], edited: [] },
-  //     { created_files: [], deleted_files: ['k8s/helm/cron.yaml'], modified_files: [] }],
-  // ])('should not message when changelogUnreleased() and required files not modified', (times, keyedPaths, files) => {
-  //   dm.danger.git.created_files = files.created_files;
-  //   dm.danger.git.deleted_files = files.deleted_files;
-  //   dm.danger.git.modified_files = files.modified_files;
-  //   return target.changelogUnreleased().then(() => {
-  //     expect(dm.message).toHaveBeenCalledTimes(0);
-  //   })
-  // });
+  it.each([
+    [0, { modified: ['CHANGELOG.md'], created: [], deleted: [], edited: [] },
+      { created_files: ['CHANGELOG.md'], deleted_files: [], modified_files: [] }],
+    [0, { modified: [], created: [], deleted: ['k8s/helm/cron.yaml'], edited: [] },
+      { created_files: [], deleted_files: ['k8s/helm/cron.yaml'], modified_files: [] }],
+  ])('should not message when changelogUnreleased() and required files not modified', (times, keyedPaths, files) => {
+    dm.danger.git.created_files = files.created_files;
+    dm.danger.git.deleted_files = files.deleted_files;
+    dm.danger.git.modified_files = files.modified_files;
+    return target.changelogUnreleased().then(() => {
+      expect(dm.message).toHaveBeenCalledTimes(0);
+    })
+  });
 
-  // it("should message when changelogNotPresent()", () => {
-  //   dm.danger.git.fileMatch = chainsmoker.default({ modified: ['CHANGELOG.md'] });
-  //   return target.changelogNotPresent().then(() => {
-  //     expect(dm.warn).toHaveBeenCalledTimes(0);
-  //   })
-  // })
+  it("should message when changelogNotPresent()", () => {
+    dm.danger.git.fileMatch = chainsmoker.default({ modified: ['CHANGELOG.md'] });
+    return target.changelogNotPresent().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(0);
+    })
+  })
 
-  // it("should message when changelogNotPresent() and single file modified", () => {
-  //   target._committedFiles = ['.gitlab-ci.yml'];
-  //   return target.changelogNotPresent().then(() => {
-  //     expect(dm.warn).toHaveBeenCalledTimes(1);
-  //     expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('modifies single file'));
-  //   })
-  // })
+  it("should message when changelogNotPresent() and single file modified", () => {
+    target._committedFiles = ['.gitlab-ci.yml'];
+    return target.changelogNotPresent().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('modifies single file'));
+    })
+  })
 
-  // it("should message when changelogNotPresent() and multiple files modified", () => {
-  //   target._committedFiles = ['.gitlab-ci.yml', 'helm/tests/values.yml'];
-  //   return target.changelogNotPresent().then(() => {
-  //     expect(dm.warn).toHaveBeenCalledTimes(1);
-  //     expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('modifies multiple files'));
-  //   })
-  // })
+  it("should message when changelogNotPresent() and multiple files modified", () => {
+    target._committedFiles = ['.gitlab-ci.yml', 'helm/tests/values.yml'];
+    return target.changelogNotPresent().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('modifies multiple files'));
+    })
+  })
 
-  // it("should message when addPaasManualApplyMsg", () => {
-  //   return target.chartYamlVersionReleased().then(() => {
-  //     expect(dm.message).toHaveBeenCalledTimes(1);
-  //     expect(dm.message).toHaveBeenCalledWith("🤖 On release, make sure chart `version` is updated in `Chart.yaml` file.");
-  //   })
-  // })
+  it("should message when addPaasManualApplyMsg", () => {
+    return target.chartYamlVersionReleased().then(() => {
+      expect(dm.message).toHaveBeenCalledTimes(1);
+      expect(dm.message).toHaveBeenCalledWith("🤖 On release, make sure chart `version` is updated in `Chart.yaml` file.");
+    })
+  })
 })
