@@ -18,7 +18,7 @@ describe("test models/k8s.js ...", () => {
       message: jest.fn(),
       danger: {
         git: {
-          fileMatch: chainsmoker.default({ modified: [], created: [], deleted: [], edited: [] })
+          fileMatch: chainsmoker.default({ modified: [], created: [], deleted: [], edited: [] }),
         },
         gitlab: {
           metadata: {

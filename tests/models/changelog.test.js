@@ -4,9 +4,7 @@ const chainsmoker = require('../../node_modules/danger/distribution/commands/uti
 var danger = require("danger");
 var dm = danger;
 
-global.message = (input) => {
-  dm.message(input)
-}
+const { setUpTestScenarioObject, setUpTestScenario } = require("../fixtures");
 
 const { Changelog } = require("../../src/models");
 let target;
@@ -21,7 +19,10 @@ describe("test models/changelog.js ...", () => {
       warn: jest.fn(),
       danger: {
         git: {
-          fileMatch: chainsmoker.default({ modified: [] })
+          fileMatch: chainsmoker.default({ modified: [], created: [], deleted: [], edited: [] }),
+          created_files: [],
+          deleted_files: [],
+          modified_files: [],
         },
         gitlab: {
           metadata: {
@@ -38,12 +39,46 @@ describe("test models/changelog.js ...", () => {
     target = new Changelog(dm.danger);
   })
 
-  // it("should message when addPaasManualApplyMsg", () => {
-  //   return target.addPaasManualApplyMsg().then(() => {
-  //     expect(dm.message).toHaveBeenCalledTimes(1);
-  //     expect(dm.message).toHaveBeenCalledWith("🔰  PaaS need to merge and apply changes...");
-  //   })
-  // })
+  it("should not message when changelogUnreleased() and CHANGELOG is not modified", () => {
+    return target.changelogUnreleased().then(() => {
+      expect(dm.message).toHaveBeenCalledTimes(0);
+    })
+  })
+
+  it.each([
+    [0, { modified: ['CHANGELOG.md'], created: [], deleted: [], edited: [] },
+      { created_files: ['CHANGELOG.md'], deleted_files: ['k8s/helm/cron.yaml'], modified_files: [] }],
+    // [0, { modified: [], created: [], deleted: ['k8s/helm/cron.yaml'], edited: [] },
+    //   { created_files: [], deleted_files: ['k8s/helm/cron.yaml'], modified_files: [] }],
+  ])('should message when changelogUnreleased() and required files modified', (times, keyedPaths, files) => {
+    dm.danger.git.fileMatch = chainsmoker.default(keyedPaths);
+    dm.danger.git.created_files = files.created_files;
+    dm.danger.git.deleted_files = files.deleted_files;
+    dm.danger.git.modified_files = files.modified_files;
+
+    // dm.danger.gitlab.mr.description = setUpTestScenario(`models/__fixtures__/msk/${description}`)
+    dm.danger.git.diffForFile = (file) => {
+      return setUpTestScenarioObject(`models/__fixtures__/changelog/changelogUnreleased/changelog-multi-changed-diff.ok.json`)
+    }
+
+    return target.changelogUnreleased().then(() => {
+      expect(dm.message).toHaveBeenCalledTimes(0);
+    })
+  });
+
+  it.each([
+    [0, { modified: ['CHANGELOG.md'], created: [], deleted: [], edited: [] },
+      { created_files: ['CHANGELOG.md'], deleted_files: [], modified_files: [] }],
+    [0, { modified: [], created: [], deleted: ['k8s/helm/cron.yaml'], edited: [] },
+      { created_files: [], deleted_files: ['k8s/helm/cron.yaml'], modified_files: [] }],
+  ])('should not message when changelogUnreleased() and required files not modified', (times, keyedPaths, files) => {
+    dm.danger.git.created_files = files.created_files;
+    dm.danger.git.deleted_files = files.deleted_files;
+    dm.danger.git.modified_files = files.modified_files;
+    return target.changelogUnreleased().then(() => {
+      expect(dm.message).toHaveBeenCalledTimes(0);
+    })
+  });
 
   it("should message when changelogNotPresent()", () => {
     dm.danger.git.fileMatch = chainsmoker.default({ modified: ['CHANGELOG.md'] });

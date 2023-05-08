@@ -19,12 +19,12 @@ let checks = new Checks(danger);
 const repoSlug = danger.gitlab.metadata.repoSlug.toLowerCase();
 const web_url = danger.gitlab.mr.web_url;
 
-if (!checks.skipReview()) {
-  console.log(`MR "${web_url}" review..`);
+if (process.env.DANGER_SKIP_REVIEW === "true" || !checks.skipReview()) {
+  console.log(`\tMR "${web_url}" review..`);
   let cmn = new Common(danger);
   cmn.run();
 
-  if (isInCollection(repoSlug, ['platform-as-a-service/kafka/msk-topics'])) {
+  if (isInCollection(repoSlug, ['kafka/msk-topics'])) {
     apply.addManualApplyMsg();
     (async function () {
       await msk.run();
@@ -32,14 +32,16 @@ if (!checks.skipReview()) {
     })();
   }
 
-  if (isInCollection(repoSlug, ['k8s-deploy', 'k8s-cluster-config'])) {
+  if (isInCollection(repoSlug, ['k8s-cluster-config'])) {
     (async function () {
-      await chg.run();
+      await chg.changelogNotPresent();
     })();
   }
 
   if (isInCollection(repoSlug, ['k8s-deploy'])) {
     k8s.k8sDeployTestsAdded();
+    chg.changelogNotPresent();
+    chg.changelogUnreleased();
   }
 
   if (isInCollection(repoSlug, ['platform-as-a-service/oauth2-proxy'])) {

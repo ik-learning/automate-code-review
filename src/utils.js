@@ -72,7 +72,8 @@ const filesMatchPath = (files, paths) => {
  * @param {string} data
  */
 const writeFileSync = (filename, data) => {
-  fs.writeFileSync(filename, data)
+  const buffer = Buffer.from(data);
+  fs.writeFileSync(filename, buffer)
 }
 
 module.exports = {

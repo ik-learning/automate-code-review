@@ -2,7 +2,7 @@
 
 const { Base } = require('./base');
 const
-  { sentenceContainsValues, writeFileSync } = require("../utils");
+  { sentenceContainsValues } = require("../utils");
 const { mrTemplatesMsk } = require('../constants');
 
 class MSK extends Base {
