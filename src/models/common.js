@@ -28,7 +28,7 @@ class Common extends Base {
     }
   }
   // TODO
-  ensureFileHasNewline() {
+  async ensureFileHasNewline() {
     console.log('in: ensureHasNewLine');
     // ensure all files have newlines
     this.updatedFiles.forEach(file => {
@@ -41,11 +41,11 @@ class Common extends Base {
   }
 
   mrInfoCheck() {
-    if (danger.gitlab.mr.description.length < 10) {
+    if (this.danger.gitlab.mr.description.length < 20) {
       warn("This MR needs a sufficiently accurate description.");
     }
 
-    if (danger.gitlab.mr.title.toLocaleUpperCase().includes("WIP")) {
+    if (this.danger.gitlab.mr.title.toLocaleUpperCase().includes("WIP")) {
       warn(
         "If you want merge this MR, it's required to rename WIP part to something else."
       );
@@ -77,11 +77,11 @@ class Common extends Base {
     }
   }
 
-  run() {
+  async run() {
     this.mrInfoCheck();
     this.reviewLargePR();
     this.jiraStoryMissing();
-    this.ensureFileHasNewline();
+    await this.ensureFileHasNewline();
   }
 }
 

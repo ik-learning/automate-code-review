@@ -112,5 +112,29 @@ Closes PTS-1478
     target.jiraStoryMissing();
     expect(dm.warn).toHaveBeenCalledTimes(0);
   })
+
+  it("should not post a message when mrInfoCheck()", () => {
+    dm.danger.gitlab.mr.title = 'The fifty mannequin heads floating in the pool'
+    dm.danger.gitlab.mr.description = 'Sometimes you have to just give up and win by cheating.'
+    target.mrInfoCheck();
+    expect(dm.warn).toHaveBeenCalledTimes(0);
+  })
+
+  it("should post a message when mrInfoCheck() description is short", () => {
+    dm.danger.gitlab.mr.title = 'The fifty mannequin heads floating in the pool'
+    dm.danger.gitlab.mr.description = 'Follow up MR'
+    target.mrInfoCheck();
+    expect(dm.warn).toHaveBeenCalledTimes(1);
+    expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('sufficiently accurate'));
+  })
+
+  it("should post a message when mrInfoCheck() and title contains WIP", () => {
+    dm.danger.gitlab.mr.title = 'WIP: The fifty mannequin heads floating in the pool'
+    dm.danger.gitlab.mr.description = 'Sometimes you have to just give up and win by cheating.'
+    target.mrInfoCheck();
+    expect(dm.warn).toHaveBeenCalledTimes(1);
+    expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('rename WIP part'));
+  })
+
 })
 
