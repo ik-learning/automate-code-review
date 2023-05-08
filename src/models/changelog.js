@@ -2,6 +2,9 @@
 
 const { Base } = require('./base');
 
+const
+  { writeFileSync } = require("../utils");
+
 // TODO
 // tests
 class Changelog extends Base {
@@ -22,34 +25,38 @@ class Changelog extends Base {
   async changelogUnreleased() {
     console.log('in: changelogUnreleased');
     const chg = this.danger.git.fileMatch("CHANGELOG.md");
-    const isForReview = this.danger.git.modified_files.length > 1;
+    const isForReview = this.committedFiles.length > 1;
+
     if (chg.modified && isForReview) {
       const chgModified = chg.getKeyedPaths().modified;
-      const diffInFile = await this.danger.git.diffForFile(chgModified[0]);
-      let changes = diffInFile.diff.split('\n').filter(a => a.replaceAll(/\s/g, '') !== '');
-      // console.debug("\t\tchangelog: ", changes);
-      // example
-      // [
-      //   ' ## [Unreleased]',
-      //   '+### Added',
-      //   '+- Simplify command. Added `k8s-deploy` alongside `/usr/local/bin/docker-entrypoint.sh`',
-      //   ' ---'
-      // ]
-      // Unreleased > Added|Changed|Fixed|Removed >
-      let firstEl = changes[0];
-      let secondEl = changes[1];
-      let changelogActions = ["Added", "Changed", "Fixed", "Removed"];
-      if (changes.length > 1 && firstEl.includes('[Unreleased]') && ["Added", "Changed", "Fixed", "Removed"].some(el => secondEl.includes(el))) {
-        message('🤖 Well done!!! Found modified CHANGELOG 🎖🎖🎖.')
-      } else if (changelogActions.some(el => diffInFile.diff.includes(el))) {
-        if (changelogActions.some(el => firstEl.includes(el) || secondEl.includes(el))) {
+      const diffInFile = await this.danger.git.diffForFile(chgModified.shift());
+      const chgActionsAdded = ["+### Added", "+### Changed", "+### Fixed", "+### Removed"];
+      const chgActions = ["### Added", "### Changed", "### Fixed", "### Removed"];
+      let actions = 0;
 
-        } else {
-          warn('🌶  There should be no version until it is released, that is what the `[Unreleased]` section is for.');
+      // merge them two
+      for (const action in chgActionsAdded) {
+        if (diffInFile.diff.includes(chgActionsAdded[action])) {
+          actions += 1;
         }
-      } else {
-        warn('➕  Could you add an entry to the "Unreleased" section of the changelog. Valid entries are `Added|Changed|Fixed|Removed`.');
       }
+
+      if (actions === 0) {
+        const firstDiff = diffInFile.diff.split('+-')[0]
+        for (let action in chgActions) {
+          if (firstDiff.includes(chgActions[action])) {
+            actions += 1;
+          }
+        }
+      }
+
+      if (actions === 1) {
+        message('🤖 Well done!!! Found modified CHANGELOG 🎖🎖🎖.')
+      } else if (actions > 1) {
+        warn('🌶  Where possible keep a release small.');
+      }
+    } else {
+      warn('➕  Could you add an entry to the "Unreleased" section of the changelog. Valid entries are `Added|Changed|Fixed|Removed`.');
     }
   }
 

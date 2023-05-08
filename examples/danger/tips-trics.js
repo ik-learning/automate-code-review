@@ -14,3 +14,10 @@ return false
 writeFileSync(process.cwd() + "/tests/models/__fixtures__/msk/topics.diff.csv", JSON.stringify(diff))
 console.log(this.danger.gitlab.mr)
 writeFileSync(process.cwd() + "/tests/models/__fixtures__/msk/topics.add.mr", JSON.stringify(this.danger.gitlab.mr.description))
+
+const chgModified = chg.getKeyedPaths().modified;
+const diffInFile = await this.danger.git.diffForFile(chgModified.shift());
+console.info(diffInFile)
+let changes = diffInFile.diff.split('\n').filter(a => a.replaceAll(/\s/g, '') !== '');
+console.info(changes)
+writeFileSync(process.cwd() + "/tests/models/__fixtures__/changelog/changelog-diff.json", JSON.stringify(diffInFile))

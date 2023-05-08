@@ -47,9 +47,9 @@ describe("test models/changelog.js ...", () => {
 
   it.each([
     [1, 'changelog-single-added-diff.ok.json', 'modified-files.json', 'Found modified CHANGELOG', null],
-    [1, 'changelog-multi-changed-diff.ok.json', 'modified-files.json', 'Found modified CHANGELOG', null],
+    [1, 'changelog-single-changed-diff.ok.json', 'modified-files.json', 'Found modified CHANGELOG', null],
     [1, null, 'modified-files.no-changelog.json', null, 'Could you add an entry'],
-
+    [1, 'changelog-multi-changes-diff.ok.json', 'modified-files.json', null, 'keep a release small'],
   ])('should post message when changelogUnreleased() and required files modified', (times, fixture, modified, msg, warn) => {
     const filesFixtures = 'models/__fixtures__/changelog/changelogUnreleased';
     const gitFiles = setUpTestScenarioObject(`${filesFixtures}/${modified}`);
