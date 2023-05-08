@@ -1,16 +1,15 @@
 'use strict';
 
-const { Results } = require('./results');
-// TODO
-// test
 class Base {
+  #repository;
+  #updatedFiles;
+
   constructor(danger) {
     this.danger = danger
-    this.result = new Results();
     this.prId = danger.gitlab.metadata.pullRequestID;
-    this._repository = null;
+    this.#repository = null;
+    this.#updatedFiles = null;
     this._committedFiles = null;
-    this._updatedFiles = null;
   }
   danger() {
     console.log(this.danger.git);
@@ -20,10 +19,10 @@ class Base {
   }
 
   get repo() {
-    if (!this._repository) {
-      this._repository = this.danger.gitlab.metadata.repoSlug;
+    if (!this.#repository) {
+      this.#repository = this.danger.gitlab.metadata.repoSlug;
     }
-    return this._repository;
+    return this.#repository;
   }
 
   get committedFiles() {
@@ -38,23 +37,14 @@ class Base {
   }
 
   get updatedFiles() {
-    if (!this._updatedFiles) {
-      this._updatedFiles = [
+    if (!this.#updatedFiles) {
+      this.#updatedFiles = [
         ...this.danger.git.created_files,
         ...this.danger.git.modified_files,
       ]
     }
-    return this._updatedFiles;
+    return this.#updatedFiles;
   };
-
-  // to review
-  addWarn(msg) {
-    this.result.addWarn(msg)
-  }
-  addMsg(msg) {
-    this.result.addMsg(msg)
-  }
-  //
 
   // abstract methods
   run() {
