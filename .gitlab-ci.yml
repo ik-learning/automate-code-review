@@ -9,7 +9,7 @@ variables:
   BETA_VERSION: beta-$CI_COMMIT_SHORT_SHA
   IMAGE: $CI_REGISTRY_IMAGE:latest
 
-.rule-never-on-schedule:
+.rule-never-on-schedule: &rule-never-on-schedule
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PARENT_PIPELINE_SOURCE == "schedule"' # never on schedules
       when: never
@@ -60,7 +60,7 @@ build:
       --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME" .
     - docker save $IMAGE -o image.tar
   rules:
-    - !reference [.rule-never-on-schedule, rules]
+    - *rule-never-on-schedule
     - *trigger-mr-default
     - *trigger-default
 
@@ -77,8 +77,10 @@ docker-test:
     - docker run --rm $IMAGE -c "yarn danger --version"
     - docker run --rm $IMAGE -c "jq --version"
     - docker run --rm $IMAGE -c "uuidgen --version"
+  needs:
+    - build
   rules:
-    - !reference [.rule-never-on-schedule, rules]
+    - *rule-never-on-schedule
     - *trigger-mr-default
     - *trigger-default
 
@@ -93,8 +95,10 @@ push:
     - !reference [.template:docker-load, script]
   script:
     - docker push $CI_REGISTRY_IMAGE:latest
+  needs:
+    - docker-test
   rules:
-    - !reference [.rule-never-on-schedule, rules]
+    - *rule-never-on-schedule
     - *trigger-default
 
 danger-mr-review:
