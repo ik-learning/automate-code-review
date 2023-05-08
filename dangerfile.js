@@ -9,7 +9,6 @@ const
   { isInCollection } = require("./src/utils");
 
 let msk = new MSK(danger);
-let csv = new CSV(danger);
 let apply = new Apply(danger);
 let k8s = new K8S(danger);
 let chg = new Changelog(danger);
@@ -28,7 +27,6 @@ if (process.env.DANGER_SKIP_REVIEW === "true" || !checks.skipReview()) {
     apply.addManualApplyMsg();
     (async function () {
       await msk.run();
-      await csv.run();
     })();
   }
 

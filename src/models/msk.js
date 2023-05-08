@@ -6,6 +6,9 @@ const
   { sentenceContainsValues, writeFileSync } = require("../utils");
 const { mrTemplatesMsk } = require('../constants');
 
+const exclude_csv_headers = 1;
+const new_line = '\n';
+
 class MSK extends Base {
 
   /**
@@ -18,8 +21,8 @@ class MSK extends Base {
       const csvModified = csv.getKeyedPaths().modified;
       csvModified.forEach(async file => {
         const diff = await this.danger.git.diffForFile(file);
-        const before = diff.before.split('\n').slice(1).filter((a) => a).length;
-        const after = diff.after.split('\n').slice(1).filter((a) => a).length;
+        const before = diff.before.split(new_line).slice(1).filter((a) => a).length;
+        const after = diff.after.split(new_line).slice(1).filter((a) => a).length;
         if (before > after && !sentenceContainsValues(this.danger.gitlab.mr.description, ['## checklist', 'remove'])) {
           warn(this.#composeMsg('remove'));
         } else if (before < after && !sentenceContainsValues(this.danger.gitlab.mr.description, ['## checklist', 'added'])) {
@@ -41,10 +44,9 @@ class MSK extends Base {
     if (csv.modified) {
       const csvModified = csv.getKeyedPaths().modified;
       csvModified.forEach(async file => {
-        const diff = await this.danger.git.diffForFile(file);
-        const after = diff.after.split('\n').slice(1).filter((a) => a); // filter to remove empty elements
-        console.info(after)
-        const added = diff.added.split('\n').filter((a) => a);
+        const diffForFile = await this.danger.git.diffForFile(file);
+        const after = diffForFile.after.split(new_line).slice(exclude_csv_headers).filter((a) => a); // filter to remove empty elements
+        const added = diffForFile.added.split(new_line).filter((a) => a);
         // before
         // [
         //   ' fulfilment_expired_orders_v1_hbi_order_event_dlq,3,3',
@@ -66,31 +68,22 @@ class MSK extends Base {
         //   'fulfilment_order_count_global_v1,3,3',
         //   'fulfilment_routed_orders_temp,3,3'
         // ]
-        const justDiff = diff.diff.split('\n').filter(a => a.substring(0, 1) !== '-').map(a => {
+        const justDiff = diffForFile.diff.split(new_line).filter(a => a.substring(0, 1) !== '-').map(a => {
           return a.replace(' ', '').replace('+', '')
         });
-        let sorted = [...after].sort((el, nextEl) => {
-          let first = el.split(',')[0];
-          let second = nextEl.split(',')[0];
-          if (first < second) {
-            return -1;
-          }
-          if (first > second) {
-            return 1;
-          }
+        let sortedArray = [...after].sort((first, next) => {
+          let el = first.split(',')[0];
+          let nextEl = next.split(',')[0];
+          if (el < nextEl) return -1;
+          if (el > nextEl) return 1;
           return 0;
         });
-        // TODO: review whole msk-topics file, as it may have few violations
         const result = [];
-        let onlyAdded = true;
-        let addedAsTxt = added.join(',');
+        const addedAsTxt = added.join(',');
         for (let i = 0; i < after.length; i++) {
-          let first = after[i];
-          let second = sorted[i];
-          if (onlyAdded && addedAsTxt.includes(first)) {
-            if (first !== second) {
-              result.push(`+ ${i + 1} ${after[i]}`)
-            }
+          let original = after[i];
+          if (addedAsTxt.includes(original) && original !== sortedArray[i]) {
+            result.push(`+ ${i + 1} ${after[i]}`);
           }
         }
         if (result.length) {
