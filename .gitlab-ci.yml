@@ -3,7 +3,7 @@ stages:
   - docker-test
   # TODO: unit tests
   - docker-push
-  - check
+  - review-mr
 
 variables:
   BETA_VERSION: beta-$CI_COMMIT_SHORT_SHA
@@ -100,7 +100,7 @@ push:
 danger-mr-review:
   image:
     name: "$CI_REGISTRY_IMAGE:latest"
-  stage: check
+  stage: review-mr
   tags:
     - generic
     - medium
