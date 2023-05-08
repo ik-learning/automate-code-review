@@ -393,13 +393,21 @@ class Infrastructure extends Base {
   }
 
   async run() {
+    // TODO: test
     this.validateElasticCacheRDSInstanceClassExist();
+    // TODO: test
     await this.removeStorageResources();
+    // TODO: test
     await this.ensureRdsCreationValidated();
+    // TODO: test
     await this.ensureRdsAuroraCreationValidated();
+    // TODO: test
     await this.templateShouldBeEnforced();
+    // TODO: test
     await this.rdsMysql5EndOfLifeDate();
+    // TODO: test
     await this.dynamoDBCommonChecks();
+    // TODO: test
     await this.ensureDynamoDBSingleKeyModification();
   }
 }
