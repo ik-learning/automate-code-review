@@ -64,7 +64,7 @@ build:
     - *trigger-mr-default
     - *trigger-default
 
-test:
+docker-test:
   image: "docker:stable"
   stage: docker-test
   tags:
@@ -113,3 +113,5 @@ danger-mr-review:
   rules:
   - if: '$CI_PIPELINE_SOURCE == "trigger"'
     when: always
+  - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    when: never
