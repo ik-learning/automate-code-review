@@ -5,6 +5,9 @@ var chainsmoker = require('../../node_modules/danger/distribution/commands/utils
 console.info(Object.entries(this.danger.git))
 console.info(Object.entries(this.danger.git))
 
+const
+  { writeFileSync } = require("../utils");
+  
 // console.info("---------")
 // console.info(Object.entries(this.danger.git))
 // console.info(diff)

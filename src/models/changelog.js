@@ -2,11 +2,6 @@
 
 const { Base } = require('./base');
 
-const
-  { writeFileSync } = require("../utils");
-
-// TODO
-// tests
 class Changelog extends Base {
 
   async changelogNotPresent() {
@@ -34,7 +29,6 @@ class Changelog extends Base {
       const chgActions = ["### Added", "### Changed", "### Fixed", "### Removed"];
       let actions = 0;
 
-      // merge them two
       for (const action in chgActionsAdded) {
         if (diffInFile.diff.includes(chgActionsAdded[action])) {
           actions += 1;
