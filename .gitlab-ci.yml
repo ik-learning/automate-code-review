@@ -10,9 +10,8 @@ variables:
   IMAGE: $CI_REGISTRY_IMAGE:latest
 
 .rule-never-on-schedule: &rule-never-on-schedule
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PARENT_PIPELINE_SOURCE == "schedule"' # never on schedules
-      when: never
+  - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PARENT_PIPELINE_SOURCE == "schedule"' # never on schedules
+    when: never
 
 .common_rules: &common_rules
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
