@@ -75,6 +75,7 @@ class Infrastructure extends Base {
     const tfvarsCreated = tfvars.getKeyedPaths().created;
     const tfvarsModified = tfvars.getKeyedPaths().modified;
     let threshold = 10;
+
     // should not even do stuff if no RDS
     if (tfvarsCreated.length !== hcl.getKeyedPaths().created.length) {
       const details = [
@@ -138,9 +139,6 @@ class Infrastructure extends Base {
               warn(`📂 ${file}. ➡️ In \`prod\` environment instance class \`${instance_class}\` not recommended. Consider different class \`${suggested}\` ...`);
             }
           }
-          // make sure the recommended engine class is used
-          // https://github.com/hashicorp/terraform-provider-aws/issues/27702
-          // https://github.com/hashicorp/terraform-provider-aws/pull/27670
           if (inputInCollection(engine, ['mysql', 'postgres']) && storage_type in recommendedRDSStorageTypes) {
             const recommended = recommendedRDSStorageTypes[storage_type];
             warn(`📂 ${file}. ✏️ (Optional) Recommended \`storage_type\` is \`${recommended}\` as it provides better performance and cost efficiency as opposite to  \'${storage_type}\'. [Docs and Migration AWS migration Guide](${links.gp2gp3Migration}) and [UserGuide](${links.rdsUserGuide}).`)
@@ -360,7 +358,7 @@ class Infrastructure extends Base {
       if (tfvars.modified) {
         new Set(tfvars.getKeyedPaths().modified).forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
-          const before = hclParse(diff.before).dynamodb_table.global_secondary_indexes;
+          const ensureDynamoDBSingleKeyModificationbefore = hclParse(diff.before).dynamodb_table.global_secondary_indexes;
           const after = hclParse(diff.after).dynamodb_table.global_secondary_indexes;
           if (isDiff(before, after, maxDiff)) {
             console.log('multiple changes found while comparing "global secondary indexes"');

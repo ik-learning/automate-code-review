@@ -27,6 +27,11 @@ describe("test models/common.js ...", () => {
           diffForFile: jest.fn(),
         },
         gitlab: {
+          api: {
+            MergeRequests: {
+              edit: jest.fn(),
+            }
+          },
           metadata: {
             pullRequestID: jest.fn()
           },
@@ -40,17 +45,17 @@ describe("test models/common.js ...", () => {
     target = new Common(dm.danger);
   })
 
-//   it("should post message when reviewLargePR() and number of changes do exceed a threshold", () => {
-//     dm.danger.gitlab.mr.changes_count = 15
-//     target.reviewLargePR();
-//     expect(dm.fail).toHaveBeenCalledTimes(1);
-//   })
+  it("should post message when reviewLargePR() and number of changes do exceed a threshold", () => {
+    dm.danger.gitlab.mr.changes_count = 15
+    target.reviewLargePR();
+    expect(dm.fail).toHaveBeenCalledTimes(1);
+  })
 
-//   it("should not post message when reviewLargePR() and number of changes does not exceed a threshold", () => {
-//     dm.danger.gitlab.mr.changes_count = 8
-//     target.reviewLargePR();
-//     expect(dm.fail).toHaveBeenCalledTimes(0);
-//   })
+  it("should not post message when reviewLargePR() and number of changes does not exceed a threshold", () => {
+    dm.danger.gitlab.mr.changes_count = 8
+    target.reviewLargePR();
+    expect(dm.fail).toHaveBeenCalledTimes(0);
+  })
 
   it("should message when jiraStoryMissing() and jira story is missing", () => {
     dm.danger.gitlab.mr.state = 'opened'
@@ -153,12 +158,30 @@ Closes PTS-1478
   it.each([
     [1, { url: "https://google.com" }, 'share feedback and etc'],
     [1, {}, 'contributing an MR'],
-      [1, null, 'contributing an MR'],
-    ])('should consume welcomeMsg()', (times, input, msg) => {
-      target.welcomeMsg(input);
-      expect(dm.markdown).toHaveBeenCalledTimes(times);
-      expect(dm.markdown).toHaveBeenCalledWith(expect.stringContaining(msg));
+    [1, null, 'contributing an MR'],
+  ])('should consume welcomeMsg()', (times, input, msg) => {
+    target.welcomeMsg(input);
+    expect(dm.markdown).toHaveBeenCalledTimes(times);
+    expect(dm.markdown).toHaveBeenCalledWith(expect.stringContaining(msg));
   });
 
+  it("should update labels when addLabels(input)", () => {
+    dm.danger.gitlab.mr.labels = ["one", "two"];
+    dm.danger.gitlab.metadata.repoSlug = 'test/repo'
+    dm.danger.gitlab.api.MergeRequests.edit = jest.fn();
+    return target.addLabels(["two", "four"]).then(() => {
+      expect(dm.danger.gitlab.api.MergeRequests.edit).toHaveBeenCalledTimes(1);
+      expect(dm.danger.gitlab.api.MergeRequests.edit).toHaveBeenCalledWith('test/repo', expect.anything(), { "labels": ["one", "two", "two", "four"] });
+    })
+  })
+
+  it("should not update labels when addLabels(input)", () => {
+    dm.danger.gitlab.mr.labels = ["one", "two"];
+    dm.danger.gitlab.metadata.repoSlug = 'test/repo'
+    dm.danger.gitlab.api.MergeRequests.edit = jest.fn();
+    return target.addLabels(["one"]).then(() => {
+      expect(dm.danger.gitlab.api.MergeRequests.edit).toHaveBeenCalledTimes(0);
+    })
+  })
 })
 

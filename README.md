@@ -74,10 +74,10 @@ mk local
 
 ## Testing
 
-- [Artsy Emission](https://github.com/artsy/emission/blob/master/package.json)
-- [Jest Testing with typescript](https://danger.systems/js/tutorials/transpilation.html)
+- [Jest: testing with typescript](https://danger.systems/js/tutorials/transpilation.html)
 - [Jest: docs expect](https://jestjs.io/docs/expect)
 - [Jest: how to use jest](https://geshan.com.np/blog/2022/07/jest-tohavebeencalledwith/)
+- [Jest: partial match](https://www.emgoto.com/jest-partial-match/)
 
 ### Docs & Blogs
 
@@ -224,3 +224,6 @@ mk local
 - [X] `k8s-deploy` specific review
   + [X] Test in test folder present.
   + [X] Message with explanation what is required to test changes.
+
+
+BIG MR https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/merge_requests/4269
