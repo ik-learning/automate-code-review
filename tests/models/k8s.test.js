@@ -5,15 +5,14 @@ const chainsmoker = require('../../node_modules/danger/distribution/commands/uti
 const danger = require("danger");
 let dm = danger;
 
-global.message = (input) => {
-  dm.message(input)
-}
-
 const { K8S } = require("../../src/models");
 let target;
 
 describe("test models/k8s.js ...", () => {
   beforeEach(() => {
+
+    global.message = (input) => dm.message(input);
+
     dm = {
       message: jest.fn(),
       danger: {

@@ -4,16 +4,13 @@ jest.mock("danger", () => jest.fn())
 var danger = require("danger");
 var dm = danger;
 
-global.message = (input) => {
-  dm.message(input)
-}
-
 const { Apply } = require("../../src/models");
 let target;
 
 describe("test models/apply.js ...", () => {
 
   beforeEach(() => {
+    global.message = (input) => dm.message(input);
     dm = {
       message: jest.fn(),
       danger: {

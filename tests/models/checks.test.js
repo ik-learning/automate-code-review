@@ -4,10 +4,6 @@ const chainsmoker = require('../../node_modules/danger/distribution/commands/uti
 const danger = require("danger");
 let dm = danger;
 
-global.message = (input) => {
-  dm.message(input)
-}
-
 const { Checks } = require("../../src/models");
 let target;
 
