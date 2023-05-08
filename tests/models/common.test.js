@@ -139,7 +139,7 @@ Closes PTS-1478
   })
 
   it("should post a message when welcomeMsg() and link is provided", () => {
-    target.welcomeMsg({ url: "https://google.com"});
+    target.welcomeMsg({ url: "https://google.com" });
     expect(dm.markdown).toHaveBeenCalledTimes(1);
     expect(dm.markdown).toHaveBeenCalledWith(expect.stringContaining('share feedback and etc'));
   })
@@ -149,6 +149,16 @@ Closes PTS-1478
     expect(dm.markdown).toHaveBeenCalledTimes(1);
     expect(dm.markdown).toHaveBeenCalledWith(expect.stringContaining('contributing an MR'));
   })
+
+  it.each([
+    [1, { url: "https://google.com" }, 'share feedback and etc'],
+    [1, {}, 'contributing an MR'],
+      [1, null, 'contributing an MR'],
+    ])('should consume welcomeMsg()', (times, input, msg) => {
+      target.welcomeMsg(input);
+      expect(dm.markdown).toHaveBeenCalledTimes(times);
+      expect(dm.markdown).toHaveBeenCalledWith(expect.stringContaining(msg));
+  });
 
 })
 
