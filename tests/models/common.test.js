@@ -183,5 +183,27 @@ Closes PTS-1478
       expect(dm.danger.gitlab.api.MergeRequests.edit).toHaveBeenCalledTimes(0);
     })
   })
-})
 
+  it("should message when ensureFileHasNewline() and no new line present", () => {
+    dm.danger.git.created_files = ['requirements.txt'];
+    dm.danger.git.modified_files = [];
+    dm.danger.git.diffForFile = async (file) => {
+      return setUpTestScenarioObject('models/__fixtures__/common/no-newline.diff.json');
+    }
+    return target.ensureFileHasNewline().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('No newline at end of file'));
+    })
+  })
+
+  it("should not message when ensureFileHasNewline() and new line present", () => {
+    dm.danger.git.created_files = ['requirements.txt'];
+    dm.danger.git.modified_files = [];
+    dm.danger.git.diffForFile = async (file) => {
+      return setUpTestScenarioObject('models/__fixtures__/common/newline.diff.json');
+    }
+    return target.ensureFileHasNewline().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(0);
+    })
+  })
+})

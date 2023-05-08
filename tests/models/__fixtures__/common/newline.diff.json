@@ -1,0 +1,7 @@
+{
+  "before": "boto3==1.26.127\ncrhelper==2.0.11\npython-json-logger==2.0.7",
+  "after": "boto3==1.26.129\ncrhelper==2.0.11\npython-json-logger==2.0.7",
+  "diff": "-boto3==1.26.127\n+boto3==1.26.129\n crhelper==2.0.11\n python-json-logger==2.0.7\n",
+  "added": "+boto3==1.26.129",
+  "removed": "-boto3==1.26.127"
+}

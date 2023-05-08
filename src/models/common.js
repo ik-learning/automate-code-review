@@ -2,11 +2,8 @@
 
 const { links } = require('../constants');
 
-const { error } = require('console');
 const { Base } = require('./base');
 
-// TODO
-// tests
 class Common extends Base {
 
   reviewLargePR() {
@@ -27,13 +24,12 @@ class Common extends Base {
       }
     }
   }
-  // TODO
+
   async ensureFileHasNewline() {
     console.log('in: ensureHasNewLine');
-    // ensure all files have newlines
     this.updatedFiles.forEach(file => {
       this.danger.git.diffForFile(file).then((el) => {
-        if (el.added.includes('No newline at end of file')) {
+        if ((el.added + el.diff).includes('No newline at end of file')) {
           warn(`📂 ***${file}***. ➡️  No newline at end of file.`);
         }
       })
