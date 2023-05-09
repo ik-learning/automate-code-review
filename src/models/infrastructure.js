@@ -15,20 +15,19 @@ const { Base } = require('./base');
 // test
 class Infrastructure extends Base {
 
-  // TODO: test
   /**
-   *
+   * Validate Instance Class Exists
    */
-  validateElasticCacheRDSInstanceClassExist() {
+  validateInstanceClassExist() {
     console.log('in: validateElasticCacheRDSInstanceClassExist');
-    const tfvars = this.danger.git.fileMatch("(elasticache|rds)/**/*.tfvars");
-    if (tfvars.created || tfvars.edited) {
-      const tfvarsCache = this.danger.git.fileMatch("elasticache/**");
-      const tfvarsRDS = this.danger.git.fileMatch("rds/**");
-      if (tfvarsCache.created || tfvarsCache.modified) {
+    const vars = this.danger.git.fileMatch("(elasticache|rds)/**/*.tfvars");
+    if (vars.created || vars.modified || vars.edited) {
+      const varsCache = this.danger.git.fileMatch("elasticache/**");
+      const varsRDS = this.danger.git.fileMatch("rds/**");
+      if (varsCache.created || varsCache.modified || varsCache.edited) {
         const link = links.nodeTypes['cache']
         message(`🔰  When in doubt, available [cache node types](${link})`)
-      } else if (tfvarsRDS.created || tfvarsRDS.modified) {
+      } else if (varsRDS.created || varsRDS.modified || varsRDS.edited) {
         const link = links.nodeTypes['rds']
         message(`🔰  When in doubt, available [rds instance classes](${link})`)
       }
@@ -405,8 +404,7 @@ class Infrastructure extends Base {
   }
 
   async run() {
-    // TODO: test
-    this.validateElasticCacheRDSInstanceClassExist();
+    this.validateInstanceClassExist();
     // TODO: test
     await this.removeStorageResources();
     // TODO: test
