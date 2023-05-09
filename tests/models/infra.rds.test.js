@@ -105,24 +105,10 @@ describe("test models/infrastructure.js ...", () => {
     ['models/__fixtures__/storage/rds-modified.diff.json']
   ])("should messages when ensureRdsCreationValidated() number of stacks hits the threshold", (scenario) => {
     dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
-    // dm.danger.git.diffForFile = (file) => {
-    //   return setUpTestScenarioObject('models/__fixtures__/mysql/mysql8-diff.json')
-    // }
     return target.validateRdsCreation().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(1);
       expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
     })
-    // TODO: externalize
-    // mapping = {
-    //   'rds/stack/dev/values.tfvars': `models/__fixtures__/mysql/mysql8-diff.json`,
-    // }
-    // dm.danger.git.diffForFile = (file) => {
-    //   return setUpTestScenarioObject(mapping[file])
-    // }
-    // // ^ TODO: externalize
-    // return target.rdsMysql5EndOfLifeDate().then(() => {
-    //   expect(dm.message).toHaveBeenCalledTimes(0);
-    // })
   })
 
   it("should messages when ensureRdsCreationValidated() with multiple number of stacks", () => {
@@ -130,6 +116,23 @@ describe("test models/infrastructure.js ...", () => {
     return target.validateRdsCreation().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(1);
       expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
+    })
+  })
+
+  it.each([
+    [{ created: ['rds/dev/ci-server/terraform.tfvars'] }, 'mysql/create.diff.ok.json', 0],
+    [{ created: ['rds/dev/test-server/terraform.tfvars'] }, 'mysql/create.diff.bad.json', 1],
+    [{ created: ['rds/dev/this-server/terraform.tfvars'] }, 'mysql/mysql5-rds-create.diff.json', 0],
+    [{ created: ['rds/dev/app-server/terraform.tfvars'] }, 'mysql/create.no-instance.ok.json', 0]
+    // [{ modified: [], created: [], deleted: [], edited: [] }]
+  ])("should messages when ensureRdsCreationValidated() with single stack in dev modified", (keyedPaths, scenario, times) => {
+    dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
+    dm.danger.git.diffForFile = (file) => {
+      return setUpTestScenarioObject(`models/__fixtures__/${scenario}`)
+    }
+    return target.validateRdsCreation().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(times);
+      if (times > 0) expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('`db.t3.medium` not recommended'));
     })
   })
 
