@@ -9,11 +9,23 @@ variables:
   BETA_VERSION: beta-$CI_COMMIT_SHORT_SHA
   IMAGE: $CI_REGISTRY_IMAGE:latest
 
-.rule-never-on-schedule: &rule-never-on-schedule
+.trigger-mr-default: &trigger-mr-default
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+.trigger-default: &trigger-default
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  changes:
+  - "Dockerfile"
+  - "*.js"
+  - "src/*"
+  - "tests/*"
+  - ".gitlab-ci.yml"
+
+.avoid-schedule: &avoid-schedule-rule
   if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PARENT_PIPELINE_SOURCE == "schedule"' # never on schedules
   when: never
 
-.rule-never-on-trigger: &rule-never-on-trigger
+.avoid-trigger-rule: &avoid-trigger-rule
   if: '$CI_PIPELINE_SOURCE == "trigger"'
   when: never
 
@@ -29,18 +41,6 @@ variables:
   script:
     - echo "Docker version > ${BETA_VERSION}"
     - docker load -i image.tar
-
-.trigger-mr-default: &trigger-mr-default
-  if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-
-.trigger-default: &trigger-default
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-  changes:
-  - "Dockerfile"
-  - "*.js"
-  - "src/*"
-  - "tests/*"
-  - ".gitlab-ci.yml"
 
 build:
   tags:
@@ -85,7 +85,7 @@ docker-test:
   needs:
     - build
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
+  - if: '$CI_PIPELINE_SOURCE == "push"'
   # rules:
   #   - *rule-never-on-schedule
   #   - *trigger-mr-default
@@ -107,7 +107,7 @@ push:
     - docker-test
     - build
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
+  - if: '$CI_PIPELINE_SOURCE == "push"'
   # rules:
   #   - *rule-never-on-schedule
   #   - *trigger-default
