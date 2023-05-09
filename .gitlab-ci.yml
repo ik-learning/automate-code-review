@@ -60,7 +60,7 @@ build:
       --label "org.opencontainers.image.created=$CI_JOB_STARTED_AT"
       --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
       --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME"
-      --cache-from $CI_REGISTRY_IMAGE:latest .
+      --cache-from $IMAGE .
     - docker save $IMAGE -o image.tar
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push"'
