@@ -10,16 +10,16 @@ variables:
   IMAGE: $CI_REGISTRY_IMAGE:latest
 
 .rule-never-on-schedule: &rule-never-on-schedule
-  - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PARENT_PIPELINE_SOURCE == "schedule"' # never on schedules
-    when: never
+  if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PARENT_PIPELINE_SOURCE == "schedule"' # never on schedules
+  when: never
 
 .rule-never-on-trigger: &rule-never-on-trigger
-  - if: '$CI_PIPELINE_SOURCE == "trigger"'
-    when: never
+  if: '$CI_PIPELINE_SOURCE == "trigger"'
+  when: never
 
 .common_rules: &common_rules
-  - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    when: always
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  when: always
 
 .template:image-registry-login:
   script:
@@ -51,7 +51,6 @@ build:
     paths:
       - image.tar
   script:
-    - env
     - >
       docker build -t $IMAGE
       --build-arg BUILD_VERSION=$CI_PIPELINE_IID
@@ -119,6 +118,7 @@ danger-mr-review:
     DANGER_GITLAB_API_BASE_URL: "${CI_API_V4_URL}"
     DANGER_GITLAB_API_TOKEN: "${DANGER_GITLAB_API_TOKEN}"
   script:
+  - env
   - code-review
   rules:
   - if: '$CI_PIPELINE_SOURCE == "trigger"'

@@ -16,6 +16,13 @@ console.log("=================Validate WebHook payload====================");
 const webhookPayload = files.readFileSync(process.env.TRIGGER_PAYLOAD);
 const { changes  } = JSON.parse(webhookPayload);
 
+const isBot = (user === null || user !== null && user.username.includes('bot'))
+
+if (isBot) {
+  console.log('SKIP Code Review');
+  console.log('REASON: BOT detected');
+}
+
 if ('description' in changes) {
   console.log('SKIP Code Review');
   console.log('REASON: description updated');
