@@ -29,7 +29,10 @@ function dangerFileMatch(keyedPaths) {
  * @returns
  */
 function setUpTestScenarioObject(filePath) {
-  return JSON.parse(fs.readFileSync(__dirname + "/" + filePath, "utf8"));
+  const fullPath = `${__dirname}/${filePath}`
+  if (fs.existsSync(fullPath)) return JSON.parse(fs.readFileSync(fullPath, "utf8"));
+  console.error('File not found: ' + fullPath);
+  throw new Error('File not found: ' + fullPath);
 }
 
 function cleanUp(done) {
