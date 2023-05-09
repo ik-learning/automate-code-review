@@ -2,6 +2,7 @@ stages:
   - docker-build
   - docker-test
   # TODO: unit tests
+  # TODO: integration tests only on schedule
   - docker-push
   - review-mr
 
@@ -128,6 +129,7 @@ danger-mr-review:
     DANGER_GITLAB_API_BASE_URL: "${CI_API_V4_URL}"
     DANGER_GITLAB_API_TOKEN: "${DANGER_GITLAB_API_TOKEN}"
   script:
+  - env
   - code-review
   rules:
   - if: '$CI_PIPELINE_SOURCE == "trigger"'

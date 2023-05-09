@@ -26,6 +26,7 @@ if (object_kind !== 'merge_request' && event_type !== 'merge_request') {
 if (isBot) {
   console.log('SKIP Code Review');
   console.log('REASON: BOT detected');
+  console.log(JSON.stringify(JSON.parse(webhookPayload), null, 2))
 }
 
 if ('description' in changes) {
