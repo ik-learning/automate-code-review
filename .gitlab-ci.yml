@@ -51,6 +51,7 @@ build:
     paths:
       - image.tar
   script:
+    - env
     - >
       docker build -t $IMAGE
       --build-arg BUILD_VERSION=$CI_PIPELINE_IID
