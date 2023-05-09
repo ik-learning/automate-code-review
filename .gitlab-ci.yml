@@ -13,6 +13,10 @@ variables:
   - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PARENT_PIPELINE_SOURCE == "schedule"' # never on schedules
     when: never
 
+.rule-never-on-trigger: &rule-never-on-trigger
+  - if: '$CI_PIPELINE_SOURCE == "trigger"'
+    when: never
+
 .common_rules: &common_rules
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     when: always
@@ -62,6 +66,7 @@ build:
     - *rule-never-on-schedule
     - *trigger-mr-default
     - *trigger-default
+    - *rule-never-on-trigger
 
 docker-test:
   image: "docker:stable"
@@ -82,6 +87,7 @@ docker-test:
     - *rule-never-on-schedule
     - *trigger-mr-default
     - *trigger-default
+    - *rule-never-on-trigger
 
 push:
   image: "docker:stable"
@@ -99,6 +105,7 @@ push:
   rules:
     - *rule-never-on-schedule
     - *trigger-default
+    - *rule-never-on-trigger
 
 danger-mr-review:
   image:
