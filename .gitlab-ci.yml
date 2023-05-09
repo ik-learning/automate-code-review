@@ -50,7 +50,10 @@ build:
     expire_in: 30 mins
     paths:
       - image.tar
+  before_script:
+    - !reference [.template:image-registry-login, script]
   script:
+    - docker pull $IMAGE || true
     - >
       docker build -t $IMAGE
       --build-arg BUILD_VERSION=$CI_PIPELINE_IID
