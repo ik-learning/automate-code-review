@@ -18,7 +18,7 @@ const { changes, user, object_kind, event_type  } = JSON.parse(webhookPayload);
 
 const isBot = (user === null || user !== null && user.username.includes('bot'))
 
-exitWithReason = (reason) => {
+const exitWithReason = (reason) => {
   console.log('SKIP Code Review');
   console.log(`REASON: ${reason}`);
   console.log("================validate.js FALSE==================");
