@@ -34,9 +34,8 @@ class Infrastructure extends Base {
     }
   }
 
-  // TODO: test
   /**
-   *
+   * Resource deletion requests
    */
   async removeStorageResources() {
     console.log('in: removeStorageResources');
@@ -47,7 +46,7 @@ class Infrastructure extends Base {
     const tfvarsDeleted = tfvars.getKeyedPaths().deleted;
     if (tfvars.deleted && tfvarsDeleted.length > 0) {
       message(`🤖 Make sure to add [skip ci] and request from Platform team manual resources removal...`);
-      message(`🤖 (Reminder for a Platform team) We should fix failing pipeline! CI probably is Failing as it can't find a related infrastructure folder anymore.`);
+      message(`🤖 (Reminder) CI probably is Failing as it can't find a related infrastructure folder anymore.`);
     }
   };
 
@@ -405,7 +404,6 @@ class Infrastructure extends Base {
 
   async run() {
     this.validateInstanceClassExist();
-    // TODO: test
     await this.removeStorageResources();
     // TODO: test
     await this.ensureRdsCreationValidated();

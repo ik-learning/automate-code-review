@@ -1,0 +1,183 @@
+{
+  "object_kind": "merge_request",
+  "event_type": "merge_request",
+  "user": {
+    "id": 12948424,
+    "name": "PaaS Review Bot",
+    "username": "group_5274586_bot3",
+    "avatar_url": "https://secure.gravatar.com/avatar/b6150ef079fc4bfbceea65046bf7cf7b?s=80\u0026d=identicon",
+    "email": "[REDACTED]"
+  },
+  "project": {
+    "id": 12501354,
+    "name": "infrastructure",
+    "description": "",
+    "web_url": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure",
+    "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/12501354/download.png",
+    "git_ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/infrastructure.git",
+    "git_http_url": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure.git",
+    "namespace": "Platform as a Service",
+    "visibility_level": 0,
+    "path_with_namespace": "HnBI/platform-as-a-service/infrastructure",
+    "default_branch": "master",
+    "ci_config_path": "",
+    "homepage": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure",
+    "url": "git@gitlab.com:HnBI/platform-as-a-service/infrastructure.git",
+    "ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/infrastructure.git",
+    "http_url": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure.git"
+  },
+  "object_attributes": {
+    "assignee_id": null,
+    "author_id": 10444423,
+    "created_at": "2023-05-09 09:30:59 UTC",
+    "description": "## Details\n\nAdd new GSI price_change_index_v1 as new attribute \"futureDelete\" is needed.\n\nhttps://hbidigital.atlassian.net/browse/OFFER-1674\n\n## Checklist\n\n- [X] Read the [DynamoDB confluence guidance](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/861470767/Requesting%2Ba%2BNoSQL%2BDatabase%2BGuidance)\n- [X] Read the DynamoDB component [readme](../../blob/master/dynamodb/README.md)\n- [X] Read the DynamoDB supported [vars definitions](../../blob/master/dynamodb/terraform/vars.tf)\n- [X] No changes have been made to the Gitlab pipeline\n- [X] `Details` section above is updated with relevant information\n- [X] Updated `terraform.tfvars` file for your table using guidance in vars.tf and README\n- [X] Confirm that the [table modification limitations](../../blob/master/dynamodb/README.md#table-modification-caveats) are taken into account for this update\n- [X] Verified the `plan` job in the merge request pipeline to confirm only your DynamoDB table is going to be updated with no other changes",
+    "head_pipeline_id": 861355107,
+    "id": 222427648,
+    "iid": 4282,
+    "last_edited_at": null,
+    "last_edited_by_id": null,
+    "merge_commit_sha": null,
+    "merge_error": null,
+    "merge_params": {
+      "force_remove_source_branch": "1"
+    },
+    "merge_status": "can_be_merged",
+    "merge_user_id": null,
+    "merge_when_pipeline_succeeds": false,
+    "milestone_id": null,
+    "source_branch": "feature/OFFER-1674_add_futureDelete_to_priceChangeDate_gsi",
+    "source_project_id": 12501354,
+    "state_id": 1,
+    "target_branch": "master",
+    "target_project_id": 12501354,
+    "time_estimate": 0,
+    "title": "Resolve OFFER-1674 \"Feature/ add futuredelete to pricechangedate gsi\"",
+    "updated_at": "2023-05-09 09:31:26 UTC",
+    "updated_by_id": 12948424,
+    "url": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/merge_requests/4282",
+    "source": {
+      "id": 12501354,
+      "name": "infrastructure",
+      "description": "",
+      "web_url": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure",
+      "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/12501354/download.png",
+      "git_ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/infrastructure.git",
+      "git_http_url": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure.git",
+      "namespace": "Platform as a Service",
+      "visibility_level": 0,
+      "path_with_namespace": "HnBI/platform-as-a-service/infrastructure",
+      "default_branch": "master",
+      "ci_config_path": "",
+      "homepage": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure",
+      "url": "git@gitlab.com:HnBI/platform-as-a-service/infrastructure.git",
+      "ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/infrastructure.git",
+      "http_url": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure.git"
+    },
+    "target": {
+      "id": 12501354,
+      "name": "infrastructure",
+      "description": "",
+      "web_url": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure",
+      "avatar_url": "https://gitlab.com/uploads/-/system/project/avatar/12501354/download.png",
+      "git_ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/infrastructure.git",
+      "git_http_url": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure.git",
+      "namespace": "Platform as a Service",
+      "visibility_level": 0,
+      "path_with_namespace": "HnBI/platform-as-a-service/infrastructure",
+      "default_branch": "master",
+      "ci_config_path": "",
+      "homepage": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure",
+      "url": "git@gitlab.com:HnBI/platform-as-a-service/infrastructure.git",
+      "ssh_url": "git@gitlab.com:HnBI/platform-as-a-service/infrastructure.git",
+      "http_url": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure.git"
+    },
+    "last_commit": {
+      "id": "9822670b4fcee1e4f72687afa4f482230fbcdf09",
+      "message": "Merge branch 'master' of gitlab.com:HnBI/platform-as-a-service/infrastructure into feature/OFFER-1674_add_futureDelete_to_priceChangeDate_gsi\n",
+      "title": "Merge branch 'master' of gitlab.com:HnBI/platform-as-a-service/infrastructure...",
+      "timestamp": "2023-05-09T10:29:09+01:00",
+      "url": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/commit/9822670b4fcee1e4f72687afa4f482230fbcdf09",
+      "author": {
+        "name": "sireeshachevuru",
+        "email": "sireeshachevuru@hollandandbarrett.com"
+      }
+    },
+    "work_in_progress": false,
+    "total_time_spent": 0,
+    "time_change": 0,
+    "human_total_time_spent": null,
+    "human_time_change": null,
+    "human_time_estimate": null,
+    "assignee_ids": [],
+    "reviewer_ids": [],
+    "labels": [
+      {
+        "id": 27453801,
+        "title": "review-bot",
+        "color": "#6699cc",
+        "project_id": 12501354,
+        "created_at": "2022-10-20 07:16:32 UTC",
+        "updated_at": "2022-10-20 07:16:32 UTC",
+        "template": false,
+        "description": null,
+        "type": "ProjectLabel",
+        "group_id": null
+      }
+    ],
+    "state": "opened",
+    "blocking_discussions_resolved": true,
+    "first_contribution": false,
+    "detailed_merge_status": "not_approved",
+    "action": "update"
+  },
+  "labels": [
+    {
+      "id": 27453801,
+      "title": "review-bot",
+      "color": "#6699cc",
+      "project_id": 12501354,
+      "created_at": "2022-10-20 07:16:32 UTC",
+      "updated_at": "2022-10-20 07:16:32 UTC",
+      "template": false,
+      "description": null,
+      "type": "ProjectLabel",
+      "group_id": null
+    }
+  ],
+  "changes": {
+    "updated_at": {
+      "previous": "2023-05-09 09:31:11 UTC",
+      "current": "2023-05-09 09:31:26 UTC"
+    },
+    "updated_by_id": {
+      "previous": null,
+      "current": 12948424
+    },
+    "labels": {
+      "previous": [],
+      "current": [
+        {
+          "id": 27453801,
+          "title": "review-bot",
+          "color": "#6699cc",
+          "project_id": 12501354,
+          "created_at": "2022-10-20 07:16:32 UTC",
+          "updated_at": "2022-10-20 07:16:32 UTC",
+          "template": false,
+          "description": null,
+          "type": "ProjectLabel",
+          "group_id": null
+        }
+      ]
+    }
+  },
+  "repository": {
+    "name": "infrastructure",
+    "url": "git@gitlab.com:HnBI/platform-as-a-service/infrastructure.git",
+    "description": "",
+    "homepage": "https://gitlab.com/HnBI/platform-as-a-service/infrastructure"
+  },
+  "id": "39433694",
+  "ref": "master",
+  "variables": {}
+}

@@ -1,9 +1,8 @@
 jest.mock("danger", () => jest.fn())
-const chainsmoker = require('../../node_modules/danger/distribution/commands/utils/chainsmoker.js')
 const danger = require("danger");
 let dm = danger;
 
-const { setUpTestScenarioObject, setUpTestScenario } = require("../fixtures");
+const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch } = require("../fixtures");
 
 const { Infrastructure } = require("../../src/models");
 let target;
@@ -46,11 +45,10 @@ describe("test models/infrastructure.js ...", () => {
   })
 
   it("should not messages when validateElasticCacheRDSInstanceClassExist() and not a single file modified", () => {
-    dm.danger.git.fileMatch = chainsmoker.default({ modified: [], created: [], deleted: [], edited: [] });
+    dm.danger.git.fileMatch = dangerFileMatch();
     target.validateInstanceClassExist()
     expect(dm.message).toHaveBeenCalledTimes(0);
   })
-
 
   it.each([
     [{ modified: ['elasticache/dev/values.tfvars'], created: [] }, 'cache node types'],
@@ -60,9 +58,34 @@ describe("test models/infrastructure.js ...", () => {
     [{ modified: ['rds/stage/values.tfvars'], edited: [], created: [] }, '[rds instance classes]'],
     [{ modified: [], edited: ['rds/stage/values.tfvars'], created: [] }, '[rds instance classes]'],
   ])('should messages when validateElasticCacheRDSInstanceClassExist() and at least a single file is modified', (keyedPaths, msg) => {
-    dm.danger.git.fileMatch = chainsmoker.default(keyedPaths);
+    dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
     target.validateInstanceClassExist()
     expect(dm.message).toHaveBeenCalledTimes(1);
     expect(dm.message).toHaveBeenCalledWith(expect.stringContaining(msg));
+  });
+
+  it.each([
+    [{ modified: [], created: ['elasticache/prod/values.tfvars'], deleted: [] }],
+    [{ modified: ['elasticache/prod/values.tfvars'], created: [], deleted: [] }],
+    [{ modified: [], created: [], deleted: [] }],
+  ])("should not messages when removeStorageResources() and not a single stack deleted", (keyedPaths) => {
+    dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
+    target.removeStorageResources()
+    expect(dm.message).toHaveBeenCalledTimes(0);
+  })
+
+  it.each([
+    [{ modified: ['elasticache/dev/values.tfvars'], deleted: ['dynamodb/**/*.tfvars'] }],
+    [{ deleted: ['dynamodb/dev/values.tfvars'] }],
+    [{ deleted: ['dynamodb/environments/dev/values.tfvars'] }],
+    [{ deleted: ['elasticache/stack/environments/dev/values.tfvars'] }],
+    [{ deleted: ['rds/stack/dev/values.tfvars'] }],
+    [{ deleted: ['elasticsearch/stack/dev/values.tfvars'] }],
+    [{ deleted: ['rds-aurora/stack/dev/values.tfvars'] }],
+  ])('should messages when validateElasticCacheRDSInstanceClassExist() and at least a single stack is deleted', (keyedPaths) => {
+    dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
+    target.removeStorageResources()
+    expect(dm.message).toHaveBeenCalledTimes(2);
+    expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('add [skip ci]'));
   });
 })

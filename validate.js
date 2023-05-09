@@ -18,6 +18,14 @@ const { changes, user, object_kind, event_type  } = JSON.parse(webhookPayload);
 
 const isBot = (user === null || user !== null && user.username.includes('bot'))
 
+exitWithReason = (reason) => {
+  console.log('SKIP Code Review');
+  console.log(`REASON: ${reason}`);
+  console.log("================validate.js FALSE==================");
+  console.log("=================ABORT=================");
+  process.exit(1);
+}
+
 if (object_kind !== 'merge_request' && event_type !== 'merge_request') {
   console.log('SKIP Code Review');
   console.log(`REASON: object_kind is ${object_kind} and event_type is ${event_type}`);
@@ -29,12 +37,8 @@ if (isBot) {
   console.log(JSON.stringify(JSON.parse(webhookPayload), null, 2))
 }
 
+// This check is too restrictive. Should validate where only 'description' is updated or some other areas as well.
 if ('description' in changes) {
-  console.log('SKIP Code Review');
-  console.log('REASON: description updated');
-  console.log(JSON.stringify({ result: "false" }));
-  console.log("=================ABORT=================");
-  process.exit(1);
+  exitWithReason('only description updated')
 }
-console.log("================PROCEED==================");
-console.log(JSON.stringify({ result: "true" }));
+console.log("================validate.js OK==================");
