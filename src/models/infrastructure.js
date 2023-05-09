@@ -135,6 +135,7 @@ class Infrastructure extends Base {
     }
   }
 
+  // TODO test
   /**
    * RDS creation validated
    */
@@ -228,18 +229,27 @@ class Infrastructure extends Base {
   }
 
   // TODO: test
+  /**
+   * RDS-aurora creation validated
+   */
   async validateRdsAuroraCreation() {
     console.log('in: validateRdsAuroraCreation');
 
     const tfvars = this.danger.git.fileMatch("rds-aurora/**/*.tfvars");
-    const hcl = this.danger.git.fileMatch("rds-aurora/**/*.hcl");
     const tfvarsCreated = tfvars.getKeyedPaths().created;
     const tfvarsModified = tfvars.getKeyedPaths().modified;
     const infoMessages = new Set();
     const threshold = 10;
 
-    if (tfvars.modified || tfvars.created || tfvars.deleted) {
+    let reviewCount = uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created);
 
+    if (reviewCount > threshold) {
+      warn(`☣️  Skip review as number of changes hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling and to simplify code review.`);
+    } else if (uniqueElementsCount(tfvars.getKeyedPaths().edited) > 2
+      || uniqueElementsCount(tfvars.getKeyedPaths().modified) > 2
+      || uniqueElementsCount(tfvars.getKeyedPaths().deleted) > 2) {
+      warn(`☣️  Multiple configurations modified in single MR. Is this expected?`);
+    } else if (reviewCount < threshold) {
       if (tfvars.created) {
         tfvarsCreated.forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
@@ -268,7 +278,7 @@ class Infrastructure extends Base {
             const instance_type = data.instance_type;
             const { engine_name, engine_sql_version } = data.engine;
 
-            if (file.includes('environments/sandbox/') || file.includes('environments/dev/')) {
+            if (file.includes('/sandbox/') || file.includes('/dev/')) {
               if (!match.isMatch(instance_type, auroraRdsRecommendInstanceTypesInDev) && !infoMessages.has('instance_type')) {
                 warn(`📂 ${file}. ➡️  (💸 saving) In NON production environment "instance_type" \`${instance_type}\` not recommended. Consider different type \`${auroraRdsRecommendInstanceTypesInDev}\` ...`);
                 // to remove duplicates
@@ -414,7 +424,7 @@ class Infrastructure extends Base {
     // await this.removeStorageResources();
     await this.validateRdsCreation();
     // TODO: test
-    // await this.validateRdsAuroraCreation();
+    await this.validateRdsAuroraCreation();
     // await this.templateShouldBeEnforced();
     // await this.rdsMysql5EndOfLifeDate();
     // TODO: test

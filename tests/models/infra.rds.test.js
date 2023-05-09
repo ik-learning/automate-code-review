@@ -101,8 +101,8 @@ describe("test models/infrastructure.js ...", () => {
   })
 
   it.each([
-    ['models/__fixtures__/storage/rds-created.diff.json'],
-    ['models/__fixtures__/storage/rds-modified.diff.json']
+    ['models/__fixtures__/storage/rds-created.json'],
+    ['models/__fixtures__/storage/rds-modified.json']
   ])("should messages when ensureRdsCreationValidated() number of stacks hits the threshold", (scenario) => {
     dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
     return target.validateRdsCreation().then(() => {
@@ -135,6 +135,17 @@ describe("test models/infrastructure.js ...", () => {
     return target.validateRdsCreation().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(times);
       if (times > 0) expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('`db.t3.medium` not recommended'));
+    })
+  })
+
+  it.each([
+    ['models/__fixtures__/storage/rds-aurora-created.json'],
+    ['models/__fixtures__/storage/rds-aurora-modified.json']
+  ])("should messages when validateRdsAuroraCreation() number of stacks hits the threshold", (scenario) => {
+    dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
+    return target.validateRdsAuroraCreation().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
     })
   })
 
