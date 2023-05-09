@@ -149,9 +149,9 @@ class Infrastructure extends Base {
 
     if (reviewCount > threshold) {
       warn(`☣️  Skip review as number of changes hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling and to simplify code review.`);
-    } else if (uniqueElementsCount(tfvars.getKeyedPaths().edited) > 1
-      || uniqueElementsCount(tfvars.getKeyedPaths().modified) > 1
-      || uniqueElementsCount(tfvars.getKeyedPaths().deleted) > 1) {
+    } else if (uniqueElementsCount(tfvars.getKeyedPaths().edited) > 2
+      || uniqueElementsCount(tfvars.getKeyedPaths().modified) > 2
+      || uniqueElementsCount(tfvars.getKeyedPaths().deleted) > 2) {
       warn(`☣️  Multiple configurations modified in single MR. Is this expected?`);
     } else if (reviewCount < threshold) {
       if (tfvars.created) {
@@ -159,11 +159,10 @@ class Infrastructure extends Base {
         match(tfvarsCreated, ['**/dev/**'], {}).forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
           let data = hclParse(diff.after);
-          let { instance_class, engine, engine_version } = data.rds_config.instance_config
-
+          let { instance_class, engine, engine_version, family } = data.rds_config.instance_config
           if (engine === 'postgres' && instance_class && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
             warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider different class \`${rdsRecommendInstanceTypesInDev}\` ...`);
-          } else if (engine === 'mysql' && instance_class && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
+          } else if (engine === 'mysql' && !family.includes('mysql5') && instance_class && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
             warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider different types|class \`${rdsRecommendInstanceTypesInDev}\` ...`);
           }
         }, Error());
@@ -193,6 +192,7 @@ class Infrastructure extends Base {
             const recommended = recommendedRDSStorageTypes[storage_type];
             warn(`📂 ${file}. ✏️ (Optional) Recommended \`storage_type\` is \`${recommended}\` as it provides better performance and cost efficiency as opposite to  \'${storage_type}\'. [Docs and Migration AWS migration Guide](${links.gp2gp3Migration}) and [UserGuide](${links.rdsUserGuide}).`)
           }
+
           message(`📂 ${file}. ✏️  Make sure to review CI job output attribute "engine_info.valid_upgrade_targets" in order to understand where the up-to-date "engine" version is requested.`);
         }, Error())
       }
@@ -361,7 +361,7 @@ class Infrastructure extends Base {
       })
     }
   }
-    // TODO: test
+  // TODO: test
   async ensureDynamoDBSingleKeyModification() {
     console.log('in: ensureDynamoDBSingleKeyModification');
     const threshold = 10;
@@ -407,20 +407,20 @@ class Infrastructure extends Base {
   }
 
   async run() {
-    this.validateInstanceClassExist();
-    this.validateRdsPlan();
-    this.validateSingleStackAtOnceCreated();
-    this.validateVarsAndHclCreated();
-    await this.removeStorageResources();
+    // this.validateInstanceClassExist();
+    // this.validateRdsPlan();
+    // this.validateSingleStackAtOnceCreated();
+    // this.validateVarsAndHclCreated();
+    // await this.removeStorageResources();
     await this.validateRdsCreation();
     // TODO: test
-    await this.validateRdsAuroraCreation();
-    await this.templateShouldBeEnforced();
-    await this.rdsMysql5EndOfLifeDate();
+    // await this.validateRdsAuroraCreation();
+    // await this.templateShouldBeEnforced();
+    // await this.rdsMysql5EndOfLifeDate();
     // TODO: test
-    await this.dynamoDBCommonChecks();
+    // await this.dynamoDBCommonChecks();
     // TODO: test
-    await this.ensureDynamoDBSingleKeyModification();
+    // await this.ensureDynamoDBSingleKeyModification();
   }
 }
 

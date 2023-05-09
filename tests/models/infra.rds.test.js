@@ -123,8 +123,10 @@ describe("test models/infrastructure.js ...", () => {
     [{ created: ['rds/dev/ci-server/terraform.tfvars'] }, 'mysql/create.diff.ok.json', 0],
     [{ created: ['rds/dev/test-server/terraform.tfvars'] }, 'mysql/create.diff.bad.json', 1],
     [{ created: ['rds/dev/this-server/terraform.tfvars'] }, 'mysql/mysql5-rds-create.diff.json', 0],
-    [{ created: ['rds/dev/app-server/terraform.tfvars'] }, 'mysql/create.no-instance.ok.json', 0]
-    // [{ modified: [], created: [], deleted: [], edited: [] }]
+    [{ created: ['rds/dev/app-server/terraform.tfvars'] }, 'mysql/create.no-instance.ok.json', 0],
+    [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'postgres/create.diff.ok.json', 0],
+    [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'postgres/create.no-instance.ok.json', 0],
+    [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'postgres/create.db.t3.medium.json', 1],
   ])("should messages when ensureRdsCreationValidated() with single stack in dev modified", (keyedPaths, scenario, times) => {
     dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
     dm.danger.git.diffForFile = (file) => {
