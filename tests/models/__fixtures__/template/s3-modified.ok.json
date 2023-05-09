@@ -1,0 +1,15 @@
+{
+  "description": "## Details\n\nWe have a requirement for [Ziggy](https://workbench.tools-dev.hbi.systems/ziggy/microspace/) (Planogram creation tool) to allow for users to upload custom images to display on planograms. Ziggy is for internal use only. This MR adds buckets in dev and prod to store these images. \n \n## References\n\nSRS-824\n\n\n\n## Checklist\n\n- [x] `Details` section above is updated with relevant information\n- [x] Read the [S3 Bucket confluence guidance](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/1020297361/S3%2BBuckets%2BGuidance)\n- [x] Read the S3 bucket component [README](../../blob/master/s3-bucket/README.md)\n- [x] Complete [first-time setup](../../blob/master/s3-bucket/README.md#first-time-setup) if required\n- [x] Added the bucket(s) configuration as per [guidance](../../blob/master/s3-bucket/README.md#defining-buckets)\n- [x] No changes have been made to the Gitlab pipeline\n- [x] Verified the `plan` job to confirm only your bucket(s) are going to be added and no other changes",
+  "files": {
+    "modified": [
+      "s3-bucket/environments/dev/eu-west-1/sc-spange/terraform.yaml",
+      "s3-bucket/environments/prod/eu-west-1/sc-spange/terraform.yaml"
+    ],
+    "created": [],
+    "deleted": [],
+    "edited": [
+      "s3-bucket/environments/dev/eu-west-1/sc-spange/terraform.yaml",
+      "s3-bucket/environments/prod/eu-west-1/sc-spange/terraform.yaml"
+    ]
+  }
+}

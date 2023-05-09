@@ -8,7 +8,7 @@ const { links, recommendedRDSStorageTypes,
 
 const
   { uniqueElementsCount, inputInCollection, hclParse,
-    sentenceContainsValues, isDiff } = require("../utils");
+    sentenceContainsMarkers, isDiff, writeFileSync } = require("../utils");
 
 const { Base } = require('./base');
 // TODO
@@ -50,24 +50,20 @@ class Infrastructure extends Base {
     }
   };
 
-  // TODO: test
   /**
-   *
+   *  Mysql 5 end-of-life
    */
   async rdsMysql5EndOfLifeDate() {
     console.log('in: rdsMysql5EndOfLifeDate');
     const tfvars = this.danger.git.fileMatch("rds/**/*.tfvars");
     if (tfvars.modified || tfvars.created) {
-
       const tfvarsCreated = tfvars.getKeyedPaths().created;
       const tfvarsModified = tfvars.getKeyedPaths().modified;
       // merge them
       const varsMerged = tfvarsCreated.concat(tfvarsModified);
-
       varsMerged.forEach(async file => {
         const diff = await this.danger.git.diffForFile(file);
-        const data = hclParse(diff.after);
-        let { family } = data.rds_config.instance_config
+        let { family } = hclParse(diff.after).rds_config?.instance_config
         if (family.includes("mysql5")) {
           const text = [
             `☣️  [MySQL5.7 End of life support is October 2023, when are you planning on upgrading?](${links.mysqlRdsEndOfLife}).`,
@@ -79,39 +75,81 @@ class Infrastructure extends Base {
     }
   }
 
-  async ensureRdsCreationValidated() {
+  /**
+   * .tfvars and .hcl file should be created at the same time
+   */
+  validateVarsAndHclCreated() {
+    console.log('in: validateVarsAndHclCreated');
+
+    const vars = this.danger.git.fileMatch("rds/**/*.tfvars", "rds-aurora/**/*.tfvars");
+    const hcl = this.danger.git.fileMatch("rds/**/*.hcl", "rds-aurora/**/*.hcl");
+
+    if (vars.getKeyedPaths().created.length !== hcl.getKeyedPaths().created.length) {
+      if (vars.getKeyedPaths().created.length > hcl.getKeyedPaths().created.length) {
+        const details = [
+          "*No `*.hcl` file detected* for every `*.tfvars`. Create a `terragrunt.hcl` file next to `*.tfvars` with the below **exact** content: <br>",
+          "```",
+          "include \"common\" {\r",
+          " path = find_in_parent_folders(\"common.hcl\")\r",
+          "}",
+          "```"
+        ].join("\n")
+        warn(details)
+      } else if (vars.getKeyedPaths().created.length < hcl.getKeyedPaths().created.length) {
+        warn("*No `*.tfvars` file detected* for every `*.hcl`. Create a `terraform.tfvars` file next to `*.hcl`")
+      }
+    }
+  }
+
+  // RDS
+  /**
+   * Single stack for environment is updated at once
+   */
+  validateSingleStackAtOnceCreated() {
+    console.log('in: validateSingleStackAtOnceCreated');
+
+    const vars = this.danger.git.fileMatch("rds/**/*.tfvars", "rds-aurora/**/*.tfvars");
+    const created = vars.getKeyedPaths().created;
+    const envs = new Set()
+    created.forEach(el => {
+      if (el.includes('/dev/')) {
+        envs.add('dev')
+      } else if (el.includes('/prod/')) {
+        envs.add('prod')
+      }
+    })
+    if (envs.size > 1) {
+      message('🤖 Do you need **prod** immediately too, or can it be split out and deployed later (ie. will you be using it today?).');
+    }
+  }
+
+  /**
+   * Validate RDS plan
+   */
+  validateRdsPlan() {
+    console.log('in: validateRdsPlan');
+    const vars = this.danger.git.fileMatch("rds/**/*.tfvars", "rds-aurora/**/*.tfvars");
+
+    if (vars.modified || vars.created) {
+      message('🤖 Make sure to verify the `plan` job in the merge request pipeline and compare "engine_info.valid_upgrade_targets" output attribute with desired engine version.');
+    }
+  }
+
+  /**
+   * RDS creation validated
+   */
+  async validateRdsCreation() {
     console.log('in: ensureRdsCreationValidated');
     const tfvars = this.danger.git.fileMatch("rds/**/*.tfvars");
-    const hcl = this.danger.git.fileMatch("rds/**/*.hcl");
+    // const hcl = this.danger.git.fileMatch("rds/**/*.hcl");
     const tfvarsCreated = tfvars.getKeyedPaths().created;
     const tfvarsModified = tfvars.getKeyedPaths().modified;
     let threshold = 10;
 
-    // should not even do stuff if no RDS
-    if (tfvarsCreated.length !== hcl.getKeyedPaths().created.length) {
-      const details = [
-        "*No `*.hcl` file detected*. Create a `terragrunt.hcl` file next to `*.tfvars` with the below **exact** content: <br>",
-        "```",
-        "include \"common\" {\r",
-        " path = find_in_parent_folders(\"common.hcl\")\r",
-        "}",
-        "```"
-      ].join("\n")
-      warn(details)
-    }
-    // TODO: check more specific e.g. dev and prod contains
-    if (tfvarsCreated.length > 1) {
-      message('🤖 Do you need **prod** immediately too, or can it be split out and deployed later (ie. will you be using it today?).');
-    }
+    if (uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created) > threshold) {
+      warn(`☣️  Skip review as number of "RDS" file changed hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling.`);
+    } else if (tfvars.modified || tfvars.created || tfvars.deleted) {
 
-    if (tfvars.modified || tfvars.created) {
-      message('🤖 Make sure to verify the `plan` job in the merge request pipeline and compare "engine_info.valid_upgrade_targets" output attribute with desired engine version.');
-    }
-
-    if (tfvars.modified || tfvars.created || tfvars.deleted) {
-      if (uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created) > threshold) {
-        warn(`☣️  Skip review as number of "RDS" file changed hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling.`);
-      }
       if (uniqueElementsCount(tfvars.getKeyedPaths().edited) > 1
         || uniqueElementsCount(tfvars.getKeyedPaths().modified) > 1
         || uniqueElementsCount(tfvars.getKeyedPaths().deleted) > 1) {
@@ -200,27 +238,7 @@ class Infrastructure extends Base {
     const infoMessages = new Set();
     const threshold = 10;
 
-    if (tfvarsCreated.length !== hcl.getKeyedPaths().created.length) {
-      const details = [
-        "*No `*.hcl` file detected*. Create a `terragrunt.hcl` file next to `*.tfvars` with the below **exact** content: <br>",
-        "```",
-        "include \"common\" {\r",
-        " path = find_in_parent_folders(\"common.hcl\")\r",
-        "}",
-        "```"
-      ].join("\n")
-      warn(details)
-    }
-    // TODO: check more specific e.g. dev and prod contains
-    if (tfvarsCreated.length > 1) {
-      message('🤖 Do you need **prod** immediately too, or can it be split out and deployed later (ie. will you be using it today?).');
-    }
-
     if (tfvars.modified || tfvars.created || tfvars.deleted) {
-
-      if (tfvars.modified || tfvars.created) {
-        message('🤖 Make sure to verify the `plan` job in the merge request pipeline and compare "engine_info.valid_upgrade_targets" output attribute with desired engine version .');
-      }
 
       if (tfvars.created) {
         tfvarsCreated.forEach(async file => {
@@ -228,7 +246,7 @@ class Infrastructure extends Base {
           const data = hclParse(diff.after).cluster_config;
           const instance_type = data.instance_type;
 
-          if (file.includes('environments/sandbox/') || file.includes('environments/dev/')) {
+          if (file.includes('/sandbox/') || file.includes('/dev/')) {
             if (!match.isMatch(instance_type, auroraRdsRecommendInstanceTypesInDev) && !infoMessages.has('instance_type')) {
               warn(`📂 ${file}. ➡️  (💸 saving) In environment "instance_type" \`${instance_type}\` not recommended. Consider different type \`${auroraRdsRecommendInstanceTypesInDev}\` ...`);
               infoMessages.add('instance_type')
@@ -263,66 +281,51 @@ class Infrastructure extends Base {
     }
   }
 
-  // TODO: test
+  /**
+   * Enforce MR template for a given stack
+   */
   async templateShouldBeEnforced() {
     console.log('in: templateShouldBeEnforced');
     const templates = mrTemplates;
-    const tfvars = this.danger.git.fileMatch("**.tfvars");
-    const tfvarsCreated = tfvars.getKeyedPaths().created;
-    const tfvarsModified = tfvars.getKeyedPaths().modified;
-    const tfvarsDeleted = tfvars.getKeyedPaths().deleted;
+    const vars = this.danger.git.fileMatch("**.tfvars", "**.yaml");
 
-    let template = {}
-    let tmpCreatedMissing = !sentenceContainsValues(this.mrDescription, ['## checklist', 'created']);
-    let tmpModifiedMissing = !sentenceContainsValues(this.mrDescription, ['## checklist', 'update']);
-    let tmpDeletedMissing = !sentenceContainsValues(this.mrDescription, ['## checklist', 'remove']);
+    // What
+    // 1. From 'rds/environments/dev/eu-west-1/seller-experience-finance/terraform.tfvars' to 'rds'
+    // 2. Check whether 'rds' is in supported templates 'mrTemplates'
+    const varsCreated = new Set(vars.getKeyedPaths().created.map(a => a.split('/')[0]).filter(stack => stack in mrTemplates));
+    const varsModified = new Set(vars.getKeyedPaths().modified.map(a => a.split('/')[0]).filter(stack => stack in mrTemplates));
+    const varsDeleted = new Set(vars.getKeyedPaths().deleted.map(a => a.split('/')[0]).filter(stack => stack in mrTemplates));
+
+    let template = new Set()
+    // What
+    // 1. Description contains markers
+    // 2. And at least a single file modified
+    let createdMissing = !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'create']) && varsCreated.size > 0;
+    let modifiedMissing = !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'update']) && varsModified.size > 0;
+    let deletedMissing = !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'remove']) && varsDeleted.size > 0;
+
     // created
-    // TODO: can we merge them and run it once?
-    // TODO: can we change logic e.g. run it less times, do pre-processing?
-    if (tmpCreatedMissing && tfvarsCreated.length > 0) {
-      // todo: test
-      tfvarsCreated.forEach(file => {
-        const stack = file.split("/")[0];
-        if (stack in templates) {
-          template[stack] = 'created'
-        }
-      })
-    }
+    if (createdMissing) varsCreated.forEach(stack => template.add({ stack: stack, action: 'created' }))
     // updated
-    if (tmpModifiedMissing && tfvarsModified.length > 0) {
-      // todo: test
-      tfvarsModified.forEach(file => {
-        const stack = file.split("/")[0];
-        if (stack in templates) {
-          template[stack] = 'modified'
-        }
-      })
-    }
+    if (modifiedMissing) varsModified.forEach(stack => template.add({ stack: stack, action: 'modified' }))
     // deleted
-    if (tmpDeletedMissing && tfvarsDeleted.length > 0) {
-      // todo: test
-      tfvarsDeleted.forEach(file => {
-        const stack = file.split("/")[0];
-        if (stack in templates) {
-          template[stack] = 'deleted'
-        }
-      })
-    }
+    if (deletedMissing) varsDeleted.forEach(stack => template.add({ stack: stack, action: 'deleted' }))
 
-    if (Object.keys(template).length === 1) {
-      Object.entries(template).forEach(([key, value]) => {
-        const mrTemplate = templates[key][value];
+    if (template.size === 1) {
+      template.forEach((el) => {
+        const mrTemplate = mrTemplates[el.stack][el.action];
         const mrTemplateWithoutExt = mrTemplate.split('.')[0];
         const sanitized = mrTemplate.split(" ").join("%20");
         const link = `https://gitlab.com/${this.repo}/-/blob/master/.gitlab/merge_request_templates/${sanitized}`;
         warn(`MR template is missing ***Edit>Description>Choose Template*** [${mrTemplateWithoutExt}](${link}), provide details and a jira ticket...`);
       });
-    } else if (Object.keys(template).length > 1) {
+    } else if (template.size > 1) {
       fail(`multiple resources "created|modified|deleted" for stacks in "${Object.keys(template).join('&')}" in a single MR.`)
     }
   }
 
   // DynamoDB
+  // TODO: test
   async dynamoDBCommonChecks() {
     console.log('in: dynamoDBCommonChecks');
     const tfvars = this.danger.git.fileMatch("dynamodb/**/*.tfvars", "**/dynamodb/**/*.tfvars");
@@ -358,7 +361,7 @@ class Infrastructure extends Base {
       })
     }
   }
-
+    // TODO: test
   async ensureDynamoDBSingleKeyModification() {
     console.log('in: ensureDynamoDBSingleKeyModification');
     const threshold = 10;
@@ -366,6 +369,7 @@ class Infrastructure extends Base {
     const tfvars = this.danger.git.fileMatch("dynamodb/**/*.tfvars", "**/dynamodb/**/*.tfvars");
     if (uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created) > threshold) {
       warn(`☣️  Skip review as number of "DynamoDB" file changed hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling.`);
+      return;
     } else if (tfvars.modified || tfvars.created || tfvars.deleted) {
       if (tfvars.modified) {
         new Set(tfvars.getKeyedPaths().modified).forEach(async file => {
@@ -389,8 +393,8 @@ class Infrastructure extends Base {
             ].join("\n")
             // TODO: hard to read, should be more explicit naming possibly
             if (el.non_key_attributes && beforeHashKeys[el.name] && el.non_key_attributes.length !== beforeHashKeys[el.name].length) {
-                warn(msg);
-            // TODO: it should be a better logic
+              warn(msg);
+              // TODO: it should be a better logic
             } else if (el.non_key_attributes === null && beforeHashKeys[el.name] && beforeHashKeys[el.name].length > 1) {
               warn(msg);
             } else if (el.non_key_attributes && beforeHashKeys[el.name] === null && el.non_key_attributes.length > 1) {
@@ -404,14 +408,14 @@ class Infrastructure extends Base {
 
   async run() {
     this.validateInstanceClassExist();
+    this.validateRdsPlan();
+    this.validateSingleStackAtOnceCreated();
+    this.validateVarsAndHclCreated();
     await this.removeStorageResources();
-    // TODO: test
-    await this.ensureRdsCreationValidated();
+    await this.validateRdsCreation();
     // TODO: test
     await this.ensureRdsAuroraCreationValidated();
-    // TODO: test
     await this.templateShouldBeEnforced();
-    // TODO: test
     await this.rdsMysql5EndOfLifeDate();
     // TODO: test
     await this.dynamoDBCommonChecks();

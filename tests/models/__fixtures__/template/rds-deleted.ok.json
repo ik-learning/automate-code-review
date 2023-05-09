@@ -1,0 +1,11 @@
+{
+  "description": "## Details\n\n<!-- Provide details on instance(s) deletion -->\n\n`back-office-nl-payroll-integration` is not in use, so we can delete it\n\nLast used 04-01-2022 and NL commission did not happen\n\n## References\n\n<!-- Jira Story Link if any should go here -->\n\nRecent connection was to see if there was anything in there, and see the last connection (04-01-2022)\n\n![image](/uploads/91e212fe3002778f8c46d3080eb52d69/image.png)\n\nInvestigated as part of re-encryptions https://hbidigital.atlassian.net/browse/PAAS-1067 (no point re-encrypting if it's not in use :shrug:)\n\n## Checklist\n\n- [x] `Details` section above is updated with relevant information\n- [x] A populated Jira ticket has been linked\n- [x] Read the [RDS confluence guidance](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/836173888/SQL+Databases+Guidance#Deleting-your-Database)\n- [x] Read the RDS component [readme](../../blob/master/rds/README.md)\n- [x] Acknowledge that all data will be lost when instance(s) are removed\n- [x] Removed the instance(s) configuration as per [guidance](../../blob/master/rds/README.md#deleting-an-instance)\n- [x] The merge request's pipeline has been skipped\n- [x] No changes have been made to the Gitlab pipeline",
+  "files": {
+    "modified": [],
+    "created": [],
+    "deleted": [
+      "rds/environments/dev/eu-west-1/back-office-nl-payroll-integration/terraform.tfvars"
+    ],
+    "edited": []
+  }
+}

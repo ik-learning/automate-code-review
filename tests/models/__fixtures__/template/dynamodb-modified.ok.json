@@ -1,0 +1,13 @@
+{
+  "description": "## Details\nInclude futureDelete field to the price_change_index GSI\n\nhttps://hbidigital.atlassian.net/browse/OFFER-1674\n\n## Checklist\n\n- [X] Read the [DynamoDB confluence guidance](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/861470767/Requesting%2Ba%2BNoSQL%2BDatabase%2BGuidance)\n- [X] Read the DynamoDB component [readme](../../blob/master/dynamodb/README.md)\n- [X] Read the DynamoDB supported [vars definitions](../../blob/master/dynamodb/terraform/vars.tf)\n- [X] No changes have been made to the Gitlab pipeline\n- [X] `Details` section above is updated with relevant information\n- [X] Updated `terraform.tfvars` file for your table using guidance in vars.tf and README\n- [X] Confirm that the [table modification limitations](../../blob/master/dynamodb/README.md#table-modification-caveats) are taken into account for this update\n- [X] Verified the `plan` job in the merge request pipeline to confirm only your DynamoDB table is going to be updated with no other changes",
+  "files": {
+    "modified": [
+      "dynamodb/environments/dev/eu-west-1/offer-price/terraform.tfvars"
+    ],
+    "created": [],
+    "deleted": [],
+    "edited": [
+      "dynamodb/environments/dev/eu-west-1/offer-price/terraform.tfvars"
+    ]
+  }
+}

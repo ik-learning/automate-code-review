@@ -3,7 +3,7 @@ const array = require('lodash/array');
 
 const { Base } = require('./base');
 const
-  { sentenceContainsValues, writeFileSync } = require("../utils");
+  { sentenceContainsMarkers, writeFileSync } = require("../utils");
 const { mrTemplatesMsk } = require('../constants');
 
 const exclude_csv_headers = 1;
@@ -14,7 +14,7 @@ class MSK extends Base {
   /**
    * To enforce MSK template for create, update and remove a topic
    */
-  async templateShouldBeEnforcedMsk()  {
+  async templateShouldBeEnforcedMsk() {
     console.log('in: templateShouldBeEnforcedMsk');
     const csv = this.danger.git.fileMatch("topics.csv");
     if (csv.modified) {
@@ -23,11 +23,11 @@ class MSK extends Base {
         const diff = await this.danger.git.diffForFile(file);
         const before = diff.before.split(new_line).slice(1).filter((a) => a).length;
         const after = diff.after.split(new_line).slice(1).filter((a) => a).length;
-        if (before > after && !sentenceContainsValues(this.mrDescription, ['## checklist', 'remove'])) {
+        if (before > after && !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'remove'])) {
           warn(this.#composeMsg('remove'));
-        } else if (before < after && !sentenceContainsValues(this.mrDescription, ['## checklist', 'added'])) {
+        } else if (before < after && !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'added'])) {
           warn(this.#composeMsg('add'));
-        } else if (!sentenceContainsValues(this.mrDescription, ['## checklist', 'update'])) {
+        } else if (!sentenceContainsMarkers(this.mrDescription, ['## checklist', 'update'])) {
           warn(this.#composeMsg('update'));
         }
       });

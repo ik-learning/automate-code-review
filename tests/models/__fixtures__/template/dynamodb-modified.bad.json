@@ -1,0 +1,13 @@
+{
+  "description": "## Details\nInclude futureDelete field to the price_change_index GSI",
+  "files": {
+    "modified": [
+      "dynamodb/environments/dev/eu-west-1/offer-price/terraform.tfvars"
+    ],
+    "created": [],
+    "deleted": [],
+    "edited": [
+      "dynamodb/environments/dev/eu-west-1/offer-price/terraform.tfvars"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "description": "## Details\n\nMultiple Stacks)",
+  "files": {
+    "modified": [],
+    "created": [
+      "rds/environments/dev/eu-west-1/seller-experience-finance/terraform.tfvars",
+      "rds/environments/prod/eu-west-1/seller-experience-finance/terraform.tfvars",
+      "s3-bucket/environments/dev/eu-west-1/sc-spange/terraform.yaml",
+      "s3-bucket/environments/prod/eu-west-1/sc-spange/terraform.yaml"
+    ],
+    "deleted": [
+      "rds/environments/dev/eu-west-1/back-office-nl-payroll-integration/terraform.tfvars"
+    ],
+    "edited": [
+      "rds/environments/dev/eu-west-1/seller-experience-finance/terraform.tfvars",
+      "rds/environments/prod/eu-west-1/seller-experience-finance/terraform.tfvars",
+      "s3-bucket/environments/dev/eu-west-1/sc-spange/terraform.yaml",
+      "s3-bucket/environments/prod/eu-west-1/sc-spange/terraform.yaml"
+    ]
+  }
+}

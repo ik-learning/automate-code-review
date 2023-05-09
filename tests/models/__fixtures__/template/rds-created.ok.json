@@ -1,0 +1,15 @@
+{
+  "description": "## Details\n\n<!-- Describe the purpose of the RDS instance being created -->\nMake databases for service finance in seller experience team\n\n<!-- Jira Story Link if any should go here -->\nhttps://hbidigital.atlassian.net/browse/VP-1837\n\n## Checklist\n\n- [x] Read the [RDS confluence guidance](https://hbidigital.atlassian.net/wiki/spaces/PAAS/pages/836173888/Requesting+a+SQL+Database+Guidance)\n- [x] Read the RDS component [readme](../../blob/master/rds/README.md)\n- [x] Read the RDS supported [vars definitions](../../blob/master/rds/terraform/vars.tf)\n- [x] No changes have been made to the Gitlab pipeline\n- [x] `Details` section above is updated with relevant information\n- [x] Created a directory under `rds/environments/ENV/REGION/` following the naming convention (`TEAM-PROJECT`) defined in the confluence page\n- [x] Created a `terraform.tfvars` file in the new `TEAM-PROJECT` directory created in the above step\n- [x] Created a `terragrunt.hcl` file in the new `TEAM-PROJECT` directory created in the above step with the content specified in the [README](https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/tree/master/rds/README.md#usage).\n- [x] Configured `terraform.tfvars` file for all variables defined in `rds/terraform/vars.tf` using guidance in vars.tf and [README](https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/tree/master/rds/README.md)\n- [x] Verified the `plan` job in the merge request pipeline to confirm only your RDS instance is going to be added and no other changes\n- [x] Acknowledge that team-based AWS SSO is in place and RDS user credentials will be fetched using the documented [credentials workflow](../../blob/master/rds/README.md#credential-workflow)",
+    "files": {
+      "modified": [],
+      "created": [
+        "rds/environments/dev/eu-west-1/seller-experience-finance/terraform.tfvars",
+        "rds/environments/prod/eu-west-1/seller-experience-finance/terraform.tfvars"
+      ],
+      "deleted": [],
+      "edited": [
+        "rds/environments/dev/eu-west-1/seller-experience-finance/terraform.tfvars",
+        "rds/environments/prod/eu-west-1/seller-experience-finance/terraform.tfvars"
+      ]
+    }
+}

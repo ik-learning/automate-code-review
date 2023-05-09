@@ -1,0 +1,15 @@
+{
+  "description": "## Details\n\n<!-- Describe the purpose of the RDS instance",
+  "files": {
+    "modified": [],
+    "created": [
+      "rds/environments/dev/eu-west-1/seller-experience-finance/terraform.tfvars",
+      "rds/environments/prod/eu-west-1/seller-experience-finance/terraform.tfvars"
+    ],
+    "deleted": [],
+    "edited": [
+      "rds/environments/dev/eu-west-1/seller-experience-finance/terraform.tfvars",
+      "rds/environments/prod/eu-west-1/seller-experience-finance/terraform.tfvars"
+    ]
+  }
+}

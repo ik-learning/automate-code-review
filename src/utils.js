@@ -11,7 +11,7 @@ const fs = require('fs');
  * @param {*} pattern
  * @returns true or false
  */
-const sentenceContainsValues = (target, pattern) => {
+const sentenceContainsMarkers = (target, pattern) => {
   let result = 0;
   let targetLowerCase = target.toLowerCase();
   pattern.forEach(function (word) {
@@ -66,7 +66,7 @@ const filesMatchPath = (files, paths) => {
 /**
  * Write data to file.
  *
- * example usage: writeFileSync(process.cwd() + "/tests/models/__fixtures__/msk/topics.diff.csv", JSON.stringify(diff))
+ * example usage: writeFileSync(process.cwd() + "/tests/models/__fixtures__/diff.json", JSON.stringify(diff))
  *
  * @param {string} filename
  * @param {string} data
@@ -77,7 +77,7 @@ const writeFileSync = (filename, data) => {
 }
 
 module.exports = {
-  sentenceContainsValues,
+  sentenceContainsMarkers,
   inputInCollection,
   isDiff,
   hclParse,

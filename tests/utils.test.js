@@ -1,21 +1,21 @@
 
-const { sentenceContainsValues, filesMatchPath,
+const { sentenceContainsMarkers, filesMatchPath,
   inputInCollection, isDiff, hclParse,
   uniqueElementsCount, isInCollection } = require('../src/utils');
 
 describe("Test utils.js ...", () => {
 
-  describe("sentenceContainsValues(string,array[string]))", () => {
+  describe("sentenceContainsMarkers(string,array[string]))", () => {
     test('sentence contains array values', () => {
-      expect(sentenceContainsValues("## checklist \\n and le's remove", ['## checklist', 'remove'])).toBeTruthy();
+      expect(sentenceContainsMarkers("## checklist \\n and le's remove", ['## checklist', 'remove'])).toBeTruthy();
     });
 
     test('sentence contains case insensitive values from an array', () => {
-      expect(sentenceContainsValues("## Checklist \\n and le's remove", ['## checklist', 'remove'])).toBeTruthy();
+      expect(sentenceContainsMarkers("## Checklist \\n and le's remove", ['## checklist', 'remove'])).toBeTruthy();
     });
 
     test('sentence do not contains all the values from an array', () => {
-      expect(sentenceContainsValues("## checklist \\n and le's remove", ['## checklist', 'added'])).toBeFalsy();
+      expect(sentenceContainsMarkers("## checklist \\n and le's remove", ['## checklist', 'added'])).toBeFalsy();
     });
   })
 
