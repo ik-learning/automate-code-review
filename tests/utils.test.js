@@ -176,6 +176,10 @@ describe("Test utils.js ...", () => {
     ])('collection of elements %p contains unique %p', (elements, result) => {
       expect(uniqueElementsCount(elements)).toEqual(result);
     });
+
+    test('multiple arrays find unique elements count', () => {
+      expect(uniqueElementsCount(["one"],["two"],["two", "three"])).toBe(3);
+    });
   })
 
   describe("isInCollection(string,collection[string]))", () => {

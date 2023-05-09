@@ -139,22 +139,21 @@ class Infrastructure extends Base {
    * RDS creation validated
    */
   async validateRdsCreation() {
-    console.log('in: ensureRdsCreationValidated');
+    console.log('in: validateRdsCreation');
     const tfvars = this.danger.git.fileMatch("rds/**/*.tfvars");
-    // const hcl = this.danger.git.fileMatch("rds/**/*.hcl");
     const tfvarsCreated = tfvars.getKeyedPaths().created;
     const tfvarsModified = tfvars.getKeyedPaths().modified;
     let threshold = 10;
 
-    if (uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created) > threshold) {
-      warn(`☣️  Skip review as number of "RDS" file changed hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling.`);
-    } else if (tfvars.modified || tfvars.created || tfvars.deleted) {
+    let reviewCount = uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created);
 
-      if (uniqueElementsCount(tfvars.getKeyedPaths().edited) > 1
-        || uniqueElementsCount(tfvars.getKeyedPaths().modified) > 1
-        || uniqueElementsCount(tfvars.getKeyedPaths().deleted) > 1) {
-        warn(`☣️  Multiple RDS configurations modified in single MR. Is this expected?`);
-      }
+    if (reviewCount > threshold) {
+      warn(`☣️  Skip review as number of changes hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling and to simplify code review.`);
+    } else if (uniqueElementsCount(tfvars.getKeyedPaths().edited) > 1
+      || uniqueElementsCount(tfvars.getKeyedPaths().modified) > 1
+      || uniqueElementsCount(tfvars.getKeyedPaths().deleted) > 1) {
+      warn(`☣️  Multiple configurations modified in single MR. Is this expected?`);
+    } else if (reviewCount < threshold) {
       if (tfvars.created) {
         // validate instance class in dev
         match(tfvarsCreated, ['**/dev/**'], {}).forEach(async file => {
@@ -168,6 +167,7 @@ class Infrastructure extends Base {
             warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider different types|class \`${rdsRecommendInstanceTypesInDev}\` ...`);
           }
         }, Error());
+
         tfvarsCreated.forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
           const data = hclParse(diff.after);
@@ -228,8 +228,8 @@ class Infrastructure extends Base {
   }
 
   // TODO: test
-  async ensureRdsAuroraCreationValidated() {
-    console.log('in: ensureAuroraRdsCreationValidated');
+  async validateRdsAuroraCreation() {
+    console.log('in: validateRdsAuroraCreation');
 
     const tfvars = this.danger.git.fileMatch("rds-aurora/**/*.tfvars");
     const hcl = this.danger.git.fileMatch("rds-aurora/**/*.hcl");
@@ -414,7 +414,7 @@ class Infrastructure extends Base {
     await this.removeStorageResources();
     await this.validateRdsCreation();
     // TODO: test
-    await this.ensureRdsAuroraCreationValidated();
+    await this.validateRdsAuroraCreation();
     await this.templateShouldBeEnforced();
     await this.rdsMysql5EndOfLifeDate();
     // TODO: test

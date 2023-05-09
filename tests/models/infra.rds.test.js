@@ -48,25 +48,6 @@ describe("test models/infrastructure.js ...", () => {
     expect(1).toBe(1);
   })
 
-  // it.each([
-  //   [{ fixture: 'models/__fixtures__/template/dynamodb-modified.ok.json' }, 0],
-  //   [{ fixture: 'models/__fixtures__/template/dynamodb-modified.bad.json' }, 1],
-  //   [{ fixture: 'models/__fixtures__/template/rds-created.bad.json' }, 1],
-  //   [{ fixture: 'models/__fixtures__/template/rds-created.ok.json' }, 0],
-  //   [{ fixture: 'models/__fixtures__/template/s3-modified.bad.json' }, 1],
-  //   [{ fixture: 'models/__fixtures__/template/s3-modified.ok.json' }, 0],
-  //   [{ fixture: 'models/__fixtures__/template/rds-deleted.bad.json' }, 1],
-  //   [{ fixture: 'models/__fixtures__/template/rds-deleted.ok.json' }, 0],
-  // ])("should validate mr template when templateShouldBeEnforced()", (source, times) => {
-  //   const fixture = setUpTestScenarioObject(source.fixture);
-  //   dm.danger.git.fileMatch = dangerFileMatch(fixture.files);
-  //   target.mrDescription = fixture.description
-
-  //   target.templateShouldBeEnforced();
-  //   expect(dm.warn).toHaveBeenCalledTimes(times);
-  //   if (times > 0) expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('template is missing'));
-  // })
-
   it.each([
     [0, { created: [] }],
     [0, { created: ['rds/envs/dev/terragrunt.hcl', 'rds/envs/dev/terraform.tfvars'] }],
@@ -118,14 +99,38 @@ describe("test models/infrastructure.js ...", () => {
     expect(dm.message).toHaveBeenCalledTimes(times);
     if (times > 0) expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('Make sure to verify the `plan` job'))
   })
-})
 
-// infrastructure.js |   29.93 |    78.26 |   44.44 |   29.93
-// infrastructure.js |   37.78 |    96.66 |   44.44 |   37.78
-// infrastructure.js |   37.38 |      100 |   44.44 |   37.38
-// infrastructure.js |   38.76 |      100 |      50 |   38.76
-// infrastructure.js |   43.46 |      100 |   54.54 |   43.46
-// infrastructure.js |   43.21 |      100 |   54.54 |   43.21 | 131-221,225-295,343-376,379-419,422-435
-// infrastructure.js |   43.47 |      100 |   54.54 |   43.47 | 130-220,224-290,338-371,374-414,417-430
-// infrastructure.js |   44.96 |      100 |   54.54 |   44.96 | 132-222,226-280,328-361,364-404,407-420
-//
+  it.each([
+    ['models/__fixtures__/storage/rds-created.diff.json'],
+    ['models/__fixtures__/storage/rds-modified.diff.json']
+  ])("should messages when ensureRdsCreationValidated() number of stacks hits the threshold", (scenario) => {
+    dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
+    // dm.danger.git.diffForFile = (file) => {
+    //   return setUpTestScenarioObject('models/__fixtures__/mysql/mysql8-diff.json')
+    // }
+    return target.validateRdsCreation().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
+    })
+    // TODO: externalize
+    // mapping = {
+    //   'rds/stack/dev/values.tfvars': `models/__fixtures__/mysql/mysql8-diff.json`,
+    // }
+    // dm.danger.git.diffForFile = (file) => {
+    //   return setUpTestScenarioObject(mapping[file])
+    // }
+    // // ^ TODO: externalize
+    // return target.rdsMysql5EndOfLifeDate().then(() => {
+    //   expect(dm.message).toHaveBeenCalledTimes(0);
+    // })
+  })
+
+  it("should messages when ensureRdsCreationValidated() with multiple number of stacks", () => {
+    dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/storage/rds-multiple.diff.json'));
+    return target.validateRdsCreation().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
+    })
+  })
+
+})

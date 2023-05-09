@@ -58,7 +58,7 @@ const mrTemplates = {
     'modified': 'Update RDS Aurora cluster.md',
     'deleted': 'Default.md'
   },
-  's3': {
+  's3-bucket': {
     'created': 'Create S3 Bucket.md',
     'modified': 'Update S3 Bucket.md',
     'deleted': 'Delete S3 Bucket.md'

@@ -44,10 +44,21 @@ const hclParse = source => {
   return hcl.parseToObject(source)[0];
 }
 
+/**
+ * Count number of unique elements in multiple arrays
+ * @param  {...any} source string arrays
+ * @returns
+ */
 const uniqueElementsCount = (...source) => {
-  return new Set(...source).size
+  return new Set([].concat.apply([], source)).size
 }
 
+/**
+ *  Is target string present in collection
+ * @param {*} target string
+ * @param {*} collection string array
+ * @returns
+ */
 const isInCollection = (target, collection) => {
   return collection.some(element => {
     if (target.includes(element)) {
