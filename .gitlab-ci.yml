@@ -61,11 +61,11 @@ build:
       --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
       --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME" .
     - docker save $IMAGE -o image.tar
-  rules:
-    - *rule-never-on-schedule
-    - *trigger-mr-default
-    - *trigger-default
-    - *rule-never-on-trigger
+  # rules:
+  #   - *rule-never-on-schedule
+  #   - *trigger-mr-default
+  #   - *trigger-default
+  #   - *rule-never-on-trigger
 
 docker-test:
   image: "docker:stable"
@@ -82,11 +82,11 @@ docker-test:
     - docker run --rm $IMAGE -c "uuidgen --version"
   needs:
     - build
-  rules:
-    - *rule-never-on-schedule
-    - *trigger-mr-default
-    - *trigger-default
-    - *rule-never-on-trigger
+  # rules:
+  #   - *rule-never-on-schedule
+  #   - *trigger-mr-default
+  #   - *trigger-default
+  #   - *rule-never-on-trigger
 
 push:
   image: "docker:stable"
@@ -101,10 +101,11 @@ push:
     - docker push $CI_REGISTRY_IMAGE:latest
   needs:
     - docker-test
-  rules:
-    - *rule-never-on-schedule
-    - *trigger-default
-    - *rule-never-on-trigger
+    - build
+  # rules:
+  #   - *rule-never-on-schedule
+  #   - *trigger-default
+  #   - *rule-never-on-trigger
 
 danger-mr-review:
   image:
