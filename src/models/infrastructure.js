@@ -371,10 +371,10 @@ class Infrastructure extends Base {
       if (tfvars.modified) {
         new Set(tfvars.getKeyedPaths().modified).forEach(async file => {
           const diff = await this.danger.git.diffForFile(file);
-          const ensureDynamoDBSingleKeyModificationbefore = hclParse(diff.before).dynamodb_table.global_secondary_indexes;
+          const before = hclParse(diff.before).dynamodb_table.global_secondary_indexes;
           const after = hclParse(diff.after).dynamodb_table.global_secondary_indexes;
           if (isDiff(before, after, maxDiff)) {
-            console.log('multiple changes found while comparing "global secondary indexes"');
+            console.debug('multiple changes found while comparing "global secondary indexes"');
             warn(`📂 ***${file}*** ➡️  (Potential issue) Only one GSI can be modified at a time, otherwise AWS will complain..`);
             return
           }
