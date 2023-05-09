@@ -1,0 +1,19 @@
+{
+  "modified": [
+    "rds/environments/dev/eu-west-1/composer-dam/terraform.tfvars",
+    "rds/environments/dev/eu-west-1/composer-pagebuilder-api/terraform.tfvars",
+    "rds/environments/dev/eu-west-1/composer-seo-api/terraform.tfvars",
+    "rds/environments/dev/eu-west-1/dns-airflow/terraform.tfvars",
+    "rds/environments/dev/eu-west-1/dns-data-analytics-portal/terraform.tfvars",
+    "rds/environments/dev/eu-west-1/dns-marquez/terraform.tfvars"
+  ],
+  "created": [
+    "rds/environments/dev/eu-west-1/attract-lighthouse-ci-server/terraform.tfvars",
+    "rds/environments/dev/eu-west-1/attract-magnoliaauthor/terraform.tfvars"
+  ],
+  "deleted": [
+    "rds/environments/dev/eu-west-1/instore-fulcrum/terraform.tfvars",
+    "rds/environments/dev/eu-west-1/instore-hht-parcelevents/terraform.tfvars"
+  ],
+  "edited": []
+}

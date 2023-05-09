@@ -112,7 +112,7 @@ describe("test models/infrastructure.js ...", () => {
   })
 
   it("should messages when ensureRdsCreationValidated() with multiple number of stacks", () => {
-    dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/storage/rds-multiple.diff.json'));
+    dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/storage/rds-multiple.json'));
     return target.validateRdsCreation().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(1);
       expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
@@ -146,6 +146,14 @@ describe("test models/infrastructure.js ...", () => {
     return target.validateRdsAuroraCreation().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(1);
       expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
+    })
+  })
+
+  it("should messages when validateRdsAuroraCreation() with multiple number of stacks", () => {
+    dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/storage/rds-aurora-multiple.json'));
+    return target.validateRdsCreation().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
     })
   })
 
