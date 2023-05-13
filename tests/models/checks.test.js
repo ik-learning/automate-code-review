@@ -1,32 +1,11 @@
-jest.mock("danger", () => jest.fn())
-const chainsmoker = require('../../node_modules/danger/distribution/commands/utils/chainsmoker.js')
-
-const danger = require("danger");
-let dm = danger;
-
+const { setupDanger } = require("../fixtures");
 const { Checks } = require("../../src/models");
-let target;
 
 describe("test models/checks.js ...", () => {
+  let target, dm;
+
   beforeEach(() => {
-    global.message = (input) => dm.message(input);
-    dm = {
-      message: jest.fn(),
-      danger: {
-        git: { },
-        gitlab: {
-          metadata: {
-            pullRequestID: jest.fn()
-          },
-          mr: {
-            state: '',
-            title: '',
-            description: '',
-          },
-          approvals: {}
-        },
-      },
-    }
+    dm = setupDanger();
     target = new Checks(dm.danger);
   })
 

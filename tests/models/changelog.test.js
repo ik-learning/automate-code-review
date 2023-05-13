@@ -1,45 +1,12 @@
-
-jest.mock("danger", () => jest.fn())
-
-var danger = require("danger");
-var dm = danger;
-
-const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch } = require("../fixtures");
-
 const { Changelog } = require("../../src/models");
-let target;
+const { setUpTestScenarioObject, setUpTestScenario,
+  dangerFileMatch, setupDanger } = require("../fixtures");
 
 describe("test models/changelog.js ...", () => {
+  let target, dm;
 
   beforeEach(() => {
-    global.message = (input) => dm.message(input);
-    global.warn = (input) => dm.warn(input)
-    global.fail = (input) => dm.fail(input);
-
-    dm = {
-      message: jest.fn(),
-      warn: jest.fn(),
-      fail: jest.fn(),
-      danger: {
-        git: {
-          fileMatch: dangerFileMatch({ modified: [], created: [], deleted: [], edited: [] }),
-          created_files: [],
-          deleted_files: [],
-          modified_files: [],
-        },
-        gitlab: {
-          metadata: {
-            pullRequestID: jest.fn()
-          },
-          mr: {
-            state: '',
-            title: '',
-            description: '',
-          },
-          approvals: {}
-        },
-      },
-    }
+    dm = setupDanger();
     target = new Changelog(dm.danger);
   })
 

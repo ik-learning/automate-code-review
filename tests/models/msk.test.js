@@ -1,38 +1,11 @@
-
-jest.mock("danger", () => jest.fn())
-const danger = require("danger");
-let dm = danger;
-
-const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch } = require("../fixtures");
-
 const { MSK } = require("../../src/models");
-let target;
+const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch, setupDanger } = require("../fixtures");
 
 describe("test models/msk.js ...", () => {
+  let target, dm;
 
   beforeEach(() => {
-
-    global.message = (input) => dm.message(input);
-    global.warn = (input) => dm.warn(input);
-
-    dm = {
-      message: jest.fn(),
-      warn: jest.fn(),
-      danger: {
-        git: {
-          fileMatch: jest.fn(),
-          diffForFile: jest.fn(),
-        },
-        gitlab: {
-          metadata: {
-            pullRequestID: jest.fn()
-          },
-          mr: {
-            description: '',
-          }
-        },
-      },
-    }
+    dm = setupDanger();
     target = new MSK(dm.danger);
   })
 

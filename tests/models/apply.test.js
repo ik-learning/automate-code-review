@@ -1,33 +1,9 @@
-
-jest.mock("danger", () => jest.fn())
-
-var danger = require("danger");
-var dm = danger;
-
 const { Apply } = require("../../src/models");
-let target;
+const { setupDanger } = require("../fixtures");
 
 describe("test models/apply.js ...", () => {
-
   beforeEach(() => {
-    global.message = (input) => dm.message(input);
-    dm = {
-      message: jest.fn(),
-      danger: {
-        git: {
-          fileMatch: jest.fn(),
-        },
-        gitlab: {
-          metadata: {
-            pullRequestID: jest.fn()
-          },
-          mr: {
-            description: '',
-          }
-        },
-      },
-    }
-
+    dm = setupDanger();
     target = new Apply(dm.danger);
   })
 

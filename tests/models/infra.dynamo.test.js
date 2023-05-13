@@ -1,46 +1,12 @@
-jest.mock("danger", () => jest.fn())
-const danger = require("danger");
-let dm = danger;
-
-const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch } = require("../fixtures");
-
 const { Infrastructure } = require("../../src/models");
-let target;
+const { setUpTestScenarioObject, setUpTestScenario,
+  dangerFileMatch, setupDanger } = require("../fixtures");
 
 describe("test models/infrastructure.js ...", () => {
+  let target, dm;
+
   beforeEach(() => {
-
-    global.message = (input) => dm.message(input);
-    global.warn = (input) => dm.warn(input);
-    global.fail = (input) => dm.fail(input);
-    global.markdown = (input) => dm.markdown(input);
-
-    dm = {
-      message: jest.fn(),
-      warn: jest.fn(),
-      fail: jest.fn(),
-      markdown: jest.fn(),
-      danger: {
-        git: {
-          fileMatch: jest.fn(),
-          diffForFile: jest.fn(),
-        },
-        gitlab: {
-          api: {
-            MergeRequests: {
-              edit: jest.fn(),
-            }
-          },
-          metadata: {
-            pullRequestID: jest.fn()
-          },
-          mr: {
-            description: '',
-            state: '',
-          }
-        },
-      },
-    }
+    dm = setupDanger();
     target = new Infrastructure(dm.danger);
   })
 
@@ -53,8 +19,6 @@ describe("test models/infrastructure.js ...", () => {
     return target.validateDBCommons().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(times);
     })
-    // expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('description of how the change'));
-    // expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('is a relevant test in'));
   })
 
   it.each([
@@ -64,7 +28,13 @@ describe("test models/infrastructure.js ...", () => {
     return target.validateDBSingleKeyModification().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(times);
     })
-    // expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('description of how the change'));
-    // expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('is a relevant test in'));
+  })
+
+  it("should messages when validateDBSingleKeyModification() with stack hit threshold", () => {
+    dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/dynamo/multiple-modifications.bad.json'));
+    return target.validateDBSingleKeyModification().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
+    })
   })
 })

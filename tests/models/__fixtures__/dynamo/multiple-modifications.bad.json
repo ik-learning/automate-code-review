@@ -1,0 +1,20 @@
+{
+  "modified": [
+    "dynamodb/environments/dev/eu-west-1/composer-dam/terraform.tfvars",
+    "dynamodb/environments/dev/eu-west-1/composer-pagebuilder-api/terraform.tfvars",
+    "dynamodb/environments/dev/eu-west-1/composer-seo-api/terraform.tfvars",
+    "dynamodb/environments/dev/eu-west-1/dns-airflow/terraform.tfvars",
+    "dynamodb/environments/dev/eu-west-1/dns-data-analytics-portal/terraform.tfvars",
+    "dynamodb/environments/dev/eu-west-1/dns-marquez/terraform.tfvars",
+    "dynamodb/environments/dev/eu-west-1/attract/terraform.tfvars"
+  ],
+  "created": [
+    "dynamodb/environments/dev/eu-west-1/attract-lighthouse-ci-server/terraform.tfvars",
+    "dynamodb/environments/dev/eu-west-1/attract-magnoliaauthor/terraform.tfvars"
+  ],
+  "deleted": [
+    "dynamodb/environments/dev/eu-west-1/instore-fulcrum/terraform.tfvars",
+    "dynamodb/environments/dev/eu-west-1/instore-hht-parcelevents/terraform.tfvars"
+  ],
+  "edited": []
+}

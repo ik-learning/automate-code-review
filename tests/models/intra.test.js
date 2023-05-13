@@ -1,46 +1,11 @@
-jest.mock("danger", () => jest.fn())
-const danger = require("danger");
-let dm = danger;
-
-const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch } = require("../fixtures");
-
 const { Infrastructure } = require("../../src/models");
-let target;
+const { setUpTestScenarioObject, setUpTestScenario,
+  dangerFileMatch, setupDanger } = require("../fixtures");
 
 describe("test models/infrastructure.js ...", () => {
+  let target, dm;
   beforeEach(() => {
-
-    global.message = (input) => dm.message(input);
-    global.warn = (input) => dm.warn(input);
-    global.fail = (input) => dm.fail(input);
-    global.markdown = (input) => dm.markdown(input);
-
-    dm = {
-      message: jest.fn(),
-      warn: jest.fn(),
-      fail: jest.fn(),
-      markdown: jest.fn(),
-      danger: {
-        git: {
-          fileMatch: dangerFileMatch(),
-          diffForFile: jest.fn(),
-        },
-        gitlab: {
-          api: {
-            MergeRequests: {
-              edit: jest.fn(),
-            }
-          },
-          metadata: {
-            pullRequestID: jest.fn()
-          },
-          mr: {
-            description: '',
-            state: '',
-          }
-        },
-      },
-    }
+    dm = setupDanger();
     target = new Infrastructure(dm.danger);
   })
 
@@ -96,7 +61,6 @@ describe("test models/infrastructure.js ...", () => {
 
   it("should not messages when rdsMysql5EndOfLifeDate() and rds family is not 'mysql5'", () => {
     dm.danger.git.fileMatch = dangerFileMatch({ modified: ['rds/stack/dev/values.tfvars'], created: [] });
-    // TODO: externalize
     mapping = {
       'rds/stack/dev/values.tfvars': `models/__fixtures__/mysql/mysql8-diff.json`,
     }
@@ -114,7 +78,6 @@ describe("test models/infrastructure.js ...", () => {
     [{ modified: [], created: ['rds/stack/prod/values.tfvars'] }],
   ])("should messages when rdsMysql5EndOfLifeDate() and rds family is mysql5", (keyedPaths) => {
     dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
-    // TODO: externalize
     mapping = {
       'rds/stack/dev/values.tfvars': `models/__fixtures__/mysql/mysql5-diff.json`,
       'rds/stack/prod/values.tfvars': `models/__fixtures__/mysql/mysql5-diff.json`,
@@ -122,7 +85,6 @@ describe("test models/infrastructure.js ...", () => {
     dm.danger.git.diffForFile = (file) => {
       return setUpTestScenarioObject(mapping[file])
     }
-    // ^ TODO: externalize
     return target.rdsMysql5EndOfLifeDate().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(1);
       expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('MySQL5.7 End of life support is October 2023'));

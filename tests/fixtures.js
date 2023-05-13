@@ -35,6 +35,52 @@ function setUpTestScenarioObject(filePath) {
   throw new Error('File not found: ' + fullPath);
 }
 
+function setupDanger() {
+  jest.mock("danger", () => jest.fn())
+  var danger = require("danger");
+  var dm = danger;
+
+  global.message = (input) => dm.message(input);
+  global.message = (input) => dm.message(input);
+  global.warn = (input) => dm.warn(input);
+  global.fail = (input) => dm.fail(input);
+  global.markdown = (input) => dm.markdown(input);
+
+  dm = {
+    message: jest.fn(),
+    warn: jest.fn(),
+    fail: jest.fn(),
+    markdown: jest.fn(),
+
+    danger: {
+      git: {
+        fileMatch: dangerFileMatch({ modified: [], created: [], deleted: [], edited: [] }),
+        diffForFile: jest.fn(),
+        created_files: [],
+        deleted_files: [],
+        modified_files: [],
+      },
+      gitlab: {
+        api: {
+          MergeRequests: {
+            edit: jest.fn(),
+          }
+        },
+        metadata: {
+          pullRequestID: jest.fn()
+        },
+        mr: {
+          description: '',
+          state: '',
+          title: '',
+        },
+        approvals: {}
+      },
+    },
+  }
+  return dm;
+}
+
 function cleanUp(done) {
   done();
 }
@@ -43,4 +89,5 @@ module.exports = {
   setUpTestScenario,
   setUpTestScenarioObject,
   dangerFileMatch,
+  setupDanger,
 };
