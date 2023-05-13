@@ -446,11 +446,11 @@ class Infrastructure extends Base {
     // TODO: test
     await this.validateRdsModification();
     // TODO: test
-    // await this.validateRdsAuroraCreation();
-    // await this.templateShouldBeEnforced();
-    // await this.rdsMysql5EndOfLifeDate();
-    // await this.validateDBCommons();
-    // await this.validateDBSingleKeyModification();
+    await this.validateRdsAuroraCreation();
+    await this.templateShouldBeEnforced();
+    await this.rdsMysql5EndOfLifeDate();
+    await this.validateDBCommons();
+    await this.validateDBSingleKeyModification();
   }
 }
 
