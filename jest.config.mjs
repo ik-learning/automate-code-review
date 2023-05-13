@@ -9,7 +9,7 @@ export default {
   // automock: false,
 
   // Stop running tests after `n` failures
-  // bail: 0,
+  bail: 2,
 
   // The directory where Jest should store its cached dependency information
   // cacheDirectory: "/private/var/folders/_c/_98lxf5d64z2dcc1lr55llzr0000gn/T/jest_dx",
@@ -21,7 +21,9 @@ export default {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  // collectCoverageFrom: undefined,
+  collectCoverageFrom: [
+    'src/**/{!(ignore - me),}.js',
+  ],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
