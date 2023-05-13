@@ -1,10 +1,9 @@
 
 jest.mock("danger", () => jest.fn())
-const chainsmoker = require('../../node_modules/danger/distribution/commands/utils/chainsmoker.js')
 const danger = require("danger");
 let dm = danger;
 
-const { setUpTestScenarioObject, setUpTestScenario } = require("../fixtures");
+const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch } = require("../fixtures");
 
 const { MSK } = require("../../src/models");
 let target;
@@ -47,7 +46,7 @@ describe("test models/msk.js ...", () => {
   ])('should post messages on templateShouldBeEnforcedMsk when topic created|updated|removed',
     (keyedPaths, description, csvDiff, messageTimes, warnTimes) => {
       target.mrDescription = setUpTestScenario(`models/__fixtures__/msk/${description}`)
-      dm.danger.git.fileMatch = chainsmoker.default(keyedPaths);
+      dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
       dm.danger.git.diffForFile = (file) => {
         return setUpTestScenarioObject(`models/__fixtures__/msk/${csvDiff}`)
       }
@@ -60,7 +59,7 @@ describe("test models/msk.js ...", () => {
   });
 
   it("should not post a message when templateShouldBeEnforcedMsk() in cases when target file not modified", () => {
-    dm.danger.git.fileMatch = chainsmoker.default({ modified: [], created: [], deleted: [], edited: [] });
+    dm.danger.git.fileMatch = dangerFileMatch({ modified: [], created: [], deleted: [], edited: [] });
     return target.templateShouldBeEnforcedMsk().then(() => {
       expect(dm.message).toHaveBeenCalledTimes(0);
       expect(dm.warn).toHaveBeenCalledTimes(0);
@@ -69,7 +68,7 @@ describe("test models/msk.js ...", () => {
 
   it("should post a message when csvEntryAlphabeticOrder() not in alphabetic order", () => {
     const nonAlphabetic = 'models/__fixtures__/msk/topics-added-diff.non-order.csv.json';
-    dm.danger.git.fileMatch = chainsmoker.default({ modified: ['msk-topics.csv'] });
+    dm.danger.git.fileMatch = dangerFileMatch({ modified: ['msk-topics.csv'] });
     dm.danger.git.diffForFile = (file) => {
       if (file === 'msk-topics.csv') return setUpTestScenarioObject(nonAlphabetic)
     }
@@ -86,7 +85,7 @@ describe("test models/msk.js ...", () => {
 
   it("should post a message when csvEntryAlphabeticOrder() not in alphabetic order topics added not in order", () => {
     const nonAlphabetic = 'models/__fixtures__/msk/topics-added-diff.non-order.split.csv.json';
-    dm.danger.git.fileMatch = chainsmoker.default({ modified: ['msk-topics.csv'] });
+    dm.danger.git.fileMatch = dangerFileMatch({ modified: ['msk-topics.csv'] });
     dm.danger.git.diffForFile = (file) => {
       if (file === 'msk-topics.csv') return setUpTestScenarioObject(nonAlphabetic)
     }
@@ -101,7 +100,7 @@ describe("test models/msk.js ...", () => {
 
   it("should post a message when csvEntryAlphabeticOrder() in alphabetic order and single topic added in order", () => {
     const nonAlphabetic = 'models/__fixtures__/msk/topic-added-diff.order.csv.json';
-    dm.danger.git.fileMatch = chainsmoker.default({ modified: ['msk-topics.csv'] });
+    dm.danger.git.fileMatch = dangerFileMatch({ modified: ['msk-topics.csv'] });
     dm.danger.git.diffForFile = (file) => {
       if (file === 'msk-topics.csv') return setUpTestScenarioObject(nonAlphabetic)
     }
@@ -112,7 +111,7 @@ describe("test models/msk.js ...", () => {
 
   it("should post a message when csvEntryAlphabeticOrder() and topic updated", () => {
     const nonAlphabetic = 'models/__fixtures__/msk/topics-updated-diff.order.csv.json';
-    dm.danger.git.fileMatch = chainsmoker.default({ modified: ['msk-topics.csv'] });
+    dm.danger.git.fileMatch = dangerFileMatch({ modified: ['msk-topics.csv'] });
     dm.danger.git.diffForFile = (file) => {
       if (file === 'msk-topics.csv') return setUpTestScenarioObject(nonAlphabetic)
     }
@@ -122,4 +121,11 @@ describe("test models/msk.js ...", () => {
     })
   })
 
+  it("should test paradox", () => {
+    dm.danger.git.fileMatch = dangerFileMatch({ modified: [] });
+    return target.run().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(0);
+      expect(dm.message).toHaveBeenCalledTimes(0);
+    })
+  })
 })
