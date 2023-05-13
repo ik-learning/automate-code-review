@@ -241,7 +241,7 @@ class Infrastructure extends Base {
     const infoMessages = new Set();
     const threshold = 10;
 
-    let reviewCount = uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created);
+    let reviewCount = uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().created);
 
     if (reviewCount > threshold) {
       warn(`☣️  Skip review as number of changes hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling and to simplify code review.`);
@@ -255,6 +255,7 @@ class Infrastructure extends Base {
           const diff = await this.danger.git.diffForFile(file);
           const data = hclParse(diff.after).cluster_config;
           const instance_type = data.instance_type;
+          // writeFileSync(process.cwd() + "/tests/models/__fixtures__/postgres/123-create.diff.json", JSON.stringify(diff))
 
           if (file.includes('/sandbox/') || file.includes('/dev/')) {
             if (!match.isMatch(instance_type, auroraRdsRecommendInstanceTypesInDev) && !infoMessages.has('instance_type')) {
@@ -310,16 +311,16 @@ class Infrastructure extends Base {
     // What
     // 1. Description contains markers
     // 2. And at least a single file modified
-    let createdMissing = !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'create']) && varsCreated.size > 0;
-    let modifiedMissing = !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'update']) && varsModified.size > 0;
-    let deletedMissing = !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'remove']) && varsDeleted.size > 0;
-
+    let createdMissing = !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'create']);
+    let modifiedMissing = !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'update']);
+    let deletedMissing = !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'remove']);
+    
     // created
-    if (createdMissing) varsCreated.forEach(stack => template.add({ stack: stack, action: 'created' }))
+    [...varsCreated].filter(a => createdMissing).forEach(stack => template.add({ stack: stack, action: 'created' }));
     // updated
-    if (modifiedMissing) varsModified.forEach(stack => template.add({ stack: stack, action: 'modified' }))
+    [...varsModified].filter(a => modifiedMissing).forEach(stack => template.add({ stack: stack, action: 'modified' }));
     // deleted
-    if (deletedMissing) varsDeleted.forEach(stack => template.add({ stack: stack, action: 'deleted' }))
+    [...varsDeleted].filter(a => deletedMissing).forEach(stack => template.add({ stack: stack, action: 'deleted' }));
 
     if (template.size === 1) {
       template.forEach((el) => {
