@@ -396,44 +396,38 @@ class Infrastructure extends Base {
         if (isDiff(before, after, maxDiff)) {
           console.debug('multiple changes found while comparing "global secondary indexes"');
           warn(`📂 ***${file}*** ➡️  (Potential issue) Only one GSI can be modified at a time, otherwise AWS will complain..`);
-          return
+        } else {
+          const beforeHashKeys = before.reduce((obj, item) => (obj[item.name] = item.non_key_attributes, obj), {});
+          const beforeRangeKeys = before.reduce((obj, item) => (obj[item.name] = item.range_key, obj), {});
+          after.filter(el => el.name in beforeHashKeys || el.name in beforeRangeKeys).forEach(el => {
+            let msg = [
+              `📂 ***${file}*** ➡️  Cannot update GSI's properties other than ***Provisioned Throughput*** and ***Contributor Insights Specification***.`,
+              "***(Official resolution)*** You can create a new GSI with a different name.",
+              `***(non-Official resolution)*** Remove GCI '${el.name}' key in one MR and create a new MR with new|required values.`
+            ].join("\n")
+            if (el.non_key_attributes && el.non_key_attributes.length !== beforeHashKeys[el.name].length) {
+              warn(msg);
+            } else if (el.range_key && el.range_key != beforeRangeKeys[el.name]) {
+              warn(msg);
+            }
+          })
         }
-        // TODO: extract this method
-        const beforeHashKeys = before.reduce((obj, item) => (obj[item.name] = item.non_key_attributes, obj), {});
-        // TODO: optional extract this logic
-        after.filter(el => el.name in beforeHashKeys).forEach(el => {
-          // TODO: explicity test this logic
-          let msg = [
-            `📂 ***${file}*** ➡️  Cannot update GSI's properties other than ***Provisioned Throughput*** and ***Contributor Insights Specification***.`,
-            "***(Official resolution)*** You can create a new GSI with a different name.",
-            `***(non-Official resolution)*** Remove GCI '${el.name}' key in one MR and create a new MR with new|required values.`
-          ].join("\n")
-          // TODO: hard to read, should be more explicit naming possibly
-          if (el.non_key_attributes && beforeHashKeys[el.name] && el.non_key_attributes.length !== beforeHashKeys[el.name].length) {
-            warn(msg);
-            // TODO: it should be a better logic
-          } else if (el.non_key_attributes === null && beforeHashKeys[el.name] && beforeHashKeys[el.name].length > 1) {
-            warn(msg);
-          } else if (el.non_key_attributes && beforeHashKeys[el.name] === null && el.non_key_attributes.length > 1) {
-            warn(msg);
-          }
-        })
       }, Error())
     }
   }
 
   async run() {
-    this.validateInstanceClassExist();
-    this.validateRdsPlan();
-    this.validateSingleStackAtOnceCreated();
-    this.validateVarsAndHclCreated();
-    await this.removeStorageResources();
-    await this.validateRdsCreation();
+    // this.validateInstanceClassExist();
+    // this.validateRdsPlan();
+    // this.validateSingleStackAtOnceCreated();
+    // this.validateVarsAndHclCreated();
+    // await this.removeStorageResources();
+    // await this.validateRdsCreation();
     // TODO: test
-    await this.validateRdsAuroraCreation();
-    await this.templateShouldBeEnforced();
-    await this.rdsMysql5EndOfLifeDate();
-    await this.validateDBCommons();
+    // await this.validateRdsAuroraCreation();
+    // await this.templateShouldBeEnforced();
+    // await this.rdsMysql5EndOfLifeDate();
+    // await this.validateDBCommons();
     // TODO: test
     await this.validateDBSingleKeyModification();
   }

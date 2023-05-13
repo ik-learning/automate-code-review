@@ -1,0 +1,7 @@
+{
+  "before": "global_secondary_indexes = [\n    {\n      name               = \"idx_by_customer_id\"\n      hash_key           = \"customerId\"\n      projection_type    = \"ALL\"\n      range_key          = \"\"\n      read_capacity      = null\n      write_capacity     = null\n      non_key_attributes = []\n    }\n  ]\n\n  tags = {\n    team        = \"checkout\"\n    application = \"basket\"\n  }\n}",
+  "after": "non_key_attributes = null\n      read_capacity      = null\n      write_capacity     = null\n    },\n  ]\n\n  tags = {\n    team        = \"checkout\"\n    application = \"basket\"\n  }\n}\n",
+  "diff": "       tags = {\n     team        = \"checkout\"\n     application = \"basket\"\n   }\n-}\n\\ No newline at end of file\n+}",
+  "added": "+    },\n+    {\n+      name               = \"index-emailhash-type\"\n+      hash_key           = \"emailHashType\"\n+      range_key          = \"createdAt\"\n+      projection_type    = \"ALL\"\n+      non_key_attributes = null\n+      read_capacity      = null\n+      write_capacity     = null\n+    },\n+    {\n+      name               = \"index-alert\"\n+      hash_key           = \"alert\"\n+      range_key          = \"createdAt\"\n+      projection_type    = \"ALL\"\n+      non_key_attributes = null\n+      read_capacity      = null\n+      write_capacity     = null\n+    },\n+}",
+  "removed": "-    }\n-}\n\\ No newline at end of file"
+}

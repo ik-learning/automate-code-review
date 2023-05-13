@@ -148,7 +148,7 @@ Closes PTS-1478
     })
   })
 
-  it("should message when ensureFileHasNewline() and no new line present", () => {
+  it("should warn when ensureFileHasNewline() and no-new line present", () => {
     dm.danger.git.created_files = ['requirements.txt'];
     dm.danger.git.modified_files = [];
     dm.danger.git.diffForFile = async (file) => {
@@ -160,11 +160,22 @@ Closes PTS-1478
     })
   })
 
-  it("should not message when ensureFileHasNewline() and new line present", () => {
+  it("should not warn when ensureFileHasNewline() and new line present", () => {
     dm.danger.git.created_files = ['requirements.txt'];
     dm.danger.git.modified_files = [];
     dm.danger.git.diffForFile = async (file) => {
       return setUpTestScenarioObject('models/__fixtures__/common/newline.diff.json');
+    }
+    return target.ensureFileHasNewline().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(0);
+    })
+  })
+
+  it("should not warn when ensureFileHasNewline() and new line removed", () => {
+    dm.danger.git.created_files = ['requirements.txt'];
+    dm.danger.git.modified_files = [];
+    dm.danger.git.diffForFile = async (file) => {
+      return setUpTestScenarioObject('models/__fixtures__/common/no-newline-removed.json');
     }
     return target.ensureFileHasNewline().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(0);

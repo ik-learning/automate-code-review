@@ -29,7 +29,7 @@ class Common extends Base {
     console.log('in: ensureHasNewLine');
     this.updatedFiles.forEach(file => {
       this.danger.git.diffForFile(file).then((el) => {
-        if ((el.added + el.diff).includes('No newline at end of file')) {
+        if ((el.added + el.diff).includes('No newline at end of file') && !el.removed.includes('No newline at')) {
           warn(`📂 ***${file}***. ➡️  No newline at end of file.`);
         }
       })
