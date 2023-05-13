@@ -264,12 +264,10 @@ describe("Test utils.js ...", () => {
 
   describe("writeFileSync(string,string))", () => {
     const fs = require("fs");
-    jest.mock('fs', () => ({
-      writeFileSync: jest.fn((file_name, data) => {
-        return []
-      })
-    }))
+    let spyFsReadFileSync = jest
+      .spyOn(fs, "writeFileSync")
+      .mockReturnValue(true);
     writeFileSync('filename', 'some data to write')
-    expect(fs.writeFileSync).toHaveBeenCalledTimes(0);
+    expect(spyFsReadFileSync).toHaveBeenCalledTimes(1);
   })
 })
