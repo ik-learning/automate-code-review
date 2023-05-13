@@ -374,7 +374,7 @@ class Infrastructure extends Base {
       })
     }
   }
-  // TODO: test
+
   /**
    * DynamoDB Single Key modification validation
    * @returns
@@ -428,7 +428,6 @@ class Infrastructure extends Base {
     // await this.templateShouldBeEnforced();
     // await this.rdsMysql5EndOfLifeDate();
     // await this.validateDBCommons();
-    // TODO: test
     await this.validateDBSingleKeyModification();
   }
 }
