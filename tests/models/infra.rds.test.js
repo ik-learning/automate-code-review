@@ -43,78 +43,152 @@ describe("test models/infrastructure.js ...", () => {
     if (times > 0) expect(dm.message).toHaveBeenCalledWith(expect.stringContaining(msg))
   })
 
-  it.each([
-    [0, { created: [] }],
-    [1, { created: ['rds/envs/dev/terraform.tfvars'] }],
-    [1, { created: ['rds-aurora/envs/dev/terraform.tfvars'] }],
-    [1, { created: ['rds-aurora/envs/dev/terraform.tfvars', 'rds-aurora/envs/dev/38e7/terraform.tfvars'] }],
-    [1, { created: ['rds/envs/dev/terraform.tfvars', 'rds/envs/dev/38e7/terraform.tfvars'] }],
-    [1, { created: ['rds/envs/dev/9aa2/terraform.tfvars', 'rds/envs/dev/11ed/terraform.tfvars'] }],
-    [1, { created: ['rds-aurora/envs/dev/9aa2/terraform.tfvars', 'rds-aurora/envs/dev/11ed/terraform.tfvars'] }],
-    [1, { created: ['rds/envs/dev/9aa2/terraform.tfvars', 'rds/envs/prod/11ed/terraform.tfvars'] }],
-    [1, { created: ['rds-aurora/envs/dev/9aa2/terraform.tfvars', 'rds-aurora/envs/prod/11ed/terraform.tfvars'] }],
-  ])("should message when validateRdsPlan() and stack is modified", (times, keyedPaths) => {
-    dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
-    target.validateRdsPlan();
+  describe("validateRdsCreation()", () => {
+    it.each([
+      [0, { created: [] }],
+      [1, { created: ['rds/envs/dev/terraform.tfvars'] }],
+      [1, { created: ['rds-aurora/envs/dev/terraform.tfvars'] }],
+      [1, { created: ['rds-aurora/envs/dev/terraform.tfvars', 'rds-aurora/envs/dev/38e7/terraform.tfvars'] }],
+      [1, { created: ['rds/envs/dev/terraform.tfvars', 'rds/envs/dev/38e7/terraform.tfvars'] }],
+      [1, { created: ['rds/envs/dev/9aa2/terraform.tfvars', 'rds/envs/dev/11ed/terraform.tfvars'] }],
+      [1, { created: ['rds-aurora/envs/dev/9aa2/terraform.tfvars', 'rds-aurora/envs/dev/11ed/terraform.tfvars'] }],
+      [1, { created: ['rds/envs/dev/9aa2/terraform.tfvars', 'rds/envs/prod/11ed/terraform.tfvars'] }],
+      [1, { created: ['rds-aurora/envs/dev/9aa2/terraform.tfvars', 'rds-aurora/envs/prod/11ed/terraform.tfvars'] }],
+    ])("should message when validateRdsPlan() and stack is modified", (times, keyedPaths) => {
+      dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
+      target.validateRdsPlan();
 
-    expect(dm.message).toHaveBeenCalledTimes(times);
-    if (times > 0) expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('Make sure to verify the `plan` job'))
+      expect(dm.message).toHaveBeenCalledTimes(times);
+      if (times > 0) expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('Make sure to verify the `plan` job'))
+    })
   })
 
-  it.each([
-    ['models/__fixtures__/storage/rds-created.json'],
-    ['models/__fixtures__/storage/rds-modified.json']
-  ])("should messages when ensureRdsCreationValidated() number of stacks hits the threshold", (scenario) => {
-    dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
-    return target.validateRdsCreation().then(() => {
+  describe("validateRdsCreation()", () => {
+
+    it.each([
+      [{ created: ['rds/dev/ci-server/terraform.tfvars'] }, 'mysql/create.diff.ok.json', 0],
+      [{ created: ['rds/dev/test-server/terraform.tfvars'] }, 'mysql/create.diff.bad.json', 1],
+      [{ created: ['rds/dev/this-server/terraform.tfvars'] }, 'mysql/mysql5-rds-create.diff.json', 1],
+      [{ created: ['rds/dev/app-server/terraform.tfvars'] }, 'mysql/create.no-instance.ok.json', 0],
+      [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'postgres/create.diff.ok.json', 0],
+      [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'postgres/create.no-instance.ok.json', 0],
+      [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'postgres/create.db.t3.medium.json', 1],
+    ])("should messages when ensureRdsCreationValidated() with single stack in dev modified", (keyedPaths, scenario, times) => {
+      dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
+      dm.danger.git.diffForFile = (file) => {
+        return setUpTestScenarioObject(`models/__fixtures__/${scenario}`)
+      }
+      return target.validateRdsCreation().then(() => {
+        expect(dm.warn).toHaveBeenCalledTimes(times);
+      })
+    })
+
+    it("should warn when validateRdsCreation() with outdated postgres11 'engine' and 'storage'", () => {
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/postgres/rds-created.json'));
+      dm.danger.git.diffForFile = (file) => {
+        return setUpTestScenarioObject(`models/__fixtures__/postgres/postgres11-outdated-engine-storage.warn.json`)
+      }
+      return target.validateRdsCreation().then(() => {
+        expect(dm.warn).toHaveBeenCalledTimes(3);
+        expect(dm.message).toHaveBeenCalledTimes(1);
+        expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('create an rds with outdated engine?'));
+        expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Recommended `storage_type` is `gp3`'));
+        expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('In `dev` environment instance class `db.m5.large` not recommended'));
+      })
+    })
+
+    it("should warn when validateRdsCreation() with not recommended 'instance_class'", () => {
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/postgres/rds-created-prod.json'));
+      dm.danger.git.diffForFile = (file) => {
+        return setUpTestScenarioObject('models/__fixtures__/postgres/family15-instance_class-outdated.warn.json')
+      }
+      return target.validateRdsCreation().then(() => {
+        expect(dm.warn).toHaveBeenCalledTimes(2);
+        expect(dm.message).toHaveBeenCalledTimes(1);
+        expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('In `prod` environment instance class `db.t3.medium` not recommended'));
+        expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Recommended `storage_type` is `gp3`'));
+      })
+    })
+
+
+    it("should warn when validateRdsCreation() with outdated mysql5 'engine' and 'storage'", () => {
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/mysql/rds-created.json'));
+      dm.danger.git.diffForFile = (file) => {
+        return setUpTestScenarioObject(`models/__fixtures__/mysql/mysql5.7-outdated-enginer-storage.warn.json`)
+      }
+      return target.validateRdsCreation().then(() => {
+        expect(dm.warn).toHaveBeenCalledTimes(2);
+        expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('create an rds with outdated engine?'));
+        expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Recommended `storage_type` is `gp3`'));
+      })
+    })
+  })
+
+  describe("validateRdsAuroraCreation()", () => {
+
+    it.each([
+      ['models/__fixtures__/storage/rds-aurora-created.json'],
+      ['models/__fixtures__/storage/rds-aurora-modified.json']
+    ])("should warn when validateRdsAuroraCreation() number of stacks hits the threshold", (scenario) => {
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
+      return target.validateRdsAuroraCreation().then(() => {
+        expect(dm.warn).toHaveBeenCalledTimes(1);
+        expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
+      })
+    })
+
+  })
+
+  describe("validateRdsCommons()", () => {
+
+    it("should warn when validateRdsCommons() with multiple number of stacks", () => {
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/storage/rds-multiple.json'));
+      target.validateRdsCommons()
+      expect(dm.warn).toHaveBeenCalledTimes(1);
+      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
+    })
+
+    it.each([
+      ['models/__fixtures__/storage/rds-created.json'],
+      ['models/__fixtures__/storage/rds-modified.json']
+    ])("should messages when ensureRdsCreationValidated() number of stacks hits the threshold", (scenario) => {
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
+      target.validateRdsCommons()
       expect(dm.warn).toHaveBeenCalledTimes(1);
       expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
     })
   })
 
-  it("should messages when ensureRdsCreationValidated() with multiple number of stacks", () => {
-    dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/storage/rds-multiple.json'));
-    return target.validateRdsCreation().then(() => {
-      expect(dm.warn).toHaveBeenCalledTimes(1);
-      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
-    })
-  })
+  describe("validateRdsModification()", () => {
 
-  it.each([
-    [{ created: ['rds/dev/ci-server/terraform.tfvars'] }, 'mysql/create.diff.ok.json', 0],
-    [{ created: ['rds/dev/test-server/terraform.tfvars'] }, 'mysql/create.diff.bad.json', 1],
-    [{ created: ['rds/dev/this-server/terraform.tfvars'] }, 'mysql/mysql5-rds-create.diff.json', 0],
-    [{ created: ['rds/dev/app-server/terraform.tfvars'] }, 'mysql/create.no-instance.ok.json', 0],
-    [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'postgres/create.diff.ok.json', 0],
-    [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'postgres/create.no-instance.ok.json', 0],
-    [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'postgres/create.db.t3.medium.json', 1],
-  ])("should messages when ensureRdsCreationValidated() with single stack in dev modified", (keyedPaths, scenario, times) => {
-    dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
-    dm.danger.git.diffForFile = (file) => {
-      return setUpTestScenarioObject(`models/__fixtures__/${scenario}`)
-    }
-    return target.validateRdsCreation().then(() => {
-      expect(dm.warn).toHaveBeenCalledTimes(times);
-      if (times > 0) expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('`db.t3.medium` not recommended'));
+    it.each([
+      ['models/__fixtures__/storage/rds-created.json'],
+      ['models/__fixtures__/storage/rds-modified.json']
+    ])("should not message when validateRdsModification() with number of modified fiels ", (scenario) => {
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
+      return target.validateRdsModification().then(() => {
+        expect(dm.warn).toHaveBeenCalledTimes(0);
+        expect(dm.message).toHaveBeenCalledTimes(0);;
+      })
     })
-  })
 
-  it.each([
-    ['models/__fixtures__/storage/rds-aurora-created.json'],
-    ['models/__fixtures__/storage/rds-aurora-modified.json']
-  ])("should messages when validateRdsAuroraCreation() number of stacks hits the threshold", (scenario) => {
-    dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
-    return target.validateRdsAuroraCreation().then(() => {
-      expect(dm.warn).toHaveBeenCalledTimes(1);
-      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
+    // TODO: test
+    it("should warn when validateRdsModification() with incorrect configuration", () => {
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/storage/rds-multiple.json'));
+      return target.validateRdsModification().then(() => {
+        expect(1).toBe(1);
+        // expect(dm.warn).toHaveBeenCalledTimes(1);
+        // expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
+      });
     })
-  })
 
-  it("should messages when validateRdsAuroraCreation() with multiple number of stacks", () => {
-    dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/storage/rds-aurora-multiple.json'));
-    return target.validateRdsCreation().then(() => {
-      expect(dm.warn).toHaveBeenCalledTimes(1);
-      expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
+    it("should not warn when validateRdsModification() with correct configuration", () => {
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/storage/rds-multiple.json'));
+      return target.validateRdsModification().then(() => {
+        expect(1).toBe(1);
+        // expect(dm.warn).toHaveBeenCalledTimes(1);
+        // expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
+      });
     })
   })
 

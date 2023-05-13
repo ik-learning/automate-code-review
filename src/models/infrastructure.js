@@ -135,18 +135,14 @@ class Infrastructure extends Base {
     }
   }
 
-  // TODO test
-  /**
-   * RDS creation validated
-   */
-  async validateRdsCreation() {
-    console.log('in: validateRdsCreation');
+  validateRdsCommons() {
     const tfvars = this.danger.git.fileMatch("rds/**/*.tfvars");
     const tfvarsCreated = tfvars.getKeyedPaths().created;
     const tfvarsModified = tfvars.getKeyedPaths().modified;
-    let threshold = 10;
+    const tfvarsDeleted = tfvars.getKeyedPaths().deleted;
 
-    let reviewCount = uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created);
+    let threshold = 10;
+    let reviewCount = uniqueElementsCount(tfvarsCreated, tfvarsModified, tfvarsDeleted);
 
     if (reviewCount > threshold) {
       warn(`☣️  Skip review as number of changes hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling and to simplify code review.`);
@@ -154,77 +150,101 @@ class Infrastructure extends Base {
       || uniqueElementsCount(tfvars.getKeyedPaths().modified) > 2
       || uniqueElementsCount(tfvars.getKeyedPaths().deleted) > 2) {
       warn(`☣️  Multiple configurations modified in single MR. Is this expected?`);
-    } else if (reviewCount < threshold) {
-      if (tfvars.created) {
-        // validate instance class in dev
-        match(tfvarsCreated, ['**/dev/**'], {}).forEach(async file => {
-          const diff = await this.danger.git.diffForFile(file);
-          let data = hclParse(diff.after);
-          let { instance_class, engine, engine_version, family } = data.rds_config.instance_config
-          if (engine === 'postgres' && instance_class && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
-            warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider different class \`${rdsRecommendInstanceTypesInDev}\` ...`);
-          } else if (engine === 'mysql' && !family.includes('mysql5') && instance_class && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
-            warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider different types|class \`${rdsRecommendInstanceTypesInDev}\` ...`);
-          }
-        }, Error());
+    }
+  }
 
-        tfvarsCreated.forEach(async file => {
-          const diff = await this.danger.git.diffForFile(file);
+  /**
+   * RDS creation validated
+   */
+  async validateRdsCreation() {
+    console.log('in: validateRdsCreation');
+    const tfvars = this.danger.git.fileMatch("rds/**/*.tfvars");
+    const tfvarsCreated = tfvars.getKeyedPaths().created;
+    let threshold = 2;
+
+    let reviewCount = uniqueElementsCount(tfvars.getKeyedPaths().created);
+
+    if (reviewCount < threshold && tfvars.created) {
+      // validate instance class in dev
+      match(tfvarsCreated, ['**/dev/**'], {}).forEach(async file => {
+        const diff = await this.danger.git.diffForFile(file);
+        let data = hclParse(diff.after);
+        let { instance_class, engine, engine_version, family } = data.rds_config.instance_config
+        if (engine === 'postgres' && instance_class && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
+          warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider different class \`${rdsRecommendInstanceTypesInDev}\` ...`);
+        } else if (engine === 'mysql' && !family.includes('mysql5') && instance_class && !match.isMatch(instance_class, rdsRecommendInstanceTypesInDev)) {
+          warn(`📂 ${file}. ➡️  (💸 saving) In \`dev\` environment instance class \`${instance_class}\` not recommended. Consider different types|class \`${rdsRecommendInstanceTypesInDev}\` ...`);
+        }
+      }, Error());
+
+      tfvarsCreated.forEach(async file => {
+        const diff = await this.danger.git.diffForFile(file);
+        const data = hclParse(diff.after);
+        let { engine, engine_version, family, storage_type, instance_class } = data.rds_config.instance_config
+        let rdsFamily = rdsConfiguration[engine].family
+        // make sure latest engine version is in use dev|prod
+        if (engine === 'postgres' && family !== rdsFamily) {
+          warn(`📂 ${file}. ✏️  is there is a reason to create an rds with outdated engine?. **recommended** \`{ family:${rdsFamily} }\` **current** \`{ family:${family}, engine_version:${engine_version} }\``)
+        }
+        if (engine === 'mysql' && family !== rdsFamily) {
+          warn(`📂 ${file}. ✏️  is there is a reason to create an rds with outdated engine? **recommended** \`{ family:${rdsFamily} }\` **current** \`{ family:${family}, engine_version:${engine_version} }\``)
+        }
+        if (file.includes('/prod/')) {
+          const arr = instance_class.split(".")
+          const suggested = `db.t4g.${arr[2]}`;
+          if (instance_class.includes('db.t3.')) {
+            warn(`📂 ${file}. ➡️ In \`prod\` environment instance class \`${instance_class}\` not recommended. Consider different class \`${suggested}\` ...`);
+          }
+        }
+        if (inputInCollection(engine, ['mysql', 'postgres']) && storage_type in recommendedRDSStorageTypes) {
+          const recommended = recommendedRDSStorageTypes[storage_type];
+          warn(`📂 ${file}. ✏️ (Optional) Recommended \`storage_type\` is \`${recommended}\` as it provides better performance and cost efficiency as opposite to  \'${storage_type}\'. [Docs and Migration AWS migration Guide](${links.gp2gp3Migration}) and [UserGuide](${links.rdsUserGuide}).`)
+        }
+
+        message(`📂 ${file}. ✏️  Make sure to review CI job output attribute "engine_info.valid_upgrade_targets" in order to understand where the up-to-date "engine" version is requested.`);
+      }, Error())
+    }
+  }
+
+  // TODO: test
+  /**
+   * RDS modification validation
+   */
+  async validateRdsModification() {
+    const tfvars = this.danger.git.fileMatch("rds/**/*.tfvars");
+    const tfvarsModified = tfvars.getKeyedPaths().modified;
+    let threshold = 2;
+
+    let reviewCount = uniqueElementsCount(tfvars.getKeyedPaths().modified);
+
+    if (reviewCount <= threshold && tfvars.modified) {
+      let infoMessages = new Set();
+
+      message(`📂 ${file}. ✏️  Make sure to review CI job output attribute "engine_info.valid_upgrade_targets" in order to understand where the up-to-date "engine" version is requested.`);
+
+      await tfvarsModified.forEach(async file => {
+        const diff = await this.danger.git.diffForFile(file);
+        const beforeRDSConfig = hclParse(diff.before).rds_config
+        const afterRDSConfig = hclParse(diff.after).rds_config
+        if (typeof beforeRDSConfig === 'undefined' || typeof afterRDSConfig === 'undefined') {
+          console.log('skip validation as one of the values is "not defined".')
+        } else {
+          const before = beforeRDSConfig.instance_config.instance_class;
+          const after = afterRDSConfig.instance_config.instance_class;
           const data = hclParse(diff.after);
-          let { engine, engine_version, family, storage_type, instance_class } = data.rds_config.instance_config
-          let rdsEngineVersion = rdsConfiguration[engine].engine_version
-          let rdsFamily = rdsConfiguration[engine].family
-          // make sure latest engine version is in use dev|prod
-          if (engine === 'postgres' && engine_version !== rdsEngineVersion && family !== rdsFamily) {
-            warn(`📂 ${file}. ✏️  is there is a reason to create an rds with outdated engine?. **recommended** \`{ family:${rdsFamily}, engine_version:${rdsEngineVersion} }\` **current** \`{ family:${family}, engine_version:${engine_version} }\``)
-          }
-          if (engine === 'mysql' && engine_version !== rdsEngineVersion && family !== rdsFamily) {
-            warn(`📂 ${file}. ✏️  is there is a reason to create an rds with outdated engine? **recommended** \`{ family:${rdsFamily}, engine_version:${rdsEngineVersion} }\` **current** \`{ family:${family}, engine_version:${engine_version} }\``)
-          }
-          // instance class validation in prod
-          if (file.includes('/prod/')) {
-            const arr = instance_class.split(".")
-            const suggested = `db.t4g.${arr[2]}`;
-            if (instance_class.includes('db.t3.')) {
-              warn(`📂 ${file}. ➡️ In \`prod\` environment instance class \`${instance_class}\` not recommended. Consider different class \`${suggested}\` ...`);
-            }
+          let { engine, storage_type } = data.rds_config.instance_config
+          if (before !== after && !infoMessages.has('instance_classes') &&
+            !(storage_type in recommendedRDSStorageTypes)) {
+            infoMessages.add('instance_classes')
+            console.log(`before: ${before}, after: ${after}`);
+            message(`🤖 Instance class modified. Worth to provide a link to datadog dashboard, monitor, relevant capacity planning calculations...`);
           }
           if (inputInCollection(engine, ['mysql', 'postgres']) && storage_type in recommendedRDSStorageTypes) {
             const recommended = recommendedRDSStorageTypes[storage_type];
-            warn(`📂 ${file}. ✏️ (Optional) Recommended \`storage_type\` is \`${recommended}\` as it provides better performance and cost efficiency as opposite to  \'${storage_type}\'. [Docs and Migration AWS migration Guide](${links.gp2gp3Migration}) and [UserGuide](${links.rdsUserGuide}).`)
+            message(`📂 ${file}. ✏️ (Optional) Recommended \`storage_type\` is \`${recommended}\` as it provides better performance and cost efficiency as opposite to \'${storage_type}\'. [Docs and Migration AWS migration Guide](${links.gp2gp3Migration}).`)
           }
-
-          message(`📂 ${file}. ✏️  Make sure to review CI job output attribute "engine_info.valid_upgrade_targets" in order to understand where the up-to-date "engine" version is requested.`);
-        }, Error())
-      }
-      if (tfvars.modified) {
-        let infoMessages = new Set();
-        await tfvarsModified.forEach(async file => {
-          const diff = await this.danger.git.diffForFile(file);
-          const beforeRDSConfig = hclParse(diff.before).rds_config
-          const afterRDSConfig = hclParse(diff.after).rds_config
-          if (typeof beforeRDSConfig === 'undefined' || typeof afterRDSConfig === 'undefined') {
-            console.log('skip validation as one of the values is "not defined".')
-          } else {
-            const before = beforeRDSConfig.instance_config.instance_class;
-            const after = afterRDSConfig.instance_config.instance_class;
-            const data = hclParse(diff.after);
-            let { engine, storage_type } = data.rds_config.instance_config
-            if (before !== after && !infoMessages.has('instance_classes') &&
-              !(storage_type in recommendedRDSStorageTypes)) {
-              infoMessages.add('instance_classes')
-              console.log(`before: ${before}, after: ${after}`);
-              message(`🤖 Instance class modified. Worth to provide a link to datadog dashboard, monitor, relevant capacity planning calculations...`);
-            }
-            if (inputInCollection(engine, ['mysql', 'postgres']) && storage_type in recommendedRDSStorageTypes) {
-              const recommended = recommendedRDSStorageTypes[storage_type];
-              message(`📂 ${file}. ✏️ (Optional) Recommended \`storage_type\` is \`${recommended}\` as it provides better performance and cost efficiency as opposite to \'${storage_type}\'. [Docs and Migration AWS migration Guide](${links.gp2gp3Migration}).`)
-            }
-
-            message(`📂 ${file}. ✏️  Make sure to review CI job output attribute "engine_info.valid_upgrade_targets" in order to understand where the up-to-date "engine" version is requested.`);
-          }
-        }, Error())
-      }
+        }
+      }, Error())
     }
   }
 
@@ -255,7 +275,6 @@ class Infrastructure extends Base {
           const diff = await this.danger.git.diffForFile(file);
           const data = hclParse(diff.after).cluster_config;
           const instance_type = data.instance_type;
-          // writeFileSync(process.cwd() + "/tests/models/__fixtures__/postgres/123-create.diff.json", JSON.stringify(diff))
 
           if (file.includes('/sandbox/') || file.includes('/dev/')) {
             if (!match.isMatch(instance_type, auroraRdsRecommendInstanceTypesInDev) && !infoMessages.has('instance_type')) {
@@ -417,18 +436,21 @@ class Infrastructure extends Base {
   }
 
   async run() {
-    // this.validateInstanceClassExist();
-    // this.validateRdsPlan();
-    // this.validateSingleStackAtOnceCreated();
-    // this.validateVarsAndHclCreated();
-    // await this.removeStorageResources();
-    // await this.validateRdsCreation();
+    this.validateInstanceClassExist();
+    this.validateRdsPlan();
+    this.validateRdsCommons();
+    this.validateSingleStackAtOnceCreated();
+    this.validateVarsAndHclCreated();
+    await this.removeStorageResources();
+    await this.validateRdsCreation();
+    // TODO: test
+    await this.validateRdsModification();
     // TODO: test
     // await this.validateRdsAuroraCreation();
     // await this.templateShouldBeEnforced();
     // await this.rdsMysql5EndOfLifeDate();
     // await this.validateDBCommons();
-    await this.validateDBSingleKeyModification();
+    // await this.validateDBSingleKeyModification();
   }
 }
 
