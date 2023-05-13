@@ -383,43 +383,42 @@ class Infrastructure extends Base {
     console.log('in: ensureDynamoDBSingleKeyModification');
     const threshold = 10;
     const maxDiff = 1;
-    const tfvars = this.danger.git.fileMatch("dynamodb/**/*.tfvars", "**/dynamodb/**/*.tfvars");
-    if (uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().deleted, tfvars.getKeyedPaths().created) > threshold) {
+    const files = this.danger.git.fileMatch("dynamodb/**/*.tfvars", "**/dynamodb/**/*.tfvars");
+    let reviewCount = uniqueElementsCount(files.getKeyedPaths().modified);
+
+    if (reviewCount > threshold) {
       warn(`☣️  Skip review as number of "DynamoDB" file changed hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling.`);
-      return;
-    } else if (tfvars.modified || tfvars.created || tfvars.deleted) {
-      if (tfvars.modified) {
-        new Set(tfvars.getKeyedPaths().modified).forEach(async file => {
-          const diff = await this.danger.git.diffForFile(file);
-          const before = hclParse(diff.before).dynamodb_table.global_secondary_indexes;
-          const after = hclParse(diff.after).dynamodb_table.global_secondary_indexes;
-          if (isDiff(before, after, maxDiff)) {
-            console.debug('multiple changes found while comparing "global secondary indexes"');
-            warn(`📂 ***${file}*** ➡️  (Potential issue) Only one GSI can be modified at a time, otherwise AWS will complain..`);
-            return
+    } else if (reviewCount < threshold && reviewCount > 0) {
+      new Set(files.getKeyedPaths().modified).forEach(async file => {
+        const diff = await this.danger.git.diffForFile(file);
+        const before = hclParse(diff.before).dynamodb_table.global_secondary_indexes;
+        const after = hclParse(diff.after).dynamodb_table.global_secondary_indexes;
+        if (isDiff(before, after, maxDiff)) {
+          console.debug('multiple changes found while comparing "global secondary indexes"');
+          warn(`📂 ***${file}*** ➡️  (Potential issue) Only one GSI can be modified at a time, otherwise AWS will complain..`);
+          return
+        }
+        // TODO: extract this method
+        const beforeHashKeys = before.reduce((obj, item) => (obj[item.name] = item.non_key_attributes, obj), {});
+        // TODO: optional extract this logic
+        after.filter(el => el.name in beforeHashKeys).forEach(el => {
+          // TODO: explicity test this logic
+          let msg = [
+            `📂 ***${file}*** ➡️  Cannot update GSI's properties other than ***Provisioned Throughput*** and ***Contributor Insights Specification***.`,
+            "***(Official resolution)*** You can create a new GSI with a different name.",
+            `***(non-Official resolution)*** Remove GCI '${el.name}' key in one MR and create a new MR with new|required values.`
+          ].join("\n")
+          // TODO: hard to read, should be more explicit naming possibly
+          if (el.non_key_attributes && beforeHashKeys[el.name] && el.non_key_attributes.length !== beforeHashKeys[el.name].length) {
+            warn(msg);
+            // TODO: it should be a better logic
+          } else if (el.non_key_attributes === null && beforeHashKeys[el.name] && beforeHashKeys[el.name].length > 1) {
+            warn(msg);
+          } else if (el.non_key_attributes && beforeHashKeys[el.name] === null && el.non_key_attributes.length > 1) {
+            warn(msg);
           }
-          // TODO: extract this method
-          const beforeHashKeys = before.reduce((obj, item) => (obj[item.name] = item.non_key_attributes, obj), {});
-          // TODO: optional extract this logic
-          after.filter(el => el.name in beforeHashKeys).forEach(el => {
-            // TODO: explicity test this logic
-            let msg = [
-              `📂 ***${file}*** ➡️  Cannot update GSI's properties other than ***Provisioned Throughput*** and ***Contributor Insights Specification***.`,
-              "***(Official resolution)*** You can create a new GSI with a different name.",
-              `***(non-Official resolution)*** Remove GCI '${el.name}' key in one MR and create a new MR with new|required values.`
-            ].join("\n")
-            // TODO: hard to read, should be more explicit naming possibly
-            if (el.non_key_attributes && beforeHashKeys[el.name] && el.non_key_attributes.length !== beforeHashKeys[el.name].length) {
-              warn(msg);
-              // TODO: it should be a better logic
-            } else if (el.non_key_attributes === null && beforeHashKeys[el.name] && beforeHashKeys[el.name].length > 1) {
-              warn(msg);
-            } else if (el.non_key_attributes && beforeHashKeys[el.name] === null && el.non_key_attributes.length > 1) {
-              warn(msg);
-            }
-          })
-        }, Error())
-      }
+        })
+      }, Error())
     }
   }
 

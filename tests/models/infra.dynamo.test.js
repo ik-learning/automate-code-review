@@ -30,7 +30,7 @@ describe("test models/infrastructure.js ...", () => {
     })
   })
 
-  it("should messages when validateDBSingleKeyModification() with stack hit threshold", () => {
+  it("should messages when validateDBSingleKeyModification() with number of changes hit threshold", () => {
     dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/dynamo/multiple-modifications.bad.json'));
     return target.validateDBSingleKeyModification().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(1);
