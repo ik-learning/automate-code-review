@@ -68,6 +68,23 @@ const isInCollection = (target, collection) => {
   });
 }
 
+/**
+ * Return sorted target
+ * @param {*} collection
+ * @returns sorted collection
+ */
+const sortUnstructuredCollection = (collection) => {
+  return collection.sort((first, next) => {
+    let el = first, nextEl = next;
+    if (el.includes(',')) el = first.split(',')[0];
+    if (nextEl.includes(',')) nextEl = next.split(',')[0];
+    // sorting
+    if (el < nextEl) return -1;
+    if (el > nextEl) return 1;
+    return 0;
+  })
+}
+
 const filesMatchPath = (files, paths) => {
   return files.filter(val => {
     return paths.some(el => val.includes(el))
@@ -84,7 +101,7 @@ const filesMatchPath = (files, paths) => {
  */
 const writeFileSync = (filename, data) => {
   const buffer = Buffer.from(data);
-  fs.writeFileSync(filename, buffer)
+  fs.writeFileSync(filename, buffer);
 }
 
 module.exports = {
@@ -96,4 +113,5 @@ module.exports = {
   isInCollection,
   filesMatchPath,
   writeFileSync,
+  sortUnstructuredCollection,
 };

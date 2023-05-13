@@ -314,7 +314,7 @@ class Infrastructure extends Base {
     let createdMissing = !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'create']);
     let modifiedMissing = !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'update']);
     let deletedMissing = !sentenceContainsMarkers(this.mrDescription, ['## checklist', 'remove']);
-    
+
     // created
     [...varsCreated].filter(a => createdMissing).forEach(stack => template.add({ stack: stack, action: 'created' }));
     // updated
@@ -336,8 +336,10 @@ class Infrastructure extends Base {
   }
 
   // DynamoDB
-  // TODO: test
-  async dynamoDBCommonChecks() {
+  /**
+   * DynamoDB common checks
+   */
+  async validateDBCommons() {
     console.log('in: dynamoDBCommonChecks');
     const tfvars = this.danger.git.fileMatch("dynamodb/**/*.tfvars", "**/dynamodb/**/*.tfvars");
 
@@ -373,7 +375,11 @@ class Infrastructure extends Base {
     }
   }
   // TODO: test
-  async ensureDynamoDBSingleKeyModification() {
+  /**
+   * DynamoDB Single Key modification validation
+   * @returns
+   */
+  async validateDBSingleKeyModification() {
     console.log('in: ensureDynamoDBSingleKeyModification');
     const threshold = 10;
     const maxDiff = 1;
@@ -418,20 +424,19 @@ class Infrastructure extends Base {
   }
 
   async run() {
-    // this.validateInstanceClassExist();
-    // this.validateRdsPlan();
-    // this.validateSingleStackAtOnceCreated();
-    // this.validateVarsAndHclCreated();
-    // await this.removeStorageResources();
+    this.validateInstanceClassExist();
+    this.validateRdsPlan();
+    this.validateSingleStackAtOnceCreated();
+    this.validateVarsAndHclCreated();
+    await this.removeStorageResources();
     await this.validateRdsCreation();
     // TODO: test
     await this.validateRdsAuroraCreation();
-    // await this.templateShouldBeEnforced();
-    // await this.rdsMysql5EndOfLifeDate();
+    await this.templateShouldBeEnforced();
+    await this.rdsMysql5EndOfLifeDate();
+    await this.validateDBCommons();
     // TODO: test
-    // await this.dynamoDBCommonChecks();
-    // TODO: test
-    // await this.ensureDynamoDBSingleKeyModification();
+    await this.validateDBSingleKeyModification();
   }
 }
 

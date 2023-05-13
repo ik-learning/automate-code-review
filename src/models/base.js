@@ -12,12 +12,6 @@ class Base {
     this.#updatedFiles = null;
     this._committedFiles = null;
   }
-  danger() {
-    console.log(this.danger.git);
-  }
-  git() {
-    console.log(this.danger.git);
-  }
 
   get repo() {
     if (!this.#repository) {

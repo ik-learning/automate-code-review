@@ -1,7 +1,8 @@
 
 const { sentenceContainsMarkers, filesMatchPath,
   inputInCollection, isDiff, hclParse,
-  uniqueElementsCount, isInCollection } = require('../src/utils');
+  uniqueElementsCount, isInCollection,
+  sortUnstructuredCollection, writeFileSync } = require('../src/utils');
 
 describe("Test utils.js ...", () => {
 
@@ -205,13 +206,70 @@ describe("Test utils.js ...", () => {
         `
       expect(hclParse(hclString).resource.aws_kms_key.example).toStrictEqual([{ deletion_window_in_days: 10, description: 'kms-key-1' }]);
     });
+
+    it.each([
+      [['.gitlab-ci.yml'], ['terraform'], 0],
+      [['.gitlab-ci.yml'], ['ci.yml'], 1],
+      [['dynamodb/environments/datalake/eu-west-1/erasure/terraform.tfvars'], ['.gitlab-ci.yml', 'environments'], 1],
+    ])('should filesMatchPath', (files, paths, result) => {
+      expect(filesMatchPath(files, paths).length).toBe(result)
+    });
   })
 
-  it.each([
-    [['.gitlab-ci.yml'], ['terraform'], 0],
-    [['.gitlab-ci.yml'], ['ci.yml'], 1],
-    [['dynamodb/environments/datalake/eu-west-1/erasure/terraform.tfvars'], ['.gitlab-ci.yml', 'environments'], 1],
-  ])('should filesMatchPath', (files, paths, result) => {
-    expect(filesMatchPath(files, paths).length).toBe(result)
-  });
+  describe("sortUnstructuredCollection(collection[string]))", () => {
+    test('should sort collection of strings with commas', () => {
+      let input = [
+        'fulfilment_analytics_new_orders_v1_hbi_analytics_order_event_group_dlq,3,3',
+        'dns_kafkaconnect_supply_chain_moomin_replen_rirolink_v1_deadletter,3,3',
+        'hbi-onesearch-products-v5,3,3',
+      ]
+      let expected = [
+        'dns_kafkaconnect_supply_chain_moomin_replen_rirolink_v1_deadletter,3,3',
+        'fulfilment_analytics_new_orders_v1_hbi_analytics_order_event_group_dlq,3,3',
+        'hbi-onesearch-products-v5,3,3',
+      ]
+      expect(sortUnstructuredCollection(input)).toStrictEqual(expected);
+    });
+
+    test('should sort collection of strings', () => {
+      let input = [
+        'fulfilment_analytics_new_orders_v1_hbi_analytics_order_event_group_dlq',
+        'dns_kafkaconnect_supply_chain_moomin_replen_rirolink_v1_deadletter',
+        'hbi-onesearch-products-v5',
+      ]
+      let expected = [
+        'dns_kafkaconnect_supply_chain_moomin_replen_rirolink_v1_deadletter',
+        'fulfilment_analytics_new_orders_v1_hbi_analytics_order_event_group_dlq',
+        'hbi-onesearch-products-v5',
+      ]
+      expect(sortUnstructuredCollection(input)).toStrictEqual(expected);
+    });
+
+    test('should sort collection of strings with duplicates', () => {
+      let input = [
+        'fulfilment_analytics_new_orders_v1_hbi_analytics_order_event_group_dlq',
+        'dns_kafkaconnect_supply_chain_moomin_replen_rirolink_v1_deadletter',
+        'hbi-onesearch-products-v5',
+        'hbi-onesearch-products-v5',
+      ]
+      let expected = [
+        'dns_kafkaconnect_supply_chain_moomin_replen_rirolink_v1_deadletter',
+        'fulfilment_analytics_new_orders_v1_hbi_analytics_order_event_group_dlq',
+        'hbi-onesearch-products-v5',
+        'hbi-onesearch-products-v5',
+      ]
+      expect(sortUnstructuredCollection(input)).toStrictEqual(expected);
+    });
+  })
+
+  describe("writeFileSync(string,string))", () => {
+    const fs = require("fs");
+    jest.mock('fs', () => ({
+      writeFileSync: jest.fn((file_name, data) => {
+        return []
+      })
+    }))
+    writeFileSync('filename', 'some data to write')
+    expect(fs.writeFileSync).toHaveBeenCalledTimes(0);
+  })
 })

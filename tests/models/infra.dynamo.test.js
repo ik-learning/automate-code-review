@@ -1,9 +1,8 @@
 jest.mock("danger", () => jest.fn())
-const chainsmoker = require('../../node_modules/danger/distribution/commands/utils/chainsmoker.js')
 const danger = require("danger");
 let dm = danger;
 
-const { setUpTestScenarioObject, setUpTestScenario } = require("../fixtures");
+const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch } = require("../fixtures");
 
 const { Infrastructure } = require("../../src/models");
 let target;
@@ -45,10 +44,26 @@ describe("test models/infrastructure.js ...", () => {
     target = new Infrastructure(dm.danger);
   })
 
-  it("should not messages when validateElasticCacheRDSInstanceClassExist() and not a single file modified", () => {
-    dm.danger.git.fileMatch = chainsmoker.default({ modified: [], created: [], deleted: [], edited: [] });
-    target.validateElasticCacheRDSInstanceClassExist()
-    expect(dm.message).toHaveBeenCalledTimes(0);
+  it.each([
+    [{ modified: [], created: [], deleted: [], edited: [] }, 0],
+    [{ modified: [], created: ['rds/envs/dev/terragrunt.hcl'], deleted: [], edited: [] }, 0],
+    [{ modified: [], created: ['dynamodb/envs/dev/terragrunt.hcl'], deleted: [], edited: [] }, 0],
+  ])("should not messages when dynamoDBCommonChecks() and not a single dynamodb config file modified", (keyedPaths, times) => {
+    dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
+    return target.validateDBCommons().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(times);
+    })
+    // expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('description of how the change'));
+    // expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('is a relevant test in'));
+  })
+
+  it.each([
+    [{ modified: [], created: [], deleted: [], edited: [] }, 0],
+  ])("should not messages when dynamoDBCommonChecks() and not a single dynamodb config file modified", (keyedPaths, times) => {
+    dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
+    return target.validateDBSingleKeyModification().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(times);
+    })
     // expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('description of how the change'));
     // expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('is a relevant test in'));
   })

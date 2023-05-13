@@ -1,5 +1,4 @@
 jest.mock("danger", () => jest.fn())
-const chainsmoker = require('../../node_modules/danger/distribution/commands/utils/chainsmoker.js')
 const danger = require("danger");
 let dm = danger;
 
@@ -36,6 +35,7 @@ describe("test models/common.js ...", () => {
             pullRequestID: jest.fn()
           },
           mr: {
+            title: '',
             description: '',
             state: '',
           }
@@ -204,6 +204,14 @@ Closes PTS-1478
     }
     return target.ensureFileHasNewline().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(0);
+    })
+  })
+
+  it("should test paradox", () => {
+    dm.danger.git.created_files = [];
+    dm.danger.git.modified_files = [];
+    return target.run().then(() => {
+      expect(dm.fail).toHaveBeenCalledTimes(0);
     })
   })
 })

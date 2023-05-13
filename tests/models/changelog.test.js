@@ -1,10 +1,10 @@
 
 jest.mock("danger", () => jest.fn())
-const chainsmoker = require('../../node_modules/danger/distribution/commands/utils/chainsmoker.js')
+
 var danger = require("danger");
 var dm = danger;
 
-const { setUpTestScenarioObject, setUpTestScenario } = require("../fixtures");
+const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch } = require("../fixtures");
 
 const { Changelog } = require("../../src/models");
 let target;
@@ -14,12 +14,15 @@ describe("test models/changelog.js ...", () => {
   beforeEach(() => {
     global.message = (input) => dm.message(input);
     global.warn = (input) => dm.warn(input)
+    global.fail = (input) => dm.fail(input);
+
     dm = {
       message: jest.fn(),
       warn: jest.fn(),
+      fail: jest.fn(),
       danger: {
         git: {
-          fileMatch: chainsmoker.default({ modified: [], created: [], deleted: [], edited: [] }),
+          fileMatch: dangerFileMatch({ modified: [], created: [], deleted: [], edited: [] }),
           created_files: [],
           deleted_files: [],
           modified_files: [],
@@ -54,7 +57,7 @@ describe("test models/changelog.js ...", () => {
   ])('should post message when changelogUnreleased() and required files modified', (times, fixture, modified, msg, warn) => {
     const filesFixtures = 'models/__fixtures__/changelog/changelogUnreleased';
     const gitFiles = setUpTestScenarioObject(`${filesFixtures}/${modified}`);
-    dm.danger.git.fileMatch = chainsmoker.default({
+    dm.danger.git.fileMatch = dangerFileMatch({
       modified: gitFiles.modified_files, created: gitFiles.created_files, deleted: gitFiles.deleted_files, edited: gitFiles.modified_files
     });
     dm.danger.git.created_files = gitFiles.created_files;
@@ -91,7 +94,7 @@ describe("test models/changelog.js ...", () => {
   });
 
   it("should message when changelogNotPresent()", () => {
-    dm.danger.git.fileMatch = chainsmoker.default({ modified: ['CHANGELOG.md'] });
+    dm.danger.git.fileMatch = dangerFileMatch({ modified: ['CHANGELOG.md'] });
     return target.changelogNotPresent().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(0);
     })
@@ -117,6 +120,14 @@ describe("test models/changelog.js ...", () => {
     return target.chartYamlVersionReleased().then(() => {
       expect(dm.message).toHaveBeenCalledTimes(1);
       expect(dm.message).toHaveBeenCalledWith("🤖 On release, make sure chart `version` is updated in `Chart.yaml` file.");
+    })
+  })
+
+  it("should test paradox", () => {
+    dm.danger.git.created_files = [];
+    dm.danger.git.modified_files = [];
+    return target.run().then(() => {
+      expect(dm.fail).toHaveBeenCalledTimes(0);
     })
   })
 })

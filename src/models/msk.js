@@ -3,7 +3,7 @@ const array = require('lodash/array');
 
 const { Base } = require('./base');
 const
-  { sentenceContainsMarkers, writeFileSync } = require("../utils");
+  { sentenceContainsMarkers, writeFileSync, sortUnstructuredCollection } = require("../utils");
 const { mrTemplatesMsk } = require('../constants');
 
 const exclude_csv_headers = 1;
@@ -71,13 +71,8 @@ class MSK extends Base {
         const justDiff = diffForFile.diff.split(new_line).filter(a => a.substring(0, 1) !== '-').map(a => {
           return a.replace(' ', '').replace('+', '')
         });
-        let sortedArray = [...after].sort((first, next) => {
-          let el = first.split(',')[0];
-          let nextEl = next.split(',')[0];
-          if (el < nextEl) return -1;
-          if (el > nextEl) return 1;
-          return 0;
-        });
+        // TODO: Move to utils
+        let sortedArray = sortUnstructuredCollection([...after])
         const result = [];
         const addedAsTxt = added.join(',');
         for (let i = 0; i < after.length; i++) {
@@ -108,6 +103,7 @@ class MSK extends Base {
     return `MR template is missing ***Edit>Description>Choose Template*** [${templateWithoutExt}](${link}), provide details and a jira ticket...`
   }
 
+  /* istanbul ignore next */
   async run() {
     await this.templateShouldBeEnforcedMsk();
     await this.csvEntryAlphabeticOrder();
