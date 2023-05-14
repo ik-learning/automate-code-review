@@ -136,7 +136,6 @@ describe("test models/infrastructure.js ...", () => {
         expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
       })
     })
-
   })
 
   describe("validateRdsCommons()", () => {
@@ -172,24 +171,28 @@ describe("test models/infrastructure.js ...", () => {
       })
     })
 
-    // TODO: test
-    it("should warn when validateRdsModification() with incorrect configuration", () => {
-      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/storage/rds-multiple.json'));
+    it("should warn when validateRdsModification() and instance_class modified", () => {
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/postgres/rds-modified.json'));
+      dm.danger.git.diffForFile = (file) => {
+        return setUpTestScenarioObject('models/__fixtures__/postgres/instance_class-modified.warn.json')
+      }
       return target.validateRdsModification().then(() => {
-        expect(1).toBe(1);
-        // expect(dm.warn).toHaveBeenCalledTimes(1);
-        // expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
+        expect(dm.message).toHaveBeenCalledTimes(2);
+        expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('provide a link to datadog dashboard'));
+        expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('review CI job output attribute'));
       });
     })
 
-    it("should not warn when validateRdsModification() with correct configuration", () => {
-      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/storage/rds-multiple.json'));
+    it("should not warn when validateRdsModification() and version modified", () => {
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/postgres/rds-modified.json'));
+      dm.danger.git.diffForFile = (file) => {
+        return setUpTestScenarioObject('models/__fixtures__/postgres/gp2-not-modified.warn.json')
+      }
       return target.validateRdsModification().then(() => {
-        expect(1).toBe(1);
-        // expect(dm.warn).toHaveBeenCalledTimes(1);
-        // expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
+        expect(dm.message).toHaveBeenCalledTimes(2);
+        expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('Recommended `storage_type` is `gp3`'));
+        expect(dm.message).toHaveBeenCalledWith(expect.stringContaining('review CI job output attribute'));
       });
     })
   })
-
 })
