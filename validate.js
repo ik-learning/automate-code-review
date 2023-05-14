@@ -1,10 +1,6 @@
 'use strict';
 
 // Validate WebHook payload
-
-// TODO
-// test
-// move logic form bash
 import files from 'fs';
 
 console.log("=================Versions====================");

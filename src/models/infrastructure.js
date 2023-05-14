@@ -356,16 +356,14 @@ class Infrastructure extends Base {
   /**
    * DynamoDB common checks
    */
-  async validateDBCommons() {
+  async validateDBCommons(flag) {
     console.log('in: dynamoDBCommonChecks');
     const tfvars = this.danger.git.fileMatch("dynamodb/**/*.tfvars", "**/dynamodb/**/*.tfvars");
 
-    // currently turned off
-    if (false && (tfvars.modified || tfvars.edited || tfvars.created)) {
+    if (flag && (tfvars.modified || tfvars.created)) {
       const commitFiles = new Set([
-        ...tfvars.getKeyedPaths().modified,
-        ...tfvars.getKeyedPaths().edited,
         ...tfvars.getKeyedPaths().created,
+        ...tfvars.getKeyedPaths().modified
       ]);
       commitFiles.forEach(async file => {
         const diff = await this.danger.git.diffForFile(file);
@@ -445,7 +443,7 @@ class Infrastructure extends Base {
     await this.validateRdsAuroraModification();
     await this.templateShouldBeEnforced();
     await this.rdsMysql5EndOfLifeDate();
-    await this.validateDBCommons();
+    await this.validateDBCommons(false);
     await this.validateDBSingleKeyModification();
   }
 }

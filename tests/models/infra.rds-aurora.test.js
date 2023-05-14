@@ -11,9 +11,9 @@ describe("test models/infrastructure.js ...", () => {
 
   describe("validateRdsAuroraCommons()", () => {
     it.each([
-      ['models/__fixtures__/rds-aurora/mixed.warn.json5', 1],
-      ['models/__fixtures__/rds-aurora/modified.warn.json5', 1],
-      ['models/__fixtures__/rds-aurora/created.ok.json', 0],
+      ['models/__fixtures__/rds-aurora/fileMatch/mixed.warn.json5', 1],
+      ['models/__fixtures__/rds-aurora/fileMatch/modified.warn.json5', 1],
+      ['models/__fixtures__/rds-aurora/fileMatch/created.ok.json', 0],
     ])("should warn when validateRdsCommons() and the review should be skipped", (scenario, times) => {
       dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
       target.validateRdsAuroraCommons()
@@ -22,10 +22,10 @@ describe("test models/infrastructure.js ...", () => {
     })
 
     it.each([
-      ['models/__fixtures__/rds-aurora/created.threshold.json5', 1],
-      ['models/__fixtures__/rds-aurora/modified.threshold.json5', 1],
-      ['models/__fixtures__/rds-aurora/deleted.threshold.json5', 1],
-      ['models/__fixtures__/rds-aurora/created.ok.json', 0],
+      ['models/__fixtures__/rds-aurora/fileMatch/created.threshold.json5', 1],
+      ['models/__fixtures__/rds-aurora/fileMatch/modified.threshold.json5', 1],
+      ['models/__fixtures__/rds-aurora/fileMatch/deleted.threshold.json5', 1],
+      ['models/__fixtures__/rds-aurora/fileMatch/created.ok.json', 0],
     ])("should warn when ensureRdsCreationValidated() number of stacks hits the threshold", (scenario, times) => {
       dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
       target.validateRdsAuroraCommons()
@@ -47,7 +47,7 @@ describe("test models/infrastructure.js ...", () => {
     ])("should warn when validateRdsAuroraCreation() with conditions", (scenario, times) => {
       dm.danger.git.fileMatch = dangerFileMatch(scenario);
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/rds-create.ok.json5')
+        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/diffForFile/rds-create.ok.json5')
       }
       return target.validateRdsAuroraCreation().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(times);
@@ -57,7 +57,7 @@ describe("test models/infrastructure.js ...", () => {
     it("should warn when validateRdsAuroraCreation() with conditions", () => {
       dm.danger.git.fileMatch = dangerFileMatch({ created: ["rds-aurora/dev/lighthouse/terraform.tfvars"] });
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/rds-create.warn.json5')
+        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/diffForFile/rds-create.warn.json5')
       }
       return target.validateRdsAuroraCreation().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(1);
@@ -75,7 +75,7 @@ describe("test models/infrastructure.js ...", () => {
     ])("should warn when validateRdsAuroraModification() with certain conditions", (scenario, times) => {
       dm.danger.git.fileMatch = dangerFileMatch(scenario);
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/version-modified.warn.json5')
+        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/diffForFile/version-modified.warn.json5')
       }
       return target.validateRdsAuroraModification().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(times);
@@ -86,7 +86,7 @@ describe("test models/infrastructure.js ...", () => {
     it("should silent when validateRdsAuroraModification() and no issues found", () => {
       dm.danger.git.fileMatch = dangerFileMatch({ modified: ["rds-aurora/environments/dev/lighthouse/terraform.tfvars"] });
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/version-modified.ok.json5')
+        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/diffForFile/version-modified.ok.json5')
       }
       return target.validateRdsAuroraModification().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(0);
