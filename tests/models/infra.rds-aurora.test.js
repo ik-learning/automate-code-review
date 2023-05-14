@@ -36,21 +36,33 @@ describe("test models/infrastructure.js ...", () => {
 
   describe("validateRdsAuroraCreation()", () => {
 
-    // it.each([
-    //   [{ modified: ["rds-aurora/environments/dev/lighthouse/terraform.tfvars"], created: [], deleted: [], edited: [] }, 1],
-    //   [{ modified: ["rds-aurora/environments/sandbox/lighthouse/terraform.tfvars"], created: [], deleted: [], edited: [] }, 1],
-    //   [{ modified: ["rds-aurora/environments/prod/lighthouse/terraform.tfvars"], created: [], deleted: [], edited: [] }, 0],
-    //   [{ modified: [], created: ["rds-aurora/environments/prod/lighthouse/terraform.tfvars"], deleted: [], edited: [] }, 0]
-    // ])("should warn when validateRdsAuroraModification() with certain conditions", (scenario, times) => {
-    //   dm.danger.git.fileMatch = dangerFileMatch(scenario);
-    //   dm.danger.git.diffForFile = (file) => {
-    //     return setUpTestScenarioObject('models/__fixtures__/postgres/instance_class-modified.warn.json')
-    //   }
-    //   return target.validateRdsAuroraModification().then(() => {
-    //     expect(dm.warn).toHaveBeenCalledTimes(times);
-    //     // expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
-    //   })
-    // })
+    it.each([
+      [{ modified: [], created: ["rds-aurora/dev/lighthouse/terraform.tfvars"], deleted: [], edited: [] }, 0],
+      [{
+        created: ["rds-aurora/dev/lighthouse/terraform.tfvars", "rds-aurora/dev/guests/terraform.tfvars",
+          "rds-aurora/dev/payrol/terraform.tfvars"]
+      }, 0],
+      [{ modified: ["rds-aurora/environments/prod/lighthouse/terraform.tfvars"], created: [], deleted: [], edited: [] }, 0],
+      [{ modified: ["rds-aurora/environments/prod/lighthouse/terraform.tfvars"], created: [], deleted: [], edited: [] }, 0]
+    ])("should warn when validateRdsAuroraCreation() with conditions", (scenario, times) => {
+      dm.danger.git.fileMatch = dangerFileMatch(scenario);
+      dm.danger.git.diffForFile = (file) => {
+        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/rds-create.ok.json5')
+      }
+      return target.validateRdsAuroraCreation().then(() => {
+        expect(dm.warn).toHaveBeenCalledTimes(times);
+      })
+    })
+
+    it("should warn when validateRdsAuroraCreation() with conditions", () => {
+      dm.danger.git.fileMatch = dangerFileMatch({ created: ["rds-aurora/dev/lighthouse/terraform.tfvars"] });
+      dm.danger.git.diffForFile = (file) => {
+        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/rds-create.warn.json5')
+      }
+      return target.validateRdsAuroraCreation().then(() => {
+        expect(dm.warn).toHaveBeenCalledTimes(1);
+      })
+    })
   })
 
   describe("validateRdsAuroraModification()", () => {

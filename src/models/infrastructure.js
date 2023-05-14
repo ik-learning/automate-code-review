@@ -253,29 +253,27 @@ class Infrastructure extends Base {
     }
   }
 
-  // TODO: test
   /**
    * RDS-aurora creation validated
    */
   async validateRdsAuroraCreation() {
     console.log('in: validateRdsAuroraCreation');
 
-    const tfvars = this.danger.git.fileMatch("rds-aurora/**/*.tfvars");
-    const tfvarsCreated = tfvars.getKeyedPaths().created;
     const threshold = 2;
-    const infoMessages = new Set();
-    const reviewCount = uniqueElementsCount(tfvars.getKeyedPaths().created);
+    const msg = new Set();
+    const stacks = this.danger.git.fileMatch("rds-aurora/**/*.tfvars");
+    const targets = stacks.getKeyedPaths().created;
+    const reviewCount = uniqueElementsCount(targets);
 
     if (reviewCount <= threshold) {
-      tfvarsCreated.forEach(async file => {
+      targets.forEach(async file => {
         const diff = await this.danger.git.diffForFile(file);
-        const data = hclParse(diff.after).cluster_config;
-        const instance_type = data.instance_type;
+        const { instance_type } = hclParse(diff.after).cluster_config;
 
         if (file.includes('/sandbox/') || file.includes('/dev/')) {
-          if (!match.isMatch(instance_type, auroraRdsRecommendInstanceTypesInDev) && !infoMessages.has('instance_type')) {
-            warn(`📂 ${file}. ➡️  (💸 saving) In environment "instance_type" \`${instance_type}\` not recommended. Consider different type \`${auroraRdsRecommendInstanceTypesInDev}\` ...`);
-            infoMessages.add('instance_type')
+          if (!match.isMatch(instance_type, auroraRdsRecommendInstanceTypesInDev) && !msg.has('instance_type')) {
+            warn(`📂 ${file}. ➡️  (💸 saving) In non-production environment "instance_type" \`${instance_type}\` not recommended. Consider different type \`${auroraRdsRecommendInstanceTypesInDev}\` ...`);
+            msg.add('instance_type')
           }
         }
       })
@@ -287,24 +285,24 @@ class Infrastructure extends Base {
    */
   async validateRdsAuroraModification() {
     console.log('in: validateRdsAuroraModification');
-    const tfvars = this.danger.git.fileMatch("rds-aurora/**/*.tfvars");
+
     const threshold = 2;
-    const infoMessages = new Set();
-    const reviewCount = uniqueElementsCount(tfvars.getKeyedPaths().modified);
+    const msg = new Set();
+    const stacks = this.danger.git.fileMatch("rds-aurora/**/*.tfvars");
+    const targets = stacks.getKeyedPaths().modified;
+    const reviewCount = uniqueElementsCount(targets);
+
     if (reviewCount <= threshold) {
-      await tfvars.getKeyedPaths().modified.forEach(async file => {
+      await targets.forEach(async file => {
         const diff = await this.danger.git.diffForFile(file);
-        const beforeConfig = hclParse(diff.before).cluster_config;
-        const afterConfig = hclParse(diff.after).cluster_config;
-        const after = afterConfig.cluster_config;
-        const data = hclParse(diff.after).cluster_config;
-        const instance_type = data.instance_type;
-        const { engine_name, engine_sql_version } = data.engine;
+        const { cluster_config } = hclParse(diff.after);
+        const { instance_type, engine } = cluster_config;
+        const { engine_name, engine_sql_version } = engine;
 
         if (file.includes('/sandbox/') || file.includes('/dev/')) {
-          if (!match.isMatch(instance_type, auroraRdsRecommendInstanceTypesInDev) && !infoMessages.has('instance_type')) {
+          if (!match.isMatch(instance_type, auroraRdsRecommendInstanceTypesInDev) && !msg.has('instance_type')) {
             warn(`📂 ${file}. ➡️  (💸 saving) In non-production environment "instance_type" \`${instance_type}\` not recommended. Consider different type \`${auroraRdsRecommendInstanceTypesInDev}\` ...`);
-            infoMessages.add('instance_type')
+            msg.add('instance_type')
           }
         }
       }, Error())
@@ -388,7 +386,6 @@ class Infrastructure extends Base {
           ].join("\n")
           message(out);
         }
-
       })
     }
   }
@@ -444,7 +441,6 @@ class Infrastructure extends Base {
     await this.validateRdsCreation();
     await this.validateRdsModification();
     this.validateRdsAuroraCommons();
-    // TODO: test
     await this.validateRdsAuroraCreation();
     await this.validateRdsAuroraModification();
     await this.templateShouldBeEnforced();
