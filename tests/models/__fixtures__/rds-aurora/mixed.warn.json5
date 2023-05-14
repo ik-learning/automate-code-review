@@ -1,0 +1,12 @@
+{ // modified more then 2 files, same time is not enough to hit then threshold
+  "modified": [
+    "rds-aurora/environments/dev/eu-west-1/lighthouse/terraform.tfvars"
+  ],
+  "created": [
+    "rds-aurora/environments/dev/eu-west-1/ci-server/terraform.tfvars"
+  ],
+  "deleted": [
+    "rds-aurora/environments/dev/eu-west-1/server/terraform.tfvars"
+  ],
+  "edited": []
+}

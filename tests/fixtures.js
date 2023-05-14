@@ -1,5 +1,6 @@
 
 const fs = require('fs');
+const JSON5 = require('json5');
 const chainsmoker = require('../node_modules/danger/distribution/commands/utils/chainsmoker.js')
 
 /**
@@ -30,7 +31,11 @@ function dangerFileMatch(keyedPaths) {
  */
 function setUpTestScenarioObject(filePath) {
   const fullPath = `${__dirname}/${filePath}`
-  if (fs.existsSync(fullPath)) return JSON.parse(fs.readFileSync(fullPath, "utf8"));
+  if (filePath.includes('json5') && fs.existsSync(fullPath)) {
+    return JSON5.parse(fs.readFileSync(fullPath, "utf8"));
+  } else if (fs.existsSync(fullPath)) {
+    return JSON.parse(fs.readFileSync(fullPath, "utf8"));
+  }
   console.error('File not found: ' + fullPath);
   throw new Error('File not found: ' + fullPath);
 }

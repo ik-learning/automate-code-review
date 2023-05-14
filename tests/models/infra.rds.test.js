@@ -124,20 +124,6 @@ describe("test models/infrastructure.js ...", () => {
     })
   })
 
-  describe("validateRdsAuroraCreation()", () => {
-
-    it.each([
-      ['models/__fixtures__/storage/rds-aurora-created.json'],
-      ['models/__fixtures__/storage/rds-aurora-modified.json']
-    ])("should warn when validateRdsAuroraCreation() number of stacks hits the threshold", (scenario) => {
-      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
-      return target.validateRdsAuroraCreation().then(() => {
-        expect(dm.warn).toHaveBeenCalledTimes(1);
-        expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
-      })
-    })
-  })
-
   describe("validateRdsCommons()", () => {
 
     it("should warn when validateRdsCommons() with multiple number of stacks", () => {

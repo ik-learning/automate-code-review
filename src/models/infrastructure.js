@@ -149,9 +149,7 @@ class Infrastructure extends Base {
 
     if (reviewCount > threshold) {
       warn(`☣️  Skip review as number of changes hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling and to simplify code review.`);
-    } else if (uniqueElementsCount(tfvars.getKeyedPaths().edited) > 2
-      || uniqueElementsCount(tfvars.getKeyedPaths().modified) > 2
-      || uniqueElementsCount(tfvars.getKeyedPaths().deleted) > 2) {
+    } else if (reviewCount > 2) {
       warn(`☣️  Multiple configurations modified in single MR. Is this expected?`);
     }
   }
@@ -236,6 +234,25 @@ class Infrastructure extends Base {
     }
   }
 
+  /**
+   * Common Validation for RDS Aurora databases
+   */
+  validateRdsAuroraCommons() {
+    const tfvars = this.danger.git.fileMatch("rds-aurora/**/*.tfvars");
+    const tfvarsCreated = tfvars.getKeyedPaths().created;
+    const tfvarsModified = tfvars.getKeyedPaths().modified;
+    const tfvarsDeleted = tfvars.getKeyedPaths().deleted;
+
+    let threshold = 10;
+    let reviewCount = uniqueElementsCount(tfvarsCreated, tfvarsModified, tfvarsDeleted);
+
+    if (reviewCount > threshold) {
+      warn(`☣️  Skip review as number of changes hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling and to simplify code review.`);
+    } else if (reviewCount > 2) {
+      warn(`☣️  Multiple configurations modified in single MR. Is this expected?`);
+    }
+  }
+
   // TODO: test
   /**
    * RDS-aurora creation validated
@@ -245,57 +262,52 @@ class Infrastructure extends Base {
 
     const tfvars = this.danger.git.fileMatch("rds-aurora/**/*.tfvars");
     const tfvarsCreated = tfvars.getKeyedPaths().created;
-    const tfvarsModified = tfvars.getKeyedPaths().modified;
+    const threshold = 2;
     const infoMessages = new Set();
-    const threshold = 10;
+    const reviewCount = uniqueElementsCount(tfvars.getKeyedPaths().created);
 
-    let reviewCount = uniqueElementsCount(tfvars.getKeyedPaths().modified, tfvars.getKeyedPaths().created);
+    if (reviewCount <= threshold) {
+      tfvarsCreated.forEach(async file => {
+        const diff = await this.danger.git.diffForFile(file);
+        const data = hclParse(diff.after).cluster_config;
+        const instance_type = data.instance_type;
 
-    if (reviewCount > threshold) {
-      warn(`☣️  Skip review as number of changes hit a threshold. Threshold is set to "${threshold}" to avoid Gitlab API throttling and to simplify code review.`);
-    } else if (uniqueElementsCount(tfvars.getKeyedPaths().edited) > 2
-      || uniqueElementsCount(tfvars.getKeyedPaths().modified) > 2
-      || uniqueElementsCount(tfvars.getKeyedPaths().deleted) > 2) {
-      warn(`☣️  Multiple configurations modified in single MR. Is this expected?`);
-    } else if (reviewCount < threshold) {
-      if (tfvars.created) {
-        tfvarsCreated.forEach(async file => {
-          const diff = await this.danger.git.diffForFile(file);
-          const data = hclParse(diff.after).cluster_config;
-          const instance_type = data.instance_type;
-
-          if (file.includes('/sandbox/') || file.includes('/dev/')) {
-            if (!match.isMatch(instance_type, auroraRdsRecommendInstanceTypesInDev) && !infoMessages.has('instance_type')) {
-              warn(`📂 ${file}. ➡️  (💸 saving) In environment "instance_type" \`${instance_type}\` not recommended. Consider different type \`${auroraRdsRecommendInstanceTypesInDev}\` ...`);
-              infoMessages.add('instance_type')
-            }
+        if (file.includes('/sandbox/') || file.includes('/dev/')) {
+          if (!match.isMatch(instance_type, auroraRdsRecommendInstanceTypesInDev) && !infoMessages.has('instance_type')) {
+            warn(`📂 ${file}. ➡️  (💸 saving) In environment "instance_type" \`${instance_type}\` not recommended. Consider different type \`${auroraRdsRecommendInstanceTypesInDev}\` ...`);
+            infoMessages.add('instance_type')
           }
-        })
-      }
+        }
+      })
+    }
+  }
 
-      if (tfvars.modified) {
-        await tfvarsModified.forEach(async file => {
-          const diff = await this.danger.git.diffForFile(file);
-          const beforeConfig = hclParse(diff.before).cluster_config;
-          const afterConfig = hclParse(diff.after).cluster_config;
-          if (typeof afterConfig === 'undefined') {
-            console.log('skip validation as one of the values is "not defined".')
-          } else {
-            const after = afterConfig.cluster_config;
-            const data = hclParse(diff.after).cluster_config;
-            const instance_type = data.instance_type;
-            const { engine_name, engine_sql_version } = data.engine;
+  /**
+   * Validate RDS aurora modification
+   */
+  async validateRdsAuroraModification() {
+    console.log('in: validateRdsAuroraModification');
+    const tfvars = this.danger.git.fileMatch("rds-aurora/**/*.tfvars");
+    const threshold = 2;
+    const infoMessages = new Set();
+    const reviewCount = uniqueElementsCount(tfvars.getKeyedPaths().modified);
+    if (reviewCount <= threshold) {
+      await tfvars.getKeyedPaths().modified.forEach(async file => {
+        const diff = await this.danger.git.diffForFile(file);
+        const beforeConfig = hclParse(diff.before).cluster_config;
+        const afterConfig = hclParse(diff.after).cluster_config;
+        const after = afterConfig.cluster_config;
+        const data = hclParse(diff.after).cluster_config;
+        const instance_type = data.instance_type;
+        const { engine_name, engine_sql_version } = data.engine;
 
-            if (file.includes('/sandbox/') || file.includes('/dev/')) {
-              if (!match.isMatch(instance_type, auroraRdsRecommendInstanceTypesInDev) && !infoMessages.has('instance_type')) {
-                warn(`📂 ${file}. ➡️  (💸 saving) In NON production environment "instance_type" \`${instance_type}\` not recommended. Consider different type \`${auroraRdsRecommendInstanceTypesInDev}\` ...`);
-                // to remove duplicates
-                infoMessages.add('instance_type')
-              }
-            }
+        if (file.includes('/sandbox/') || file.includes('/dev/')) {
+          if (!match.isMatch(instance_type, auroraRdsRecommendInstanceTypesInDev) && !infoMessages.has('instance_type')) {
+            warn(`📂 ${file}. ➡️  (💸 saving) In non-production environment "instance_type" \`${instance_type}\` not recommended. Consider different type \`${auroraRdsRecommendInstanceTypesInDev}\` ...`);
+            infoMessages.add('instance_type')
           }
-        }, Error())
-      }
+        }
+      }, Error())
     }
   }
 
@@ -374,7 +386,6 @@ class Infrastructure extends Base {
             `- DynamoDB [item size Calculator](${links.dynamoDbItemSizeCalc})`,
             `- DynamoDB [pricing Calculator](${links.dynamoDbPriceCalc})`,
           ].join("\n")
-
           message(out);
         }
 
@@ -432,8 +443,10 @@ class Infrastructure extends Base {
     await this.removeStorageResources();
     await this.validateRdsCreation();
     await this.validateRdsModification();
+    this.validateRdsAuroraCommons();
     // TODO: test
     await this.validateRdsAuroraCreation();
+    await this.validateRdsAuroraModification();
     await this.templateShouldBeEnforced();
     await this.rdsMysql5EndOfLifeDate();
     await this.validateDBCommons();

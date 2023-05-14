@@ -1,0 +1,27 @@
+{ // mulitple aurora deleted at once. hit treshold
+  "modified": [],
+  "created": [],
+  "deleted": [
+    "rds-aurora/environments/dev/eu-west-1/attract-lighthouse-ci-server/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/attract-magnoliaauthor/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/composer-articles-api/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/composer-dam/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/composer-pagebuilder-api/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/composer-seo-api/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/dns-airflow/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/dns-data-analytics-portal/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/dns-marquez/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/dns-metabase-poc/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/dns-stock-service/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/instore-clocking-nl-be/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/instore-conditions/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/instore-destiny/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/instore-epos-promotions/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/instore-fulcrum/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/instore-hht-parcelevents/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/instore-product-raw/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/instore-surveys/terraform.tfvars",
+    "rds-aurora/environments/dev/eu-west-1/instore-taxfree/terraform.tfvars"
+  ],
+  "edited": []
+}
