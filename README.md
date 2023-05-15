@@ -134,6 +134,7 @@ mk local
   * TS lint
 - [ ] Docker tag.
 - [X] Message 'apply after merge'
+  * [ ] With author name
 - [X] Ensure files has new line
 - [X] Dynamodb
   * [X] Multiple GCI
@@ -224,6 +225,3 @@ mk local
 - [X] `k8s-deploy` specific review
   + [X] Test in test folder present.
   + [X] Message with explanation what is required to test changes.
-
-
-BIG MR https://gitlab.com/HnBI/platform-as-a-service/infrastructure/-/merge_requests/4269

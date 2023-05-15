@@ -16,6 +16,7 @@ const links = {
   dynamoDbItemSizeCalc: "https://dynobase.dev/dynamodb-capacity-and-item-size-calculator/",
   backOfTheEnvelopeCalc: "http://highscalability.com/blog/2011/1/26/google-pro-tip-use-back-of-the-envelope-calculations-to-choo.html",
   mysqlRdsEndOfLife: "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Concepts.VersionMgmt.html#MySQL.Concepts.VersionMgmt.ReleaseCalendar",
+  stringsInORder: "https://onlinestringtools.com/sort-strings",
   endOfLife: {
     main: 'https://endoflife.date/amazon-rds-mysql',
     rdsMysql: 'https://endoflife.date/amazon-rds-mysql'

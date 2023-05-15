@@ -358,7 +358,7 @@ class Infrastructure extends Base {
    */
   async validateDBCommons(flag) {
     console.log('in: dynamoDBCommonChecks');
-    const tfvars = this.danger.git.fileMatch("dynamodb/**/*.tfvars", "**/dynamodb/**/*.tfvars");
+    const tfvars = this.danger.git.fileMatch("dynamodb/**/*.tfvars");
 
     if (flag && (tfvars.modified || tfvars.created)) {
       const commitFiles = new Set([
@@ -368,7 +368,6 @@ class Infrastructure extends Base {
       commitFiles.forEach(async file => {
         const diff = await this.danger.git.diffForFile(file);
         const after = hclParse(diff.after).dynamodb_table.global_secondary_indexes;
-        // check for billing mode
         const { billing_mode } = hclParse(diff.after).dynamodb_table;
 
         if (billing_mode === 'PAY_PER_REQUEST') {

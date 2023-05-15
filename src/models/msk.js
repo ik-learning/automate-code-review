@@ -4,7 +4,7 @@ const array = require('lodash/array');
 const { Base } = require('./base');
 const
   { sentenceContainsMarkers, writeFileSync, sortUnstructuredCollection } = require("../utils");
-const { mrTemplatesMsk } = require('../constants');
+const { mrTemplatesMsk, links } = require('../constants');
 
 const exclude_csv_headers = 1;
 const new_line = '\n';
@@ -87,7 +87,8 @@ class MSK extends Base {
             "Topics below not following this order",
             "```diff",
             ...result,
-            "```"
+            "```",
+            `Double check [online](${links.stringsInORder})`
           ].join("\n")
           warn(msg)
         }
