@@ -42,6 +42,7 @@ class Base {
   };
 
   // abstract methods
+  /* c8 ignore next 3 */
   run() {
     throw new Error('You have to implement the method run()!');
   }
