@@ -217,9 +217,9 @@ class Infrastructure extends Base {
         const diff = await this.danger.git.diffForFile(file);
         const beforeConfig = hclParse(diff.before).rds_config
         const afterConfig = hclParse(diff.after).rds_config
-        const before = beforeConfig.instance_config.instance_class;
-        const after = afterConfig.instance_config.instance_class;
-        let { engine, storage_type } = afterConfig.instance_config
+        const before = beforeConfig?.instance_config.instance_class;
+        const after = afterConfig?.instance_config.instance_class;
+        let { engine, storage_type } = afterConfig?.instance_config
         if (before !== after && !infoMessages.has('instance_classes') && !(storage_type in recommendedRDSStorageTypes)) {
           infoMessages.add('instance_classes')
           console.log(`before: ${before}, after: ${after}`);
