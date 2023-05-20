@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 # docker build . --tag danger -f Dockerfile --progress tty
 # docker run --rm -it danger /bin/bash
 
