@@ -1,0 +1,8 @@
+{
+  "modified": [
+    "elasticache/environments/prod/teller-orchestrator/terraform.tfvars"
+  ],
+  "created": [],
+  "deleted": [],
+  "edited": []
+}

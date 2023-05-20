@@ -292,7 +292,7 @@ class Infrastructure extends Base {
     const targets = stacks.getKeyedPaths().modified;
     const reviewCount = uniqueElementsCount(targets);
 
-    if (reviewCount <= threshold) {
+    if (reviewCount > 0 && reviewCount <= threshold) {
       await targets.forEach(async file => {
         const diff = await this.danger.git.diffForFile(file);
         const { cluster_config } = hclParse(diff.after);
@@ -428,6 +428,31 @@ class Infrastructure extends Base {
     }
   }
 
+  // Cache
+  async validateCacheCreation() {
+    console.log('in: validateCacheCreation');
+
+    const threshold = 2;
+    const msg = new Set();
+    const stacks = this.danger.git.fileMatch("elasticache/**/*.tfvars");
+    const targets = stacks.getKeyedPaths().created;
+    const reviewCount = uniqueElementsCount(targets);
+
+    if (reviewCount > 0 && reviewCount <= threshold) {
+      await targets.forEach(async file => {
+        const diff = await this.danger.git.diffForFile(file);
+        const { cluster } = hclParse(diff.after);
+        const { node_type } = cluster;
+
+        if (node_type.includes('.t3.')) {
+          const arr = node_type.split(".")
+          const suggested = `${arr[0]}.t4g.${arr[2]}`;
+          warn(`📂 ${file}. ➡️  not recommended \`"node_type:${node_type}"\`. Consider different \`"node_type:${suggested}"\``);
+        }
+      }, Error())
+    }
+  }
+
   async run() {
     this.validateInstanceClassExist();
     this.validateRdsPlan();
@@ -444,6 +469,7 @@ class Infrastructure extends Base {
     await this.rdsMysql5EndOfLifeDate();
     await this.validateDBCommons(false);
     await this.validateDBSingleKeyModification();
+    await this.validateCacheCreation();
   }
 }
 
