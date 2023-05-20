@@ -2,7 +2,7 @@
 
 const { danger, message, warn, fail, markdown } = require('danger');
 
-const { MSK, CSV, Apply, K8S, Changelog, Common,
+const { MSK, Apply, K8S, Changelog, Common,
   Infrastructure, Checks } = require("./src/models");
 
 const
