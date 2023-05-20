@@ -4,6 +4,8 @@ const { setUpTestScenarioObject, setUpTestScenario,
 
 describe("test models/k8s.js ...", () => {
   let target, dm;
+  const fixturesPath = "models/__fixtures__/k8s";
+
   beforeEach(() => {
     dm = setupDanger();
     target = new K8S(dm.danger);

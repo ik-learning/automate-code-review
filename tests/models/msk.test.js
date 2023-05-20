@@ -3,6 +3,7 @@ const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch, setupDanger
 
 describe("test models/msk.js ...", () => {
   let target, dm;
+  const fixturesPath = "models/__fixtures__/msk";
 
   beforeEach(() => {
     dm = setupDanger();
@@ -18,10 +19,10 @@ describe("test models/msk.js ...", () => {
     [{ modified: ['topics.csv'] }, 'updated-topics.description-bad.txt', 'updated-topics-diff.csv.json', 1, 1],
   ])('should post messages on templateShouldBeEnforcedMsk when topic created|updated|removed',
     (keyedPaths, description, csvDiff, messageTimes, warnTimes) => {
-      target.mrDescription = setUpTestScenario(`models/__fixtures__/msk/${description}`)
+      target.mrDescription = setUpTestScenario(`${fixturesPath}/scenario/${description}`)
       dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject(`models/__fixtures__/msk/${csvDiff}`)
+        return setUpTestScenarioObject(`${fixturesPath}/diffForFile/${csvDiff}`)
       }
       return target.templateShouldBeEnforcedMsk().then(() => {
         expect(dm.message).toHaveBeenCalledTimes(messageTimes);
@@ -40,9 +41,9 @@ describe("test models/msk.js ...", () => {
   })
 
   it("should post a message when csvEntryAlphabeticOrder() not in alphabetic order", () => {
-    const nonAlphabetic = 'models/__fixtures__/msk/topics-added-diff.non-order.csv.json';
     dm.danger.git.fileMatch = dangerFileMatch({ modified: ['msk-topics.csv'] });
     dm.danger.git.diffForFile = (file) => {
+      const nonAlphabetic = `${fixturesPath}/diffForFile/topics-added-diff.non-order.csv.json`;
       if (file === 'msk-topics.csv') return setUpTestScenarioObject(nonAlphabetic)
     }
     const topics = `
@@ -57,9 +58,9 @@ describe("test models/msk.js ...", () => {
   })
 
   it("should post a message when csvEntryAlphabeticOrder() not in alphabetic order topics added not in order", () => {
-    const nonAlphabetic = 'models/__fixtures__/msk/topics-added-diff.non-order.split.csv.json';
     dm.danger.git.fileMatch = dangerFileMatch({ modified: ['msk-topics.csv'] });
     dm.danger.git.diffForFile = (file) => {
+      const nonAlphabetic = `${fixturesPath}/diffForFile/topics-added-diff.non-order.split.csv.json`;
       if (file === 'msk-topics.csv') return setUpTestScenarioObject(nonAlphabetic)
     }
     const topics = `
@@ -72,9 +73,9 @@ describe("test models/msk.js ...", () => {
   })
 
   it("should post a message when csvEntryAlphabeticOrder() in alphabetic order and single topic added in order", () => {
-    const nonAlphabetic = 'models/__fixtures__/msk/topic-added-diff.order.csv.json';
     dm.danger.git.fileMatch = dangerFileMatch({ modified: ['msk-topics.csv'] });
     dm.danger.git.diffForFile = (file) => {
+      const nonAlphabetic = `${fixturesPath}/diffForFile/topic-added-diff.order.csv.json`;
       if (file === 'msk-topics.csv') return setUpTestScenarioObject(nonAlphabetic)
     }
     return target.csvEntryAlphabeticOrder().then(() => {
@@ -83,9 +84,9 @@ describe("test models/msk.js ...", () => {
   })
 
   it("should post a message when csvEntryAlphabeticOrder() and topic updated", () => {
-    const nonAlphabetic = 'models/__fixtures__/msk/topics-updated-diff.order.csv.json';
     dm.danger.git.fileMatch = dangerFileMatch({ modified: ['msk-topics.csv'] });
     dm.danger.git.diffForFile = (file) => {
+      const nonAlphabetic = `${fixturesPath}/diffForFile/topics-updated-diff.order.csv.json`;
       if (file === 'msk-topics.csv') return setUpTestScenarioObject(nonAlphabetic)
     }
     return target.csvEntryAlphabeticOrder().then(() => {
