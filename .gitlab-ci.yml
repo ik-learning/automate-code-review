@@ -7,9 +7,12 @@ stages:
   - docker-push
   - review-mr
 
-cache:
-  paths:
-    - node_modules/
+variables:
+  FF_USE_FASTZIP: "true"
+  # These can be specified per job or per pipeline
+  ARTIFACT_COMPRESSION_LEVEL: "fast"
+  CACHE_COMPRESSION_LEVEL: "fast"
+
 variables:
   BETA_VERSION: beta-$CI_COMMIT_SHORT_SHA
   IMAGE: $CI_REGISTRY_IMAGE:latest
@@ -58,9 +61,10 @@ unit-tests:
         - yarn.lock
     paths:
       - node_modules
+    policy: pull-push
   before_script:
     - node --version
-    - yarn install
+    - yarn install --cache-folder .yarn
   script:
     - yarn run test
   rules:
