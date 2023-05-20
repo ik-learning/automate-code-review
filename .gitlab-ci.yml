@@ -52,6 +52,12 @@ unit-tests:
     - medium
   image: node:20-alpine
   stage: unit-tests
+  cache:
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - node_modules
   before_script:
     - node --version
     - yarn install
