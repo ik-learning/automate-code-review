@@ -128,7 +128,7 @@ describe("test models/infrastructure.js ...", () => {
     it("should warn when validateRdsCreation() with outdated mysql5 'engine' and 'storage'", () => {
       dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/mysql/rds-created.json'));
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject(`${fixturesPath}/mysql/diffForFile/mysql5.7-outdated-enginer-storage.warn.json`)
+        return setUpTestScenarioObject(`${fixturesPath}/mysql/diffForFile/mysql5.7-outdated.warn.json5`)
       }
       return target.validateRdsCreation().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(2);
@@ -141,7 +141,7 @@ describe("test models/infrastructure.js ...", () => {
   describe("validateRdsCommons()", () => {
 
     it("should warn when validateRdsCommons() with multiple number of stacks", () => {
-      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(`${fixturesPath}/storage/fileMatch/rds-multiple.json`));
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(`${fixturesPath}/storage/fileMatch/rds-mix.json`));
       target.validateRdsCommons()
       expect(dm.warn).toHaveBeenCalledTimes(1);
       expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
