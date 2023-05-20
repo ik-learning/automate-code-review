@@ -1,5 +1,5 @@
 stages:
-  - unit-test
+  - unit-tests
   - docker-build
   - docker-test
   # TODO: unit tests
