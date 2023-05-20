@@ -14,7 +14,7 @@
     "pr:local": "yarn danger pr --removePreviousComments $DANGER_PR_URL",
     "pr:remote": "yarn danger ci",
     "pr:remote-full": "DANGER_TEST_PR='2' yarn danger ci",
-    "test": "jest"
+    "test": "jest --colors --ci"
   },
   "dependencies": {
     "danger": "^11.2.3",
