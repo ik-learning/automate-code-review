@@ -4,6 +4,8 @@ const { setUpTestScenarioObject, setUpTestScenario,
 
 describe("test models/infrastructure.js ...", () => {
   let target, dm;
+  const fixturesPath = "models/__fixtures__";
+
   beforeEach(() => {
     dm = setupDanger();
     target = new Infrastructure(dm.danger);
@@ -62,12 +64,11 @@ describe("test models/infrastructure.js ...", () => {
   it("should not messages when rdsMysql5EndOfLifeDate() and rds family is not 'mysql5'", () => {
     dm.danger.git.fileMatch = dangerFileMatch({ modified: ['rds/stack/dev/values.tfvars'], created: [] });
     mapping = {
-      'rds/stack/dev/values.tfvars': `models/__fixtures__/mysql/mysql8-diff.json`,
+      'rds/stack/dev/values.tfvars': `${fixturesPath}/mysql/diffForFile/mysql8-updated.json`,
     }
     dm.danger.git.diffForFile = (file) => {
       return setUpTestScenarioObject(mapping[file])
     }
-    // ^ TODO: externalize
     return target.rdsMysql5EndOfLifeDate().then(() => {
       expect(dm.message).toHaveBeenCalledTimes(0);
     })
@@ -79,8 +80,8 @@ describe("test models/infrastructure.js ...", () => {
   ])("should messages when rdsMysql5EndOfLifeDate() and rds family is mysql5", (keyedPaths) => {
     dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
     mapping = {
-      'rds/stack/dev/values.tfvars': `models/__fixtures__/mysql/mysql5-diff.json`,
-      'rds/stack/prod/values.tfvars': `models/__fixtures__/mysql/mysql5-diff.json`,
+      'rds/stack/dev/values.tfvars': `${fixturesPath}/mysql/diffForFile/mysql5-updated.json`,
+      'rds/stack/prod/values.tfvars': `${fixturesPath}/mysql/diffForFile/mysql5-updated.json`,
     }
     dm.danger.git.diffForFile = (file) => {
       return setUpTestScenarioObject(mapping[file])
