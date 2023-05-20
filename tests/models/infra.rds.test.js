@@ -36,7 +36,7 @@ describe("test models/infrastructure.js ...", () => {
     [0, { created: ['rds-aurora/envs/dev/9aa2/terraform.tfvars', 'rds-aurora/envs/dev/11ed/terraform.tfvars'] }, 'Do you need **prod**'],
     [1, { created: ['rds/envs/dev/9aa2/terraform.tfvars', 'rds/envs/prod/11ed/terraform.tfvars'] }, 'Do you need **prod**'],
     [1, { created: ['rds-aurora/envs/dev/9aa2/terraform.tfvars', 'rds-aurora/envs/prod/11ed/terraform.tfvars'] }, 'Do you need **prod**'],
-  ])("should message when ensureSingleStackAtOnceCreated() and stacks modified", (times, keyedPaths, msg='') => {
+  ])("should message when ensureSingleStackAtOnceCreated() and stacks modified", (times, keyedPaths, msg = '') => {
     dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
     target.validateSingleStackAtOnceCreated();
 
@@ -66,22 +66,20 @@ describe("test models/infrastructure.js ...", () => {
 
   describe("validateRdsCreation()", () => {
 
-  it.each([
-    [{ created: ['rds/dev/ci-server/terraform.tfvars'] }, 'create.diff.ok.json', 0],
-    [{ created: ['rds/dev/test-server/terraform.tfvars'] }, 'create.diff.bad.json', 1],
-    [{ created: ['rds/dev/this-server/terraform.tfvars'] }, 'mysql5-create.diff.json', 1],
-    [{ created: ['rds/dev/app-server/terraform.tfvars'] }, 'create.no-instance.ok.json', 0],
-  ])("should ensureRdsCreationValidated() for mysql", (keyedPaths, scenario, times) => {
-    dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
-    dm.danger.git.diffForFile = (file) => {
-      return setUpTestScenarioObject(`${fixturesPath}/mysql/diffForFile/${scenario}`)
-    }
-    return target.validateRdsCreation().then(() => {
-      expect(dm.warn).toHaveBeenCalledTimes(times);
+    it.each([
+      [{ created: ['rds/dev/ci-server/terraform.tfvars'] }, 'create.diff.ok.json', 0],
+      [{ created: ['rds/dev/test-server/terraform.tfvars'] }, 'create.diff.bad.json', 1],
+      [{ created: ['rds/dev/this-server/terraform.tfvars'] }, 'mysql5-create.diff.json', 1],
+      [{ created: ['rds/dev/app-server/terraform.tfvars'] }, 'create.no-instance.ok.json', 0],
+    ])("should ensureRdsCreationValidated() for mysql", (keyedPaths, scenario, times) => {
+      dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
+      dm.danger.git.diffForFile = (file) => {
+        return setUpTestScenarioObject(`${fixturesPath}/mysql/diffForFile/${scenario}`)
+      }
+      return target.validateRdsCreation().then(() => {
+        expect(dm.warn).toHaveBeenCalledTimes(times);
+      })
     })
-  })
-
-
 
     it.each([
       [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'create.diff.ok.json', 0],
