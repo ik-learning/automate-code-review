@@ -3,6 +3,7 @@ const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch, setupDanger
 
 describe("test models/infrastructure.js ...", () => {
   let target, dm;
+  const fixturesPath = "models/__fixtures__/rds-aurora/";
 
   beforeEach(() => {
     dm = setupDanger();
@@ -11,23 +12,23 @@ describe("test models/infrastructure.js ...", () => {
 
   describe("validateRdsAuroraCommons()", () => {
     it.each([
-      ['models/__fixtures__/rds-aurora/fileMatch/mixed.warn.json5', 1],
-      ['models/__fixtures__/rds-aurora/fileMatch/modified.warn.json5', 1],
-      ['models/__fixtures__/rds-aurora/fileMatch/created.ok.json', 0],
+      ['mixed.warn.json5', 1],
+      ['modified.warn.json5', 1],
+      ['created.ok.json', 0],
     ])("should warn when validateRdsCommons() and the review should be skipped", (scenario, times) => {
-      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(`${fixturesPath}/fileMatch/${scenario}`));
       target.validateRdsAuroraCommons()
       expect(dm.warn).toHaveBeenCalledTimes(times);
       if (times > 0) expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
     })
 
     it.each([
-      ['models/__fixtures__/rds-aurora/fileMatch/created.threshold.json5', 1],
-      ['models/__fixtures__/rds-aurora/fileMatch/modified.threshold.json5', 1],
-      ['models/__fixtures__/rds-aurora/fileMatch/deleted.threshold.json5', 1],
-      ['models/__fixtures__/rds-aurora/fileMatch/created.ok.json', 0],
+      ['created.threshold.json5', 1],
+      ['modified.threshold.json5', 1],
+      ['deleted.threshold.json5', 1],
+      ['created.ok.json', 0],
     ])("should warn when ensureRdsCreationValidated() number of stacks hits the threshold", (scenario, times) => {
-      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(`${fixturesPath}/fileMatch/${scenario}`));
       target.validateRdsAuroraCommons()
       expect(dm.warn).toHaveBeenCalledTimes(times);
       if (times > 0) expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
@@ -47,7 +48,7 @@ describe("test models/infrastructure.js ...", () => {
     ])("should warn when validateRdsAuroraCreation() with conditions", (scenario, times) => {
       dm.danger.git.fileMatch = dangerFileMatch(scenario);
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/diffForFile/rds-create.ok.json5')
+        return setUpTestScenarioObject(`${fixturesPath}/diffForFile/rds-create.ok.json5`)
       }
       return target.validateRdsAuroraCreation().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(times);
@@ -55,9 +56,9 @@ describe("test models/infrastructure.js ...", () => {
     })
 
     it("should warn when validateRdsAuroraCreation() with conditions", () => {
-      dm.danger.git.fileMatch = dangerFileMatch({ created: ["rds-aurora/dev/lighthouse/terraform.tfvars"] });
+      dm.danger.git.fileMatch = dangerFileMatch({ created: ["rds-aurora/dev/lighthouse/tf.tfvars"] });
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/diffForFile/rds-create.warn.json5')
+        return setUpTestScenarioObject(`${fixturesPath}/diffForFile/rds-create.warn.json5`)
       }
       return target.validateRdsAuroraCreation().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(1);
@@ -75,7 +76,7 @@ describe("test models/infrastructure.js ...", () => {
     ])("should warn when validateRdsAuroraModification() with certain conditions", (scenario, times) => {
       dm.danger.git.fileMatch = dangerFileMatch(scenario);
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/diffForFile/version-modified.warn.json5')
+        return setUpTestScenarioObject(`${fixturesPath}/diffForFile/version-modified.warn.json5`)
       }
       return target.validateRdsAuroraModification().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(times);
@@ -86,7 +87,7 @@ describe("test models/infrastructure.js ...", () => {
     it("should silent when validateRdsAuroraModification() and no issues found", () => {
       dm.danger.git.fileMatch = dangerFileMatch({ modified: ["rds-aurora/environments/dev/lighthouse/terraform.tfvars"] });
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject('models/__fixtures__/rds-aurora/diffForFile/version-modified.ok.json5')
+        return setUpTestScenarioObject(`${fixturesPath}/diffForFile/version-modified.ok.json5`)
       }
       return target.validateRdsAuroraModification().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(0);

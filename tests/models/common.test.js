@@ -3,6 +3,7 @@ const { setUpTestScenarioObject, setUpTestScenario, setupDanger } = require("../
 
 describe("test models/common.js ...", () => {
   let target, dm;
+  const fixturesPath = "models/__fixtures__/common";
 
   beforeEach(() => {
     dm = setupDanger();
@@ -152,7 +153,7 @@ Closes PTS-1478
     dm.danger.git.created_files = ['requirements.txt'];
     dm.danger.git.modified_files = [];
     dm.danger.git.diffForFile = async (file) => {
-      return setUpTestScenarioObject('models/__fixtures__/common/no-newline.diff.json');
+      return setUpTestScenarioObject(`${fixturesPath}/diffForFile/no-newline.json`);
     }
     return target.ensureFileHasNewline().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(1);
@@ -164,7 +165,7 @@ Closes PTS-1478
     dm.danger.git.created_files = ['requirements.txt'];
     dm.danger.git.modified_files = [];
     dm.danger.git.diffForFile = async (file) => {
-      return setUpTestScenarioObject('models/__fixtures__/common/newline.diff.json');
+      return setUpTestScenarioObject(`${fixturesPath}/diffForFile/newline.json`);
     }
     return target.ensureFileHasNewline().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(0);
@@ -175,7 +176,7 @@ Closes PTS-1478
     dm.danger.git.created_files = ['requirements.txt'];
     dm.danger.git.modified_files = [];
     dm.danger.git.diffForFile = async (file) => {
-      return setUpTestScenarioObject('models/__fixtures__/common/no-newline-removed.json');
+      return setUpTestScenarioObject(`${fixturesPath}/diffForFile/no-newline_removed.json`);
     }
     return target.ensureFileHasNewline().then(() => {
       expect(dm.warn).toHaveBeenCalledTimes(0);
