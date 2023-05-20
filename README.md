@@ -94,6 +94,7 @@ mk local
 - [6/10: hints](https://prog.world/automate-review-selection-with-gitlab-ci-and-danger-js/)
 - [5/10: hints in ru](https://habr.com/ru/companies/vk/articles/672372/)
 - [6/10: Block code that is used in Demo](https://yalantis.com/blog/code-review-via-gitlab-merge-requests-code-review-must/)
+- [8/10: Speed up jobs](https://blog.nimbleways.com/let-s-make-faster-gitlab-ci-cd-pipelines/)
 
 ### Issues
 

@@ -14,10 +14,11 @@ RUN apk -v add --no-cache jq util-linux bash
 
 ENV WORK_DIR "/danger"
 ENV IS_CI "true"
+ENV NODE_ENV "production"
 
 COPY . ./
 
-RUN yarn
+RUN yarn install --production
 
 COPY ./entrypoint.sh /usr/local/bin/code-review
 RUN chmod +x /usr/local/bin/code-review
