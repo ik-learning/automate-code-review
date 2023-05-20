@@ -3,8 +3,8 @@
 	"event_type": "merge_request",
 	"user": {
 		"id": 9854903,
-		"name": "Ivan Katliarchuk",
-		"username": "Ikatliarchuk",
+		"name": "John Doe",
+		"username": "magnetgolf",
 		"avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9854903/avatar.png",
 		"email": "[REDACTED]"
 	},
@@ -98,7 +98,7 @@
 			"timestamp": "2022-10-19T14:30:50+01:00",
 			"url": "https://gitlab.com/MyCompany/platform-as-a-service/kafka/msk-topics/-/commit/7a7a8e76129298a3911515cbb18b971bef16f540",
 			"author": {
-				"name": "ivank",
+				"name": "johndoe",
 				"email": "iv@gmail.com"
 			}
 		},

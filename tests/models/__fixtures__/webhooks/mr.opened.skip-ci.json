@@ -3,8 +3,8 @@
   "event_type": "merge_request",
   "user": {
     "id": 9854903,
-    "name": "Ivan Katliarchuk",
-    "username": "Ikatliarchuk",
+    "name": "John Doe",
+    "username": "magnetgolf",
     "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9854903/avatar.png",
     "email": "[REDACTED]"
   },
@@ -98,7 +98,7 @@
       "timestamp": "2022-11-10T13:17:14+00:00",
       "url": "https://gitlab.com/MyCompany/platform-as-a-service/infrastructure/-/commit/28c87edceeb1ea381dada4a7406e712bcfb5db6b",
       "author": {
-        "name": "ivank",
+        "name": "johndoe",
         "email": "john@yahoo.com"
       }
     },

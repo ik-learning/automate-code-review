@@ -3,8 +3,8 @@
   "event_type": "merge_request",
   "user": {
     "id": 9854903,
-    "name": "Ivan Katliarchuk",
-    "username": "Ikatliarchuk",
+    "name": "John Doe",
+    "username": "magnetgolf",
     "avatar_url": "https://gitlab.com/uploads/-/system/user/avatar/9854903/avatar.png",
     "email": "[REDACTED]"
   },
@@ -93,13 +93,13 @@
     },
     "last_commit": {
       "id": "191333b605dad1cb27d4a5a24e19b86bf2a8a313",
-      "message": "wip\n\nSigned-off-by: ivank \u003civankatliarchuk@hollandandbarrett.com\u003e\n",
+      "message": "wip\n\nSigned-off-by: johndoe \u003cjohndoe@gmail.com\u003e\n",
       "title": "wip",
       "timestamp": "2023-01-11T10:46:29+00:00",
       "url": "https://gitlab.com/MyCompany/platform-as-a-service/oauth2-proxy/-/commit/191333b605dad1cb27d4a5a24e19b86bf2a8a313",
       "author": {
-        "name": "ivank",
-        "email": "ivankatliarchuk@hollandandbarrett.com"
+        "name": "johndoe",
+        "email": "johndoe@gmail.com"
       }
     },
     "work_in_progress": true,
