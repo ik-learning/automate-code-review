@@ -3,6 +3,7 @@ const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch, setupDanger
 
 describe("test models/infrastructure.js ...", () => {
   let target, dm;
+  const fixturesPath = "models/__fixtures__";
 
   beforeEach(() => {
     dm = setupDanger();
@@ -65,18 +66,31 @@ describe("test models/infrastructure.js ...", () => {
 
   describe("validateRdsCreation()", () => {
 
+  it.each([
+    [{ created: ['rds/dev/ci-server/terraform.tfvars'] }, 'create.diff.ok.json', 0],
+    [{ created: ['rds/dev/test-server/terraform.tfvars'] }, 'create.diff.bad.json', 1],
+    [{ created: ['rds/dev/this-server/terraform.tfvars'] }, 'mysql5-create.diff.json', 1],
+    [{ created: ['rds/dev/app-server/terraform.tfvars'] }, 'create.no-instance.ok.json', 0],
+  ])("should ensureRdsCreationValidated() for mysql", (keyedPaths, scenario, times) => {
+    dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
+    dm.danger.git.diffForFile = (file) => {
+      return setUpTestScenarioObject(`${fixturesPath}/mysql/diffForFile/${scenario}`)
+    }
+    return target.validateRdsCreation().then(() => {
+      expect(dm.warn).toHaveBeenCalledTimes(times);
+    })
+  })
+
+
+
     it.each([
-      [{ created: ['rds/dev/ci-server/terraform.tfvars'] }, 'mysql/create.diff.ok.json', 0],
-      [{ created: ['rds/dev/test-server/terraform.tfvars'] }, 'mysql/create.diff.bad.json', 1],
-      [{ created: ['rds/dev/this-server/terraform.tfvars'] }, 'mysql/mysql5-rds-create.diff.json', 1],
-      [{ created: ['rds/dev/app-server/terraform.tfvars'] }, 'mysql/create.no-instance.ok.json', 0],
-      [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'postgres/create.diff.ok.json', 0],
-      [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'postgres/create.no-instance.ok.json', 0],
-      [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'postgres/create.db.t3.medium.json', 1],
+      [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'create.diff.ok.json', 0],
+      [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'create.no-instance.ok.json', 0],
+      [{ created: ['rds/dev/pg-server/terraform.tfvars'] }, 'create.db.t3.medium.json', 1],
     ])("should messages when ensureRdsCreationValidated() with single stack in dev modified", (keyedPaths, scenario, times) => {
       dm.danger.git.fileMatch = dangerFileMatch(keyedPaths);
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject(`models/__fixtures__/${scenario}`)
+        return setUpTestScenarioObject(`${fixturesPath}/postgres/diffForFile/${scenario}`)
       }
       return target.validateRdsCreation().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(times);
@@ -86,7 +100,7 @@ describe("test models/infrastructure.js ...", () => {
     it("should warn when validateRdsCreation() with outdated postgres11 'engine' and 'storage'", () => {
       dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/postgres/rds-created.json'));
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject(`models/__fixtures__/postgres/postgres11-outdated-engine-storage.warn.json`)
+        return setUpTestScenarioObject(`${fixturesPath}/postgres/diffForFile/postgres11-outdated.warn.json5`)
       }
       return target.validateRdsCreation().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(3);
@@ -98,9 +112,9 @@ describe("test models/infrastructure.js ...", () => {
     })
 
     it("should warn when validateRdsCreation() with not recommended 'instance_class'", () => {
-      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/postgres/rds-created-prod.json'));
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(`${fixturesPath}/postgres/fileMatch/rds-created-prod.json`));
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject('models/__fixtures__/postgres/family15-instance_class-outdated.warn.json')
+        return setUpTestScenarioObject(`${fixturesPath}/postgres/diffForFile/family15-instance_class-outdated.warn.json`)
       }
       return target.validateRdsCreation().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(2);
@@ -114,7 +128,7 @@ describe("test models/infrastructure.js ...", () => {
     it("should warn when validateRdsCreation() with outdated mysql5 'engine' and 'storage'", () => {
       dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/mysql/rds-created.json'));
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject(`models/__fixtures__/mysql/mysql5.7-outdated-enginer-storage.warn.json`)
+        return setUpTestScenarioObject(`${fixturesPath}/mysql/diffForFile/mysql5.7-outdated-enginer-storage.warn.json`)
       }
       return target.validateRdsCreation().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(2);
@@ -127,17 +141,17 @@ describe("test models/infrastructure.js ...", () => {
   describe("validateRdsCommons()", () => {
 
     it("should warn when validateRdsCommons() with multiple number of stacks", () => {
-      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/storage/rds-multiple.json'));
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(`${fixturesPath}/storage/fileMatch/rds-multiple.json`));
       target.validateRdsCommons()
       expect(dm.warn).toHaveBeenCalledTimes(1);
       expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Multiple configurations modified in single MR'));
     })
 
     it.each([
-      ['models/__fixtures__/storage/rds-created.json'],
-      ['models/__fixtures__/storage/rds-modified.json']
+      ['rds-created.json'],
+      ['rds-modified.json']
     ])("should messages when ensureRdsCreationValidated() number of stacks hits the threshold", (scenario) => {
-      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(`${fixturesPath}/storage/fileMatch/${scenario}`));
       target.validateRdsCommons()
       expect(dm.warn).toHaveBeenCalledTimes(1);
       expect(dm.warn).toHaveBeenCalledWith(expect.stringContaining('Skip review as number of'));
@@ -147,10 +161,10 @@ describe("test models/infrastructure.js ...", () => {
   describe("validateRdsModification()", () => {
 
     it.each([
-      ['models/__fixtures__/storage/rds-created.json'],
-      ['models/__fixtures__/storage/rds-modified.json']
+      ['rds-created.json'],
+      ['rds-modified.json']
     ])("should not message when validateRdsModification() with number of modified fiels ", (scenario) => {
-      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(scenario));
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(`${fixturesPath}/storage/fileMatch/${scenario}`));
       return target.validateRdsModification().then(() => {
         expect(dm.warn).toHaveBeenCalledTimes(0);
         expect(dm.message).toHaveBeenCalledTimes(0);;
@@ -158,9 +172,9 @@ describe("test models/infrastructure.js ...", () => {
     })
 
     it("should warn when validateRdsModification() and instance_class modified", () => {
-      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/postgres/rds-modified.json'));
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(`${fixturesPath}/postgres/fileMatch/rds-modified.json`));
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject('models/__fixtures__/postgres/instance_class-modified.warn.json')
+        return setUpTestScenarioObject(`${fixturesPath}/postgres/diffForFile/instance_class-modified.warn.json`)
       }
       return target.validateRdsModification().then(() => {
         expect(dm.message).toHaveBeenCalledTimes(2);
@@ -170,9 +184,9 @@ describe("test models/infrastructure.js ...", () => {
     })
 
     it("should not warn when validateRdsModification() and version modified", () => {
-      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject('models/__fixtures__/postgres/rds-modified.json'));
+      dm.danger.git.fileMatch = dangerFileMatch(setUpTestScenarioObject(`${fixturesPath}/postgres/fileMatch/rds-modified.json`));
       dm.danger.git.diffForFile = (file) => {
-        return setUpTestScenarioObject('models/__fixtures__/postgres/gp2-not-modified.warn.json')
+        return setUpTestScenarioObject(`${fixturesPath}/postgres/diffForFile/storage_type-outdated.warn.json5`)
       }
       return target.validateRdsModification().then(() => {
         expect(dm.message).toHaveBeenCalledTimes(2);

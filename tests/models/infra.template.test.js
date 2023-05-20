@@ -3,6 +3,7 @@ const { setUpTestScenarioObject, setUpTestScenario, dangerFileMatch, setupDanger
 
 describe("test models/infrastructure.js ...", () => {
   let target, dm;
+  const fixturesPath = "models/__fixtures__/template";
 
   beforeEach(() => {
     dm = setupDanger();
@@ -10,16 +11,16 @@ describe("test models/infrastructure.js ...", () => {
   })
 
   it.each([
-    [{ fixture: 'models/__fixtures__/template/dynamodb-modified.ok.json' }, 0],
-    [{ fixture: 'models/__fixtures__/template/dynamodb-modified.bad.json' }, 1],
-    [{ fixture: 'models/__fixtures__/template/rds-created.bad.json' }, 1],
-    [{ fixture: 'models/__fixtures__/template/rds-created.ok.json' }, 0],
-    [{ fixture: 'models/__fixtures__/template/s3-modified.bad.json' }, 1],
-    [{ fixture: 'models/__fixtures__/template/s3-modified.ok.json' }, 0],
-    [{ fixture: 'models/__fixtures__/template/rds-deleted.bad.json' }, 1],
-    [{ fixture: 'models/__fixtures__/template/rds-deleted.ok.json' }, 0],
+    [{ fixture: 'dynamodb-modified.ok.json' }, 0],
+    [{ fixture: 'dynamodb-modified.bad.json' }, 1],
+    [{ fixture: 'rds-created.bad.json' }, 1],
+    [{ fixture: 'rds-created.ok.json' }, 0],
+    [{ fixture: 's3-modified.bad.json' }, 1],
+    [{ fixture: 's3-modified.ok.json' }, 0],
+    [{ fixture: 'rds-deleted.bad.json' }, 1],
+    [{ fixture: 'rds-deleted.ok.json' }, 0],
   ])("should validate mr template when templateShouldBeEnforced()", (source, times) => {
-    const fixture = setUpTestScenarioObject(source.fixture);
+    const fixture = setUpTestScenarioObject(`${fixturesPath}/${source.fixture}`);
     dm.danger.git.fileMatch = dangerFileMatch(fixture.files);
     target.mrDescription = fixture.description
 
@@ -29,7 +30,7 @@ describe("test models/infrastructure.js ...", () => {
   })
 
   it("should validate mr template when templateShouldBeEnforced() and multiple stacks modified", () => {
-    const fixture = setUpTestScenarioObject('models/__fixtures__/template/multiple-stacks.bad.json');
+    const fixture = setUpTestScenarioObject(`${fixturesPath}/multiple-stacks.bad.json`);
     dm.danger.git.fileMatch = dangerFileMatch(fixture.files);
     target.mrDescription = fixture.description;
     target.templateShouldBeEnforced()

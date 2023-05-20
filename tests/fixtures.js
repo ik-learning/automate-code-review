@@ -37,7 +37,7 @@ function setUpTestScenarioObject(filePath) {
     return JSON.parse(fs.readFileSync(fullPath, "utf8"));
   }
   console.error('File not found: ' + fullPath);
-  throw new Error('File not found: ' + fullPath);
+  throw new Error('File not found: ' + filePath);
 }
 
 function setupDanger() {
