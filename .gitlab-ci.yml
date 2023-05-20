@@ -49,9 +49,11 @@ variables:
 
 unit-tests:
   tags:
-    - docker
+    - medium
+  image: node:latest
   stage: unit-tests
   before_script:
+    - node --version
     - yarn install
   script:
     - yarn run test
