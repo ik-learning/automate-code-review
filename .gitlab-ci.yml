@@ -1,4 +1,5 @@
 stages:
+  - unit-test
   - docker-build
   - docker-test
   # TODO: unit tests
@@ -6,6 +7,9 @@ stages:
   - docker-push
   - review-mr
 
+cache:
+  paths:
+    - node_modules/
 variables:
   BETA_VERSION: beta-$CI_COMMIT_SHORT_SHA
   IMAGE: $CI_REGISTRY_IMAGE:latest
@@ -42,6 +46,17 @@ variables:
   script:
     - echo "Docker version > ${BETA_VERSION}"
     - docker load -i image.tar
+
+unit-tests:
+  tags:
+    - docker
+  stage: unit-tests
+  before_script:
+    - yarn install
+  script:
+    - yarn run test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
 
 build:
   tags:
